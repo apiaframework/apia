@@ -25,8 +25,7 @@ module CoreAPI
     # By default, fields just call the method on the underlying
     # object. Rather than specifying the type on the same line,
     # you can do so within the block of attributes.
-    field :full_name do
-      type :string
+    field :full_name, type: :string do
       backend { |u| "#{u.first_name} #{u.last_name}" }
     end
 
@@ -46,8 +45,7 @@ module CoreAPI
 
     # If a field's inclusion is conditional on the context of
     # the API request, you can exclude it entirely.
-    field :admin do
-      type :boolean
+    field :admin, type: :boolean do
       backend { |user| user.admin? }
       condition { |user, request| request.identity.admin? }
     end
