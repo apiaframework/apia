@@ -2,9 +2,13 @@
 
 require 'apeye/definitions/type'
 require 'apeye/dsls/type'
+require 'apeye/defineable'
 
 module APeye
   class Type
+    extend Defineable
+    set_definition_class Definitions::Type
+
     # Initialize an instance of this type with the value provided
     #
     # @param value [Object, Hash]
@@ -56,32 +60,6 @@ module APeye
 
       self.class.definition.conditions.all? do |cond|
         cond.call(@value, request) == true
-      end
-    end
-
-    class << self
-      def define(&block)
-        dsl = DSLs::Type.new(definition)
-        dsl.instance_eval(&block) if block_given?
-        definition
-      end
-
-      def create(&block)
-        klass = Class.new(self)
-        klass.define(&block)
-        klass
-      end
-
-      def definition
-        @definition ||= Definitions::Type.new
-      end
-
-      def method_missing(name, *args, &block)
-        if definition.dsl.respond_to?(name)
-          definition.dsl.send(name, *args, &block)
-        else
-          super
-        end
       end
     end
   end

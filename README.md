@@ -59,6 +59,7 @@ end
 ```ruby
 module CoreAPI
   class UserStateEnumType < APeye::Enum
+
     # Define all the values for the enum.
     value 'active'
     value 'suspended'
