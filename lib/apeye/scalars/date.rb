@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
 require 'date'
-require 'apeye/type'
+require 'apeye/scalar'
 
 module APeye
-  module Types
-    class Date < APeye::Type
-      type_name 'Date'
-      description 'A date (e.g. 2019-01-01)'
-
+  module Scalars
+    class Date < APeye::Scalar
       def valid?
         @value.is_a?(::Date)
       end
@@ -21,12 +18,18 @@ module APeye
         return new(string) if string.is_a?(::Date)
 
         string = string.to_s
-        return false unless string =~ /\A\d{4}\-\d{2}\-\d{2}\z/
+        unless string =~ /\A\d{4}\-\d{2}\-\d{2}\z/
+          raise APeye::ParseError, 'Date must be in the format of yyyy-mm-dd'
+        end
 
         date = ::Date.parse(string)
         new(date)
       rescue ArgumentError => e
-        e.message =~ /invalid date/ ? false : raise
+        if e.message =~ /invalid date/
+          raise APeye::ParseError, 'Invalid date was entered'
+        end
+
+        raise
       end
     end
   end

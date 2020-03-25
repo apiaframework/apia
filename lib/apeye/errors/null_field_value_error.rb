@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require 'apeye/errors/parse_error'
+require 'apeye/errors/manifest_error'
+
 module APeye
-  class NullFieldValueError < ParseError
+  class NullFieldValueError < ManifestError
     attr_reader :field
     def initialize(field)
       @field = field

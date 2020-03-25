@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'apeye/definitions/field'
+require 'apeye/type'
+
 describe APeye::Definitions::Field do
   context '#array?' do
     it 'should be true if the field can be an array' do
@@ -18,6 +20,7 @@ describe APeye::Definitions::Field do
       expect(field.array?).to be false
     end
   end
+
   context '#can_be_nil?' do
     it 'should be true if the field can be nil' do
       field = APeye::Definitions::Field.new(:id, nil: true)
@@ -35,10 +38,27 @@ describe APeye::Definitions::Field do
     end
   end
 
-  context '#value_from_object' do
+  context '#include?' do
+    it 'should return true when there is no condition' do
+      field = APeye::Definitions::Field.new(:id)
+      expect(field.include?(123, nil)).to be true
+    end
+
+    it 'should return true if the condition returns true' do
+      field = APeye::Definitions::Field.new(:id, condition: proc { true })
+      expect(field.include?(123, nil)).to be true
+    end
+
+    it 'should return false if the condition does not return true' do
+      field = APeye::Definitions::Field.new(:id, condition: proc { false })
+      expect(field.include?(123, nil)).to be false
+    end
+  end
+
+  context '#raw_value_from_object' do
     it 'should be able to pull a value from a hash' do
       field = APeye::Definitions::Field.new(:id, type: :integer)
-      expect(field.value_from_object(id: 1234)).to eq 1234
+      expect(field.raw_value_from_object(id: 1234)).to eq 1234
     end
 
     it 'should be able to pull a value from an object' do
@@ -46,55 +66,32 @@ describe APeye::Definitions::Field do
       field = APeye::Definitions::Field.new(:id, type: :integer)
       struct = Struct.new(:id).new
       struct.id = 1234
-      expect(field.value_from_object(struct)).to eq 1234
+      expect(field.raw_value_from_object(struct)).to eq 1234
     end
 
     it 'should call the backend block if one is given' do
       field = APeye::Definitions::Field.new(:id, type: :string, backend: proc { |n| "#{n}!" })
-      expect(field.value_from_object(444)).to eq '444!'
+      expect(field.raw_value_from_object(444)).to eq '444!'
     end
+  end
 
-    it 'should return nil if the value is nil' do
-      field = APeye::Definitions::Field.new(:id, type: :integer, nil: true)
-      expect(field.value_from_object({})).to eq nil
-    end
-
-    it 'should raise an error if the value is nil and its not allowed' do
+  context '#value' do
+    it 'should raise an error if the value is not valid' do
       field = APeye::Definitions::Field.new(:id, type: :integer)
       expect do
-        field.value_from_object({})
-      end.to raise_error(APeye::NullFieldValueError)
-    end
-
-    it 'should return the casted value if the value is valid' do
-      type = Class.new(APeye::Type) do
-        def cast
-          @value.to_i
-        end
-      end
-      field = APeye::Definitions::Field.new(:id, type: type)
-      expect(field.value_from_object(id: '444')).to eq 444
-    end
-
-    it 'should raise an error if the value is not valid' do
-      type = Class.new(APeye::Type) do
-        def valid?
-          false
-        end
-      end
-
-      field = APeye::Definitions::Field.new(:id, type: type)
-      expect do
-        field.value_from_object(id: '444')
+        field.value(id: '444')
       end.to raise_error(APeye::InvalidTypeError)
     end
 
     it 'should return an array if defined as an array' do
       field = APeye::Definitions::Field.new(:names, type: :string, array: true)
-      value = field.value_from_object(names: %w[Adam Michael])
+      value = field.value(names: %w[Adam Michael])
       expect(value).to be_a Array
-      expect(value[0]).to eq 'Adam'
-      expect(value[1]).to eq 'Michael'
+      expect(value[0]).to be_a APeye::Scalars::String
+      expect(value[0].cast).to eq 'Adam'
+
+      expect(value[1]).to be_a APeye::Scalars::String
+      expect(value[1].cast).to eq 'Michael'
     end
 
     it 'should return an array if defined as an array with nested types' do
@@ -104,17 +101,21 @@ describe APeye::Definitions::Field do
       end
 
       field = APeye::Definitions::Field.new(:users, type: type, array: true)
-      value = field.value_from_object(users: [
-                                        { name: 'Adam', age: 20 },
-                                        { name: 'Michael', age: 25 }
-                                      ])
+      value = field.value(users: [
+                            { name: 'Adam', age: 20 },
+                            { name: 'Michael', age: 25 }
+                          ])
       expect(value).to be_a Array
-      expect(value[0]).to be_a Hash
-      expect(value[0]['name']).to eq 'Adam'
-      expect(value[0]['age']).to eq 20
-      expect(value[1]).to be_a Hash
-      expect(value[1]['name']).to eq 'Michael'
-      expect(value[1]['age']).to eq 25
+      expect(value[0]).to be_a type
+
+      adam_hash = value[0].hash
+      expect(adam_hash['name']).to eq 'Adam'
+      expect(adam_hash['age']).to eq 20
+
+      expect(value[1]).to be_a type
+      michael_hash = value[1].hash
+      expect(michael_hash['name']).to eq 'Michael'
+      expect(michael_hash['age']).to eq 25
     end
   end
 end

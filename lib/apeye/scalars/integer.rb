@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'apeye/type'
+require 'apeye/scalar'
 
 module APeye
-  module Types
-    class Integer < APeye::Type
-      type_name 'Integer'
-      description 'A standard integer'
-
+  module Scalars
+    class Integer < APeye::Scalar
       def valid?
         @value.is_a?(::Integer)
       end

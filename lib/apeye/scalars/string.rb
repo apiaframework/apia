@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'apeye/type'
+require 'apeye/scalar'
 
 module APeye
-  module Types
-    class String < APeye::Type
-      type_name 'String'
-      description 'A standard string'
-
+  module Scalars
+    class String < APeye::Scalar
       def valid?
         @value.is_a?(::String)
       end

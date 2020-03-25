@@ -5,27 +5,53 @@ require 'apeye/dsls/type'
 
 module APeye
   class Type
-    def self.parse(value)
-      new(value)
-    end
-
-    attr_reader :value
-
+    # Initialize an instance of this type with the value provided
+    #
+    # @param value [Object, Hash]
+    # @return [APeye::Type]
     def initialize(value)
       @value = value
     end
 
-    def cast
+    # Return the raw value object for this type
+    #
+    # @return [Object, Hash]
+    attr_reader :value
+
+    # Generate a hash based on the fields defined in this type
+    #
+    # @param request [APeye::Request] the associated request
+    # @return [Hash]
+    def hash(request: nil)
       self.class.definition.fields.each_with_object({}) do |(_, field), hash|
-        hash[field.name.to_s] = field.value_from_object(@value)
+        next unless field.include?(@value, request)
+
+        type_instance = field.value(@value)
+
+        if type_instance.nil?
+          # If the value is nil, the value is nil
+          value = nil
+
+        elsif type_instance.is_a?(Type)
+          next unless type_instance.include?(request)
+
+          # For type values, we want to render a hash
+          value = type_instance.hash(request: request)
+        else
+          # For scaler values, we just want to cast them
+
+          value = type_instance.cast
+        end
+
+        hash[field.name.to_s] = value
       end
     end
 
-    def valid?
-      true
-    end
-
-    def show?(request)
+    # Should this type be included in any output?
+    #
+    # @param request [APeye::Request]
+    # @return [Boolean]
+    def include?(request)
       return true if self.class.definition.conditions.empty?
 
       self.class.definition.conditions.all? do |cond|

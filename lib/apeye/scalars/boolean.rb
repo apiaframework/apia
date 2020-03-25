@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'apeye/type'
+require 'apeye/scalar'
 
 module APeye
-  module Types
-    class Boolean < APeye::Type
-      type_name 'Boolean'
-      description 'A standard boolean (true or false)'
-
+  module Scalars
+    class Boolean < APeye::Scalar
       def valid?
         @value == true || @value == false
       end

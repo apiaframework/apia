@@ -3,6 +3,7 @@
 require 'apeye/dsls/field'
 require 'apeye/errors/invalid_type_error'
 require 'apeye/errors/null_field_value_error'
+require 'apeye/scalars'
 
 module APeye
   module Definitions
@@ -15,11 +16,12 @@ module APeye
         @options = options
       end
 
+      # Return the type of object (either a Type or a Scalar) which
+      # this field represents.
       def type
         @type ||= begin
           if @options[:type].is_a?(Symbol) || @options[:type].is_a?(String)
-            require 'apeye/types'
-            Types::ALL[@options[:type].to_sym]
+            Scalars::ALL[@options[:type].to_sym]
           else
             @options[:type]
           end
@@ -34,40 +36,57 @@ module APeye
         @options[:array] == true
       end
 
+      def include?(value, request)
+        return true if @options[:condition].nil?
+
+        @options[:condition].call(value, request)
+      end
+
       def dsl
         @dsl ||= DSLs::Field.new(self)
       end
 
-      def cast(value)
-        return nil if value.nil? && can_be_nil?
-
-        raise NullFieldValueError, self if value.nil?
-
-        if array?
-          value.map { |v| value_via_type(v) }
+      # Return the backend value from the given object based on the
+      # rules that exist for this field.
+      #
+      # @param object [Object]
+      # @return [Object]
+      def raw_value_from_object(object)
+        if @options[:backend]
+          @options[:backend].call(object)
+        elsif object.is_a?(Hash)
+          object[@name.to_sym] || object[@name.to_s]
         else
-          value_via_type(value)
+          object.public_send(@name.to_sym)
         end
       end
 
-      def value_from_object(object)
-        value = if @options[:backend]
-                  @options[:backend].call(object)
-                elsif object.is_a?(Hash)
-                  object[@name.to_sym] || object[@name.to_s]
-                else
-                  object.public_send(@name.to_sym)
-                end
-        cast(value)
+      # Return an instance of a Type or a Scalar for this field
+      #
+      # @param object [Object]
+      # @return [Object]
+      def value(object)
+        raw_value = raw_value_from_object(object)
+
+        return nil if raw_value.nil? && can_be_nil?
+        raise APeye::NullFieldValueError, self if raw_value.nil?
+
+        if array? && raw_value.is_a?(Array)
+          raw_value.map { |v| create_type_instance_from_raw_value(v) }
+        else
+          create_type_instance_from_raw_value(raw_value)
+        end
       end
 
       private
 
-      def value_via_type(value)
+      def create_type_instance_from_raw_value(value)
         type_instance = type.new(value)
-        raise InvalidTypeError.new(self, value) unless type_instance.valid?
+        if type_instance.is_a?(Scalar) && !type_instance.valid?
+          raise APeye::InvalidTypeError.new(self, value)
+        end
 
-        type_instance.cast
+        type_instance
       end
     end
   end

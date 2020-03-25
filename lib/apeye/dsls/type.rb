@@ -30,7 +30,9 @@ module APeye
         field = Definitions::Field.new(name, **options)
         field.dsl.instance_eval(&block) if block_given?
 
-        raise ParseError, "Field #{name} is missing a type" if field.type.nil?
+        if field.type.nil?
+          raise ManifestError, "Field #{name} is missing a type"
+        end
 
         @type_definition.fields[name.to_sym] = field
       end
