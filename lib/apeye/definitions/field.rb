@@ -18,6 +18,8 @@ module APeye
 
       # Return the type of object (either a Type or a Scalar) which
       # this field represents.
+      #
+      # @return [Class]
       def type
         @type ||= begin
           if @options[:type].is_a?(Symbol) || @options[:type].is_a?(String)
@@ -28,20 +30,34 @@ module APeye
         end
       end
 
+      # Can the result for thsi field be nil?
+      #
+      # @return [Boolean]
       def can_be_nil?
         @options[:nil] == true
       end
 
+      # Is the result from this field expected to be an array?
+      #
+      # @return [Boolean]
       def array?
         @options[:array] == true
       end
 
+      # Should this field be inclued for the given value and request
+      #
+      # @param value [Object]
+      # @param request [APeye::Request]
+      # @return [Boolean]
       def include?(value, request)
         return true if @options[:condition].nil?
 
-        @options[:condition].call(value, request)
+        @options[:condition].call(value, request) == true
       end
 
+      # Return a DSL instance for this field
+      #
+      # @return [APeye::DSLs::Field]
       def dsl
         @dsl ||= DSLs::Field.new(self)
       end
