@@ -7,7 +7,10 @@ require 'apeye/errors/invalid_enum_option_error'
 module APeye
   class Enum
     extend Defineable
-    set_definition_class Definitions::Enum
+
+    def self.definition
+      @definition ||= Definitions::Enum.new
+    end
 
     def initialize(value)
       @value = value

@@ -2,14 +2,6 @@
 
 module APeye
   module Defineable
-    def set_definition_class(klass)
-      @@definition_class = klass
-    end
-
-    def definition
-      @definition ||= @@definition_class.new
-    end
-
     def define(&block)
       definition.dsl.instance_eval(&block) if block_given?
       definition

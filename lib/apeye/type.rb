@@ -7,7 +7,10 @@ require 'apeye/defineable'
 module APeye
   class Type
     extend Defineable
-    set_definition_class Definitions::Type
+
+    def self.definition
+      @definition ||= Definitions::Type.new
+    end
 
     # Initialize an instance of this type with the value provided
     #
