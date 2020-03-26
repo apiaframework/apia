@@ -43,6 +43,13 @@ module APeye
       def required?
         @options[:required] == true
       end
+
+      # Is this an array?
+      #
+      # @return [Boolean]
+      def array?
+        @options[:array] == true
+      end
     end
   end
 end

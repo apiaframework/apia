@@ -24,7 +24,7 @@ module APeye
 
         date = ::Date.parse(string)
         new(date)
-      rescue ArgumentError => e
+      rescue ::ArgumentError => e
         if e.message =~ /invalid date/
           raise APeye::ParseError, 'Invalid date was entered'
         end

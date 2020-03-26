@@ -41,4 +41,21 @@ describe APeye::Definitions::Argument do
       expect(arg.required?).to be false
     end
   end
+
+  context '#array?' do
+    it 'should return true if array' do
+      arg = APeye::Definitions::Argument.new(:name, type: :string, array: true)
+      expect(arg.array?).to be true
+    end
+
+    it 'should return false if not array' do
+      arg = APeye::Definitions::Argument.new(:name, type: :string, array: false)
+      expect(arg.array?).to be false
+    end
+
+    it 'should return false if not specified' do
+      arg = APeye::Definitions::Argument.new(:name, type: :string)
+      expect(arg.array?).to be false
+    end
+  end
 end
