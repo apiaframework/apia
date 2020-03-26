@@ -7,8 +7,8 @@ module APeye
         @argument = argument
       end
 
-      def validation(&block)
-        @argument.options[:validation] = block
+      def validation(name, &block)
+        @argument.validations << { name: name, block: block }
       end
 
       def required(value)

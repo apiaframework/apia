@@ -81,6 +81,22 @@ describe APeye::ArgumentSet do
       end.to raise_error APeye::InvalidArgumentError
     end
 
+    it 'should raise an error if a validation fails for an argument' do
+      as = APeye::ArgumentSet.create do
+        argument :name, type: :string do
+          validation('must start with dave') do |v|
+            v =~ /\ADave/
+          end
+        end
+      end
+      expect do
+        as.new(name: 'Not Dave')
+      end.to raise_error APeye::InvalidArgumentError do |e|
+        expect(e.argument.name).to eq :name
+        expect(e.validation_errors).to include 'must start with dave'
+      end
+    end
+
     it 'should provide items as an array as needed' do
       as = APeye::ArgumentSet.create do
         argument :names, type: [:string]

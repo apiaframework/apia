@@ -58,4 +58,29 @@ describe APeye::Definitions::Argument do
       expect(arg.array?).to be false
     end
   end
+
+  context '#validate' do
+    it 'should return an empty array when no validations are defined' do
+      arg = APeye::Definitions::Argument.new(:name, type: :string)
+      expect(arg.validate('hello')).to be_a Array
+      expect(arg.validate('hello')).to be_empty
+    end
+
+    it 'should return the name of any validations that are not true' do
+      arg = APeye::Definitions::Argument.new(:name, type: :string)
+      arg.validations << { name: 'example1', block: proc { false } }
+      arg.validations << { name: 'example2', block: proc { true } }
+      expect(arg.validate('hello')).to be_a Array
+      expect(arg.validate('hello').size).to eq 1
+      expect(arg.validate('hello')).to include('example1')
+    end
+
+    it 'should an empty array of all validations are true' do
+      arg = APeye::Definitions::Argument.new(:name, type: :string)
+      arg.validations << { name: 'example1', block: proc { true } }
+      arg.validations << { name: 'example2', block: proc { true } }
+      expect(arg.validate('hello')).to be_a Array
+      expect(arg.validate('hello')).to be_empty
+    end
+  end
 end

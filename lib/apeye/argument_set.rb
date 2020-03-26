@@ -19,7 +19,18 @@ module APeye
         argument = self.class.definition.arguments[key.to_sym]
         next unless argument
 
-        source[key.to_sym] = parse_value(argument, value)
+        value = parse_value(argument, value)
+        validation_errors = argument.validate(value)
+        unless validation_errors.empty?
+          raise InvalidArgumentError.new(
+            argument,
+            value,
+            validation_errors: validation_errors,
+            path: @path + [argument]
+          )
+        end
+
+        source[key.to_sym] = value
       end
       check_for_missing_required_arguments
     end
@@ -36,12 +47,19 @@ module APeye
 
     def parse_value(argument, value, index: nil)
       if argument.array? && value.is_a?(Array)
-        value.each_with_index.map { |v, index| parse_value(argument, v, index: index) }
+        value.each_with_index.map do |v, index|
+          parse_value(argument, v, index: index)
+        end
 
       elsif argument.type.ancestors.include?(APeye::Scalar)
         type = argument.type.new(value)
         unless type.valid?
-          raise InvalidArgumentError.new(argument, type, index: index, path: @path + [argument])
+          raise InvalidArgumentError.new(
+            argument,
+            type,
+            index: index,
+            path: @path + [argument]
+          )
         end
 
         type.cast

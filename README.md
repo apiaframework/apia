@@ -83,11 +83,11 @@ module CoreAPI
 end
 ```
 
-## Input Objects
+## Argument Sets
 
 ```ruby
 module CoreAPI
-  class UserInputObject < APeye::InputObject
+  class UserArgumentSet < APeye::ArgumentSet
 
     # Most simply, define an argument with a type.
     argument :name, type: :string
@@ -138,7 +138,7 @@ module CoreAPI
 
       # Define any arguments that you'd like to receive for this action.
       # By default, all arguments are required.
-      argument :user, type: UserInputObject
+      argument :user, type: UserArgumentSet
 
       # Define the fields that will be returned by this action.
       field :user, type: UserType
