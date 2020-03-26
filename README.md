@@ -107,7 +107,7 @@ module CoreAPI
     end
 
     # If you want to accept an array of items, you can do this too.
-    argument :pins, type: [:string]
+    argument :pins, type: :string, array: true
   end
 end
 ```
