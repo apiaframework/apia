@@ -45,7 +45,7 @@ module APeye
           # For type values, we want to render a hash
           value = type_instance.hash(request: request)
         else
-          # For scaler values, we just want to cast them
+          # For scaler & enum values, we just want to cast them
 
           value = type_instance.cast
         end

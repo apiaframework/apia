@@ -182,5 +182,18 @@ describe APeye::Type do
       expect(hash.keys).to include 'age'
       expect(hash['age']).to be nil
     end
+
+    it 'should be able to include enums' do
+      enum = APeye::Enum.create do
+        value 'active'
+        value 'inactive'
+      end
+      type = APeye::Type.create do
+        field :status, type: enum
+      end
+      instance = type.new(status: 'active')
+      hash = instance.hash
+      expect(hash['status']).to eq 'active'
+    end
   end
 end

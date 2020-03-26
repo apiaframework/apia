@@ -12,7 +12,7 @@ module APeye
     end
 
     def to_s
-      "Invalid option for `#{enum.class.definition.name}` (got: #{@given_value.inspect} (#{@given_value.class}))"
+      "Invalid option for `#{enum.class.definition.name || 'AnonymousEnum'}` (got: #{@given_value.inspect} (#{@given_value.class}))"
     end
   end
 end
