@@ -10,7 +10,7 @@ module APeye
     extend Defineable
 
     def self.definition
-      @definition ||= Definitions::ArgumentSet.new
+      @definition ||= Definitions::ArgumentSet.new(name&.split('::')&.last)
     end
 
     def initialize(hash, path: [])

@@ -9,7 +9,7 @@ module APeye
     extend Defineable
 
     def self.definition
-      @definition ||= Definitions::Enum.new
+      @definition ||= Definitions::Enum.new(name&.split('::')&.last)
     end
 
     def initialize(value)

@@ -9,7 +9,7 @@ module APeye
     extend Defineable
 
     def self.definition
-      @definition ||= Definitions::Type.new
+      @definition ||= Definitions::Type.new(name&.split('::')&.last)
     end
 
     # Initialize an instance of this type with the value provided

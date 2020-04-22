@@ -10,7 +10,8 @@ module APeye
       attr_reader :fields
       attr_reader :conditions
 
-      def initialize
+      def initialize(name)
+        @name = name
         @fields = {}
         @conditions = []
       end

@@ -1,22 +1,21 @@
 # frozen_string_literal: true
 
-require 'apeye/dsls/enum'
+require 'apeye/dsls/error'
 
 module APeye
   module Definitions
-    class Enum
+    class Error
       attr_accessor :name
+      attr_accessor :code
+      attr_accessor :http_status
       attr_accessor :description
-      attr_accessor :cast
-      attr_reader :values
 
       def initialize(name)
         @name = name
-        @values = {}
       end
 
       def dsl
-        @dsl ||= DSLs::Enum.new(self)
+        @dsl ||= DSLs::Error.new(self)
       end
     end
   end

@@ -9,7 +9,8 @@ module APeye
       attr_accessor :description
       attr_reader :arguments
 
-      def initialize
+      def initialize(name)
+        @name = name
         @arguments = {}
       end
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
 
-module APeye
-end
+require 'apeye/type'
+require 'apeye/argument_set'
+require 'apeye/enum'

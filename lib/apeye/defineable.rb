@@ -7,8 +7,9 @@ module APeye
       definition
     end
 
-    def create(&block)
+    def create(name = 'Anonymous', &block)
       klass = Class.new(self)
+      klass.definition.name = name
       klass.define(&block)
       klass
     end
