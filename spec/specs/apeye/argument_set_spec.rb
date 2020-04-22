@@ -3,10 +3,10 @@
 require 'apeye/argument_set'
 
 describe APeye::ArgumentSet do
-  context '.argument_set_name' do
+  context '.name' do
     it 'should return the name of the enum' do
       type = APeye::ArgumentSet.create do
-        argument_set_name 'UserArguments'
+        name_override 'UserArguments'
       end
       expect(type.definition.name).to eq 'UserArguments'
     end

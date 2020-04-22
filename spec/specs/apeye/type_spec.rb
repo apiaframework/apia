@@ -4,19 +4,23 @@ require 'apeye/type'
 require 'apeye/request'
 
 describe APeye::Type do
-  context '.type_name' do
+  context '.name' do
     it 'should return the name of the type' do
-      type = APeye::Type.create do
-        type_name 'User'
-      end
+      type = APeye::Type.create('User')
       expect(type.definition.name).to eq 'User'
     end
 
     it 'should work with named classes too' do
       class MyDemoType < APeye::Type
-        type_name 'MyDemo'
       end
-      expect(MyDemoType.definition.name).to eq 'MyDemo'
+      expect(MyDemoType.definition.name).to eq 'MyDemoType'
+    end
+
+    it 'should work with overrides too' do
+      type = APeye::Type.create('User') do
+        name_override 'UserOver'
+      end
+      expect(type.definition.name).to eq 'UserOver'
     end
   end
 

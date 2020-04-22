@@ -7,6 +7,10 @@ module APeye
         @authenticator = authenticator
       end
 
+      def name_override(name)
+        @authenticator.name = name
+      end
+
       def type(type)
         @authenticator.type = type
       end

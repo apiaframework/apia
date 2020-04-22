@@ -8,7 +8,6 @@ APeye is a Ruby REST API framework for building a complete flexible HTTP API in 
 module CoreAPI
   class UserType < APeye::Type
 
-    type_name 'User'
     description 'Any user on the system'
 
     # By default, any request can render any type.

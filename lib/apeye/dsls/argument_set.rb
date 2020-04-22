@@ -9,7 +9,7 @@ module APeye
         @argument_set = argument_set
       end
 
-      def argument_set_name(name)
+      def name_override(name)
         @argument_set.name = name
       end
 

@@ -10,7 +10,7 @@ module APeye
         @type_definition = type_definition
       end
 
-      def type_name(value)
+      def name_override(value)
         @type_definition.name = value
       end
 

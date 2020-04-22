@@ -7,7 +7,7 @@ module APeye
         @enum_definition = enum_definition
       end
 
-      def enum_name(name)
+      def name_override(name)
         @enum_definition.name = name
       end
 

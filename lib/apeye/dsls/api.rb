@@ -7,6 +7,10 @@ module APeye
         @api = api
       end
 
+      def name_override(name)
+        @api.name = name
+      end
+
       def authenticator(klass)
         @api.authenticators << klass
       end

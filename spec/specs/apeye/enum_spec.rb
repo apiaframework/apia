@@ -3,10 +3,10 @@
 require 'apeye/enum'
 
 describe APeye::Enum do
-  context '.enum_name' do
+  context '.name' do
     it 'should return the name of the enum' do
       type = APeye::Enum.create do
-        enum_name 'UserType'
+        name_override 'UserType'
       end
       expect(type.definition.name).to eq 'UserType'
     end
