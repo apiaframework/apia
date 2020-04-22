@@ -29,4 +29,7 @@ describe APeye::Error do
       expect(type.definition.http_status).to eq 403
     end
   end
+
+  context '.fields' do
+  end
 end

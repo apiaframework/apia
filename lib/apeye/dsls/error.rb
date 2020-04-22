@@ -3,20 +3,20 @@
 module APeye
   module DSLs
     class Error
-      def initialize(error)
-        @error = error
+      def initialize(definition)
+        @definition = definition
       end
 
       def code(code)
-        @error.code = code
+        @definition.code = code
       end
 
       def http_status(http_status)
-        @error.http_status = http_status
+        @definition.http_status = http_status
       end
 
       def description(description)
-        @error.description = description
+        @definition.description = description
       end
     end
   end

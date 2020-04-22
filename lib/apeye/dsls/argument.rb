@@ -3,20 +3,20 @@
 module APeye
   module DSLs
     class Argument
-      def initialize(argument)
-        @argument = argument
+      def initialize(definition)
+        @definition = definition
       end
 
       def validation(name, &block)
-        @argument.validations << { name: name, block: block }
+        @definition.validations << { name: name, block: block }
       end
 
       def required(value)
-        @argument.options[:required] = value
+        @definition.options[:required] = value
       end
 
       def condition(&block)
-        @argument.options[:condition] = block
+        @definition.options[:condition] = block
       end
     end
   end

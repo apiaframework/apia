@@ -3,24 +3,24 @@
 module APeye
   module DSLs
     class Enum
-      def initialize(enum_definition)
-        @enum_definition = enum_definition
+      def initialize(definition)
+        @definition = definition
       end
 
       def name_override(name)
-        @enum_definition.name = name
+        @definition.name = name
       end
 
       def description(value)
-        @enum_definition.description = value
+        @definition.description = value
       end
 
       def value(key, description = nil)
-        @enum_definition.values[key.to_s] = { description: description }
+        @definition.values[key.to_s] = { description: description }
       end
 
       def cast(&block)
-        @enum_definition.cast = block
+        @definition.cast = block
       end
     end
   end

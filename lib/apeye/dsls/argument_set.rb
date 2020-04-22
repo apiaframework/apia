@@ -5,16 +5,16 @@ require 'apeye/definitions/argument'
 module APeye
   module DSLs
     class ArgumentSet
-      def initialize(argument_set)
-        @argument_set = argument_set
+      def initialize(definition)
+        @definition = definition
       end
 
       def name_override(name)
-        @argument_set.name = name
+        @definition.name = name
       end
 
       def description(value)
-        @argument_set.description = value
+        @definition.description = value
       end
 
       def argument(name, type: nil, **options, &block)
@@ -31,7 +31,7 @@ module APeye
         argument = Definitions::Argument.new(name, **options)
         argument.dsl.instance_eval(&block) if block_given?
 
-        @argument_set.arguments[name.to_sym] = argument
+        @definition.arguments[name.to_sym] = argument
       end
     end
   end

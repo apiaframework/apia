@@ -3,16 +3,16 @@
 module APeye
   module DSLs
     class API
-      def initialize(api)
-        @api = api
+      def initialize(definition)
+        @definition = definition
       end
 
       def name_override(name)
-        @api.name = name
+        @definition.name = name
       end
 
       def authenticator(klass)
-        @api.authenticators << klass
+        @definition.authenticators << klass
       end
     end
   end

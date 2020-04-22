@@ -1,18 +1,19 @@
 # frozen_string_literal: true
 
 require 'apeye/dsls/type'
+require 'apeye/definitions/concerns/has_fields'
 
 module APeye
   module Definitions
     class Type
+      include Concerns::HasFields
+
       attr_accessor :name
       attr_accessor :description
-      attr_reader :fields
       attr_reader :conditions
 
       def initialize(name)
         @name = name
-        @fields = {}
         @conditions = []
       end
 

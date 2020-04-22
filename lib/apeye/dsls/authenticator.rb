@@ -3,24 +3,24 @@
 module APeye
   module DSLs
     class Authenticator
-      def initialize(authenticator)
-        @authenticator = authenticator
+      def initialize(definition)
+        @definition = definition
       end
 
       def name_override(name)
-        @authenticator.name = name
+        @definition.name = name
       end
 
       def type(type)
-        @authenticator.type = type
+        @definition.type = type
       end
 
       def potential_error(error)
-        @authenticator.potential_errors << error
+        @definition.potential_errors << error
       end
 
       def action(&block)
-        @authenticator.action = block
+        @definition.action = block
       end
     end
   end
