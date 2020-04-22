@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
 require 'apeye/type'
 require 'apeye/request'
 
 describe APeye::Type do
+  include_examples 'has fields'
+
   context '.name' do
     it 'should return the name of the type' do
       type = APeye::Type.create('User')
@@ -21,34 +24,6 @@ describe APeye::Type do
         name_override 'UserOver'
       end
       expect(type.definition.name).to eq 'UserOver'
-    end
-  end
-
-  context '.field' do
-    it 'should be able to define a field' do
-      type = APeye::Type.create do
-        field :rid, type: :string
-      end
-      field = type.definition.fields[:rid]
-      expect(field).to be_a APeye::Definitions::Field
-      expect(field.name).to eq :rid
-      expect(field.type).to eq APeye::Scalars::String
-    end
-
-    it 'should raise an error if no type is provided' do
-      expect do
-        APeye::Type.create do
-          field :rid
-        end
-      end.to raise_error(APeye::ManifestError, /missing a type/)
-    end
-
-    it 'should be able to define a field returning an array' do
-      type = APeye::Type.create do
-        field :rid, type: [:string]
-      end
-      expect(type.definition.fields[:rid].array?).to be true
-      expect(type.definition.fields[:rid].type).to eq APeye::Scalars::String
     end
   end
 

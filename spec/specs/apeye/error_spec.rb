@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
 require 'apeye/error'
 
 describe APeye::Error do
+  include_examples 'has fields'
+
   context '.code' do
     it 'should return the code' do
       type = APeye::Error.create do
@@ -28,8 +31,5 @@ describe APeye::Error do
       end
       expect(type.definition.http_status).to eq 403
     end
-  end
-
-  context '.fields' do
   end
 end

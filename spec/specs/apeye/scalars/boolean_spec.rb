@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
 require 'apeye/scalars/boolean'
 
 describe APeye::Scalars::Boolean do

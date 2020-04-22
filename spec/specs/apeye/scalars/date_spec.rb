@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
 require 'apeye/scalars/date'
 
 describe APeye::Scalars::Date do

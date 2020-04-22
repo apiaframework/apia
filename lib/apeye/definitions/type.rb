@@ -6,7 +6,7 @@ require 'apeye/definitions/concerns/has_fields'
 module APeye
   module Definitions
     class Type
-      include Concerns::HasFields
+      include Definitions::Concerns::HasFields
 
       attr_accessor :name
       attr_accessor :description

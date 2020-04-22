@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
+require 'apeye/dsls/concerns/has_fields'
+
 module APeye
   module DSLs
     class Error
+      include DSLs::Concerns::HasFields
+
       def initialize(definition)
         @definition = definition
       end

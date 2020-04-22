@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+SPEC_ROOT = __dir__
 $LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
-require 'apeye'
+
+Dir[File.join(SPEC_ROOT, 'specs', 'shared', '**', '*.rb')].sort.each { |path| require path }
 
 RSpec.configure do |config|
   config.color = true

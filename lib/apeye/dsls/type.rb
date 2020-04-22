@@ -7,7 +7,7 @@ require 'apeye/dsls/concerns/has_fields'
 module APeye
   module DSLs
     class Type
-      include Concerns::HasFields
+      include DSLs::Concerns::HasFields
 
       def initialize(definition)
         @definition = definition

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
 require 'apeye/scalars/string'
 
 describe APeye::Scalars::String do
