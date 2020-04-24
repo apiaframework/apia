@@ -21,5 +21,9 @@ module APeye
         super
       end
     end
+
+    def objects
+      Set.new([self])
+    end
   end
 end

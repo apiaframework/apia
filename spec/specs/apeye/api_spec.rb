@@ -2,19 +2,30 @@
 
 require 'spec_helper'
 require 'apeye/api'
+require 'apeye/authenticator'
 
 describe APeye::API do
-  context '.authenticators' do
-    it 'should return an array of authenticators' do
-      type = APeye::API.create
-      expect(type.definition.authenticators).to be_a Array
+  context '.authenticator' do
+    it 'should allow authenticators to be defined' do
+      authenticator = APeye::Authenticator.create
+      api = APeye::API.create do
+        authenticator authenticator
+      end
+      expect(api.definition.authenticators).to be_a Array
+      expect(api.definition.authenticators[0]).to eq authenticator
     end
   end
 
-  context '.controllers' do
-    it 'should return a hash of controllers' do
-      type = APeye::API.create
-      expect(type.definition.controllers).to be_a Hash
+  context '.objects' do
+    it 'should return itself' do
+      api = APeye::API.create
+      expect(api.objects).to include api
+    end
+
+    it 'should return authenticators' do
+      auth = APeye::Authenticator.create('MainAuth')
+      api = APeye::API.create('BaseAPI') { authenticator auth }
+      expect(api.objects).to include auth
     end
   end
 end

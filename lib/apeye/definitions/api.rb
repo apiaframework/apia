@@ -18,6 +18,13 @@ module APeye
       def dsl
         @dsl ||= DSLs::API.new(self)
       end
+
+      def objects
+        set = Set.new([self])
+        @authenticators.each { |a| set |= a.definition.objects }
+        @controllers.each { |a| set |= a.controller.objects }
+        set
+      end
     end
   end
 end

@@ -10,5 +10,11 @@ module APeye
     def self.definition
       @definition ||= Definitions::Authenticator.new(name&.split('::')&.last)
     end
+
+    def self.objects
+      set = super
+      definition.potential_errors.each { |error| set |= error.objects }
+      set
+    end
   end
 end

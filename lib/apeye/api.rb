@@ -10,5 +10,12 @@ module APeye
     def self.definition
       @definition ||= Definitions::API.new(name&.split('::')&.last)
     end
+
+    def self.objects
+      set = super
+      definition.authenticators.each { |auth| set |= auth.objects }
+      definition.controllers.each { |con| set |= con.objects }
+      set
+    end
   end
 end
