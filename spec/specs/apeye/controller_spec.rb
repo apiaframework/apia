@@ -30,13 +30,13 @@ describe APeye::Controller do
     end
 
     it 'should allow you to define an anonymous endpoint' do
-      controller = APeye::Controller.create do
+      controller = APeye::Controller.create('UserController') do
         endpoint :create do
-          name 'Create a user'
           description 'Example description'
         end
       end
-      expect(controller.definition.endpoints[:create].definition.name).to eq 'Create a user'
+      expect(controller.definition.name).to eq 'UserController'
+      expect(controller.definition.endpoints[:create].definition.name).to eq 'UserController.create'
       expect(controller.definition.endpoints[:create].definition.description).to eq 'Example description'
     end
   end

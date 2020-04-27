@@ -7,12 +7,12 @@ require 'apeye/endpoint'
 describe APeye::Endpoint do
   include_examples 'has fields'
 
-  context '.name' do
+  context '.label' do
     it 'should allow the name to be defined' do
       endpoint = APeye::Endpoint.create do
-        name 'Create user'
+        label 'Create user'
       end
-      expect(endpoint.definition.name).to eq 'Create user'
+      expect(endpoint.definition.label).to eq 'Create user'
     end
   end
 

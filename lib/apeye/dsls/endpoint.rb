@@ -11,8 +11,8 @@ module APeye
         @definition = definition
       end
 
-      def name(value)
-        @definition.name = value
+      def label(value)
+        @definition.label = value
       end
 
       def description(value)

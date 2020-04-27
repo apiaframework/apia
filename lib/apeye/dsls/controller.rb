@@ -17,7 +17,7 @@ module APeye
 
       def endpoint(name, klass_or_name = nil, &block)
         if block_given?
-          @definition.endpoints[name] = APeye::Endpoint.create(klass_or_name || "#{@definition.name}-#{name}", &block)
+          @definition.endpoints[name] = APeye::Endpoint.create(klass_or_name || "#{@definition.name}.#{name}", &block)
         else
           @definition.endpoints[name] = klass_or_name
         end
