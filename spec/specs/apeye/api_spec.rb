@@ -7,8 +7,8 @@ require 'apeye/authenticator'
 describe APeye::API do
   context '.authenticator' do
     it 'should allow authenticators to be defined' do
-      authenticator = APeye::Authenticator.create
-      api = APeye::API.create do
+      authenticator = APeye::Authenticator.create('ExampleAuthenticator')
+      api = APeye::API.create('ExampleAPI') do
         authenticator authenticator
       end
       expect(api.definition.authenticator).to eq authenticator
@@ -36,7 +36,7 @@ describe APeye::API do
 
   context '.objects' do
     it 'should return itself' do
-      api = APeye::API.create
+      api = APeye::API.create('ExampleAPI')
       expect(api.objects).to include api
     end
 

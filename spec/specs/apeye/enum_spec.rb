@@ -6,7 +6,7 @@ require 'apeye/enum'
 describe APeye::Enum do
   context '.name' do
     it 'should return the name of the enum' do
-      type = APeye::Enum.create do
+      type = APeye::Enum.create('ExampleEnum') do
         name_override 'UserType'
       end
       expect(type.definition.name).to eq 'UserType'
@@ -15,7 +15,7 @@ describe APeye::Enum do
 
   context '.value' do
     it 'should be able to add values' do
-      enum = APeye::Enum.create do
+      enum = APeye::Enum.create('ExampleEnum') do
         value 'active', 'An active user'
         value 'inactive', 'An inactive user'
       end
@@ -26,7 +26,7 @@ describe APeye::Enum do
 
   context '.cast' do
     it 'should be able to set a cast value' do
-      enum = APeye::Enum.create do
+      enum = APeye::Enum.create('ExampleEnum') do
         cast do |value|
           value.to_s.upcase
         end
@@ -37,7 +37,7 @@ describe APeye::Enum do
 
   context '#cast' do
     it 'should return the casted value' do
-      enum = APeye::Enum.create do
+      enum = APeye::Enum.create('ExampleEnum') do
         value 'active'
       end
       instance = enum.new('active')
@@ -45,7 +45,7 @@ describe APeye::Enum do
     end
 
     it 'should use the cast block if one exists' do
-      enum = APeye::Enum.create do
+      enum = APeye::Enum.create('ExampleEnum') do
         value 'ACTIVE'
         cast(&:upcase)
       end
@@ -54,7 +54,7 @@ describe APeye::Enum do
     end
 
     it 'should raise an error if the resulting casted value is not valid' do
-      enum = APeye::Enum.create do
+      enum = APeye::Enum.create('ExampleEnum') do
         value 'active'
         value 'inactive'
       end

@@ -8,7 +8,7 @@ require 'apeye/object_set'
 describe APeye::Authenticator do
   context '.type' do
     it 'should allow the type to be defined' do
-      authenticator = APeye::Authenticator.create do
+      authenticator = APeye::Authenticator.create('ExampleAuthenticator') do
         type :bearer
       end
       expect(authenticator.definition.type).to eq :bearer
@@ -17,11 +17,11 @@ describe APeye::Authenticator do
 
   context '.potential_errors' do
     it 'should allow potential errors to be defined' do
-      error = APeye::Error.create do
+      error = APeye::Error.create('ExampleError') do
         code :some_code
       end
 
-      authenticator = APeye::Authenticator.create do
+      authenticator = APeye::Authenticator.create('ExampleAuthenticator') do
         potential_error error
       end
 
@@ -31,7 +31,7 @@ describe APeye::Authenticator do
 
   context '.action' do
     it 'should allow an action to be defined' do
-      authenticator = APeye::Authenticator.create do
+      authenticator = APeye::Authenticator.create('ExampleAuthenticator') do
         action { 10 }
       end
       expect(authenticator.definition.action.call).to eq 10
@@ -40,8 +40,8 @@ describe APeye::Authenticator do
 
   context '.collate_objects' do
     it 'should add potential errors' do
-      error = APeye::Error.create
-      auth = APeye::Authenticator.create { potential_error error }
+      error = APeye::Error.create('ExampleError')
+      auth = APeye::Authenticator.create('ExampleAuthenticator') { potential_error error }
       set = APeye::ObjectSet.new
       auth.collate_objects(set)
       expect(set).to include error

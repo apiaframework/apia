@@ -3,7 +3,7 @@
 shared_examples 'has fields' do |_parameter|
   context '.field' do
     it 'should be able to define a field' do
-      type = described_class.create do
+      type = described_class.create('Example') do
         field :rid, type: :string
       end
       field = type.definition.fields[:rid]
@@ -13,7 +13,7 @@ shared_examples 'has fields' do |_parameter|
     end
 
     it 'should be able to define a field returning an array' do
-      type = described_class.create do
+      type = described_class.create('Example') do
         field :rid, type: [:string]
       end
       expect(type.definition.fields[:rid].array?).to be true

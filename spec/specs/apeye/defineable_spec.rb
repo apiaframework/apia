@@ -8,8 +8,9 @@ describe APeye::Defineable do
   # extends Defineable.
   context 'naming' do
     it 'should be called anonymous if we dont have a name' do
-      klass = APeye::API.create
-      expect(klass.definition.name).to eq 'Anonymous'
+      expect do
+        APeye::API.create
+      end.to raise_error(ArgumentError, /wrong number of argument/)
     end
 
     it 'should be named with the name given when creating if anonymous' do

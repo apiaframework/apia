@@ -9,7 +9,7 @@ describe APeye::Endpoint do
 
   context '.label' do
     it 'should allow the name to be defined' do
-      endpoint = APeye::Endpoint.create do
+      endpoint = APeye::Endpoint.create('ExampleEndpoint') do
         label 'Create user'
       end
       expect(endpoint.definition.label).to eq 'Create user'
@@ -18,7 +18,7 @@ describe APeye::Endpoint do
 
   context '.description' do
     it 'should allow the description to be defined' do
-      endpoint = APeye::Endpoint.create do
+      endpoint = APeye::Endpoint.create('ExampleEndpoint') do
         description 'Create user description'
       end
       expect(endpoint.definition.description).to eq 'Create user description'
@@ -28,7 +28,7 @@ describe APeye::Endpoint do
   context '.potential_error' do
     it 'should allow a potential error to be linked' do
       error = APeye::Error.create('MyError')
-      endpoint = APeye::Endpoint.create do
+      endpoint = APeye::Endpoint.create('ExampleEndpoint') do
         potential_error error
       end
       expect(endpoint.definition.potential_errors.size).to eq 1
@@ -38,7 +38,7 @@ describe APeye::Endpoint do
 
   context '.endpoint' do
     it 'should allow the endpoint action to be defined' do
-      endpoint = APeye::Endpoint.create do
+      endpoint = APeye::Endpoint.create('ExampleEndpoint') do
         endpoint { 1234 }
       end
       expect(endpoint.definition.endpoint.call).to eq 1234

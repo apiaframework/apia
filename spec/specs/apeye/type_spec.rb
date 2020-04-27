@@ -29,7 +29,7 @@ describe APeye::Type do
 
   context '.condition' do
     it 'should be able to define a block to execute' do
-      type = APeye::Type.create do
+      type = APeye::Type.create('ExampleType') do
         condition { 'abc' }
         condition { 'xyz' }
       end
@@ -41,8 +41,8 @@ describe APeye::Type do
 
   context '.collate_objects' do
     it 'should add the types from all fields' do
-      cat_type = APeye::Type.create
-      type = APeye::Type.create
+      cat_type = APeye::Type.create('CatType')
+      type = APeye::Type.create('ExampleType')
       type.field :name, type: :string
       type.field :cat, type: cat_type
 
@@ -54,9 +54,9 @@ describe APeye::Type do
     end
 
     it 'should work with nested fields' do
-      human_type = APeye::Type.create
-      cat_type = APeye::Type.create
-      dog_type = APeye::Type.create
+      human_type = APeye::Type.create('HumanType')
+      cat_type = APeye::Type.create('CatType')
+      dog_type = APeye::Type.create('DogType')
       cat_type.field :owner, type: human_type
       cat_type.field :enemies, type: [dog_type]
       dog_type.field :owner, type: human_type
@@ -74,7 +74,7 @@ describe APeye::Type do
 
   context '#include?' do
     it 'should return true if there are no conditions' do
-      type = APeye::Type.create.new({})
+      type = APeye::Type.create('ExampleType').new({})
       request = APeye::Request.new
       expect(type.include?(request)).to be true
     end
@@ -85,7 +85,7 @@ describe APeye::Type do
 
       obj_from_condition = nil
       req_from_condition = nil
-      type = APeye::Type.create do
+      type = APeye::Type.create('ExampleType') do
         condition do |obj, req|
           obj_from_condition = obj
           req_from_condition = req
@@ -103,7 +103,7 @@ describe APeye::Type do
     end
 
     it 'should return false if any of the conditions are not positive' do
-      type = APeye::Type.create do
+      type = APeye::Type.create('ExampleType') do
         condition do |_obj, _req|
           true
         end
@@ -119,7 +119,7 @@ describe APeye::Type do
 
   context '#hash' do
     it 'should return the value for the API' do
-      type = APeye::Type.create do
+      type = APeye::Type.create('ExampleType') do
         field :id, type: :string
         field :number, type: :integer
       end
@@ -131,7 +131,7 @@ describe APeye::Type do
     end
 
     it 'should raise a parse error if a field is invalid' do
-      type = APeye::Type.create do
+      type = APeye::Type.create('ExampleType') do
         field :id, type: :string
       end
       type_instance = type.new(id: 1234)
@@ -143,7 +143,7 @@ describe APeye::Type do
     end
 
     it 'should not include items that have been excluded' do
-      type = APeye::Type.create do
+      type = APeye::Type.create('ExampleType') do
         field :id, type: :integer
         field :name, type: :string do
           condition { false }
@@ -156,12 +156,12 @@ describe APeye::Type do
     end
 
     it 'should not include types that are not permitted to be viewed' do
-      user = APeye::Type.create do
+      user = APeye::Type.create('ExampleType') do
         condition { false }
         field :id, type: :integer
       end
 
-      book = APeye::Type.create do
+      book = APeye::Type.create('ExampleType') do
         field :title, type: :string
         field :author, type: user
       end
@@ -174,7 +174,7 @@ describe APeye::Type do
     end
 
     it 'should raise an error if a field is missing but is required' do
-      type = APeye::Type.create do
+      type = APeye::Type.create('ExampleType') do
         field :id, type: :integer
         field :name, type: :string
         field :age, type: :integer, nil: true
@@ -196,11 +196,11 @@ describe APeye::Type do
     end
 
     it 'should be able to include enums' do
-      enum = APeye::Enum.create do
+      enum = APeye::Enum.create('ExampleType') do
         value 'active'
         value 'inactive'
       end
-      type = APeye::Type.create do
+      type = APeye::Type.create('ExampleType') do
         field :status, type: enum
       end
       instance = type.new(status: 'active')

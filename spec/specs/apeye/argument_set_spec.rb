@@ -6,7 +6,7 @@ require 'apeye/argument_set'
 describe APeye::ArgumentSet do
   context '.name' do
     it 'should allow the name to eb defined' do
-      type = APeye::ArgumentSet.create do
+      type = APeye::ArgumentSet.create('ExampleSet') do
         name_override 'UserArguments'
       end
       expect(type.definition.name).to eq 'UserArguments'
@@ -15,7 +15,7 @@ describe APeye::ArgumentSet do
 
   context '.argument' do
     it 'should define an argument' do
-      as = APeye::ArgumentSet.create do
+      as = APeye::ArgumentSet.create('ExampleSet') do
         argument :user, type: :string
       end
       expect(as.definition.arguments[:user]).to be_a APeye::Definitions::Argument
@@ -24,7 +24,7 @@ describe APeye::ArgumentSet do
     end
 
     it 'should invoke the block' do
-      as = APeye::ArgumentSet.create do
+      as = APeye::ArgumentSet.create('ExampleSet') do
         argument :user, type: :string do
           required true
         end
@@ -33,7 +33,7 @@ describe APeye::ArgumentSet do
     end
 
     it 'should allow additional options to be provided' do
-      as = APeye::ArgumentSet.create do
+      as = APeye::ArgumentSet.create('ExampleSet') do
         argument :user, type: :string
         argument :book, type: :string, required: true
       end
@@ -44,12 +44,12 @@ describe APeye::ArgumentSet do
 
   context '.collate_objects' do
     it 'should add types from arguments to the set' do
-      author_as = APeye::ArgumentSet.create
-      book_as = APeye::ArgumentSet.create do
+      author_as = APeye::ArgumentSet.create('AuthorSet')
+      book_as = APeye::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string
         argument :author, type: author_as
       end
-      as = APeye::ArgumentSet.create do
+      as = APeye::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string
         argument :age, type: :integer
         argument :book, type: book_as
@@ -67,7 +67,7 @@ describe APeye::ArgumentSet do
 
   context '#initialize' do
     it 'should return a hash of all arguments with their values' do
-      as = APeye::ArgumentSet.create do
+      as = APeye::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string
         argument :age, type: :integer
       end
@@ -79,7 +79,7 @@ describe APeye::ArgumentSet do
     end
 
     it 'should raise an error if a require argument is missing' do
-      as = APeye::ArgumentSet.create do
+      as = APeye::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string
         argument :age, type: :integer, required: true
       end
@@ -89,7 +89,7 @@ describe APeye::ArgumentSet do
     end
 
     it 'should raise an error if an object is not parsable' do
-      as = APeye::ArgumentSet.create do
+      as = APeye::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string
       end
       expect do
@@ -98,7 +98,7 @@ describe APeye::ArgumentSet do
     end
 
     it 'should raise an error if a validation fails for an argument' do
-      as = APeye::ArgumentSet.create do
+      as = APeye::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string do
           validation('must start with dave') do |v|
             v =~ /\ADave/
@@ -114,7 +114,7 @@ describe APeye::ArgumentSet do
     end
 
     it 'should provide items as an array as needed' do
-      as = APeye::ArgumentSet.create do
+      as = APeye::ArgumentSet.create('ExampleSet') do
         argument :names, type: [:string]
       end
       as_instance = as.new(names: %w[Adam Charlie])
@@ -124,7 +124,7 @@ describe APeye::ArgumentSet do
     end
 
     it 'should raise an error if an item in an array is not correct' do
-      as = APeye::ArgumentSet.create do
+      as = APeye::ArgumentSet.create('ExampleSet') do
         argument :names, type: [:string]
       end
       expect do
@@ -136,10 +136,10 @@ describe APeye::ArgumentSet do
     end
 
     it 'should be able to nest argument sets' do
-      as1 = APeye::ArgumentSet.create do
+      as1 = APeye::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string
       end
-      as2 = APeye::ArgumentSet.create do
+      as2 = APeye::ArgumentSet.create('ExampleSet') do
         argument :title, type: :string
         argument :user, type: as1
       end
@@ -150,10 +150,10 @@ describe APeye::ArgumentSet do
     end
 
     it 'should return nil for nested objects that are missing' do
-      as1 = APeye::ArgumentSet.create do
+      as1 = APeye::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string
       end
-      as2 = APeye::ArgumentSet.create do
+      as2 = APeye::ArgumentSet.create('ExampleSet') do
         argument :title, type: :string
         argument :user, type: as1
       end
@@ -162,14 +162,14 @@ describe APeye::ArgumentSet do
     end
 
     it 'should know about nested arguments in errors' do
-      as1 = APeye::ArgumentSet.create do
+      as1 = APeye::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string
       end
-      as2 = APeye::ArgumentSet.create do
+      as2 = APeye::ArgumentSet.create('ExampleSet') do
         argument :title, type: :string
         argument :user, type: as1
       end
-      as3 = APeye::ArgumentSet.create do
+      as3 = APeye::ArgumentSet.create('ExampleSet') do
         argument :age, type: :integer
         argument :book, type: as2
       end
