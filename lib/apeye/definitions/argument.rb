@@ -2,7 +2,6 @@
 
 require 'apeye/dsls/argument'
 require 'apeye/scalars'
-require 'apeye/errors/manifest_error'
 
 module APeye
   module Definitions
@@ -28,13 +27,9 @@ module APeye
       def type
         @type ||= begin
           if @options[:type].is_a?(Symbol) || @options[:type].is_a?(String)
-            Scalars::ALL[@options[:type].to_sym] || raise(ManifestError, "Invalid type name '#{@options[:type]}' (valid options are #{Scalars::ALL.keys.join(', ')})")
-
-          elsif @options[:type].ancestors.include?(APeye::Scalar) || @options[:type].ancestors.include?(APeye::ArgumentSet)
-            @options[:type]
-
+            Scalars::ALL[@options[:type].to_sym]
           else
-            raise ManifestError, "Invalid type provided for argument (#{@options[:type]}). Must be a scalar or argument set."
+            @options[:type]
           end
         end
       end

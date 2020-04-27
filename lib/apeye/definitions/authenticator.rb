@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'apeye/dsls/authenticator'
-require 'apeye/errors/manifest_error'
 
 module APeye
   module Definitions
@@ -16,14 +15,6 @@ module APeye
       def initialize(name)
         @name = name
         @potential_errors = []
-      end
-
-      def type=(type)
-        unless TYPES.include?(type)
-          raise ManifestError, "Invalid type '#{type}' for authenticator #{@name}"
-        end
-
-        @type = type
       end
 
       def dsl

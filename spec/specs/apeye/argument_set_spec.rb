@@ -23,14 +23,6 @@ describe APeye::ArgumentSet do
       expect(as.definition.arguments[:user].type).to eq APeye::Scalars::String
     end
 
-    it 'should raise an error if the type is missing' do
-      expect do
-        APeye::ArgumentSet.create do
-          argument :user
-        end
-      end.to raise_error APeye::ManifestError
-    end
-
     it 'should invoke the block' do
       as = APeye::ArgumentSet.create do
         argument :user, type: :string do

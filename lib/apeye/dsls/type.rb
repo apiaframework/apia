@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'apeye/definitions/field'
-require 'apeye/errors/parse_error'
 require 'apeye/dsls/concerns/has_fields'
 
 module APeye

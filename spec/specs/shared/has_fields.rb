@@ -12,14 +12,6 @@ shared_examples 'has fields' do |_parameter|
       expect(field.type).to eq APeye::Scalars::String
     end
 
-    it 'should raise an error if no type is provided' do
-      expect do
-        described_class.create do
-          field :rid
-        end
-      end.to raise_error(APeye::ManifestError, /missing a type/)
-    end
-
     it 'should be able to define a field returning an array' do
       type = described_class.create do
         field :rid, type: [:string]

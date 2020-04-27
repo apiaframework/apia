@@ -8,6 +8,14 @@ module APeye
           @fields ||= {}
         end
 
+        # Return an array of unique types that are referenced by the
+        # fields
+        #
+        # @return [Set]
+        def types
+          Set.new(@fields.values.map(&:types).flatten.uniq)
+        end
+
         # Generate a hash for the fields that are defined on this object.
         # It should receive the source object as well as a request
         #

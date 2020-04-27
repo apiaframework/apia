@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-require 'apeye/errors/parse_error'
+require 'apeye/errors/runtime_error'
 
 module APeye
-  class MissingArgumentError < APeye::ParseError
+  # This is raised when an argument set cannot be created because an argument
+  # that was required is not present on the source object.
+  class MissingArgumentError < APeye::RuntimeError
     attr_reader :argument
     def initialize(argument)
       @argument = argument

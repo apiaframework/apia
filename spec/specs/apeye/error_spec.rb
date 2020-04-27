@@ -2,12 +2,13 @@
 
 require 'spec_helper'
 require 'apeye/error'
+require 'apeye/manifest_errors'
 
 describe APeye::Error do
   include_examples 'has fields'
 
   context '.code' do
-    it 'should return the code' do
+    it 'should allow the code to the defined' do
       type = APeye::Error.create do
         code :invalid_username
       end
@@ -16,7 +17,7 @@ describe APeye::Error do
   end
 
   context '.description' do
-    it 'should return the description' do
+    it 'should allow the description to be defined' do
       type = APeye::Error.create do
         description 'Some example'
       end
@@ -25,11 +26,87 @@ describe APeye::Error do
   end
 
   context '.http_status' do
-    it 'should return the HTTP status code' do
+    it 'should allow the HTTP status to be defined' do
       type = APeye::Error.create do
         http_status 403
       end
       expect(type.definition.http_status).to eq 403
+    end
+  end
+
+  context '.objects' do
+    it 'should return itself' do
+      error = APeye::Error.create
+      expect(error.objects).to include error
+    end
+
+    it 'should return the types of any fields on the object' do
+      other_type = APeye::Type.create do
+        field :name, type: :string
+      end
+
+      error = APeye::Error.create do
+        field :message, type: :string
+        field :actor, type: other_type
+      end
+
+      expect(error.objects).to include APeye::Scalars::String
+      expect(error.objects).to include other_type
+    end
+  end
+
+  context '.validate' do
+    it 'should not raise an error for a valid object' do
+      error = APeye::Error.create('MyError') do
+        code :invalid_username
+        http_status 403
+
+        field :given_username, type: :string
+      end
+
+      errors = APeye::ManifestErrors.new
+      error.validate(errors)
+
+      expect(errors.for(error)).to be_empty
+    end
+
+    it 'should raise an error if the code is not a symbol' do
+      error = APeye::Error.create('MyError') do
+        code 'something'
+      end
+
+      errors = APeye::ManifestErrors.new
+      error.validate(errors)
+
+      expect(errors.for(error)).to include :invalid_code
+    end
+
+    it 'should raise an error if the HTTP status code is not an integer' do
+      error = APeye::Error.create('MyError') { http_status 'blah' }
+      errors = APeye::ManifestErrors.new
+      error.validate(errors)
+      expect(errors.for(error)).to include :invalid_http_status
+    end
+
+    it 'should raise an error if the HTTP status code is less than 100 or greater than 599' do
+      error = APeye::Error.create('MyError') { http_status 50 }
+      errors = APeye::ManifestErrors.new
+      error.validate(errors)
+      expect(errors.for(error)).to include :http_status_is_too_low
+
+      error = APeye::Error.create('MyError') { http_status 600 }
+      errors = APeye::ManifestErrors.new
+      error.validate(errors)
+      expect(errors.for(error)).to include :http_status_is_too_high
+    end
+
+    it 'should raise an error if any field has an invalid type' do
+      error = APeye::Error.create('MyError') do
+        field :message, type: Class.new
+      end
+      errors = APeye::ManifestErrors.new
+      error.validate(errors)
+      expect(errors.for(error)).to include :invalid_field_type
     end
   end
 end

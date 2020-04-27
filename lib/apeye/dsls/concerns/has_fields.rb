@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'apeye/definitions/field'
+
 module APeye
   module DSLs
     module Concerns

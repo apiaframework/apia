@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'apeye/errors/manifest_error'
+require 'apeye/errors/runtime_error'
 
 module APeye
-  class InvalidTypeError < ManifestError
+  class InvalidTypeError < RuntimeError
     attr_reader :field
     attr_reader :given_value
     def initialize(field, given_value)

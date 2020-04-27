@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'apeye/errors/manifest_error'
+require 'apeye/errors/runtime_error'
 
 module APeye
-  class InvalidEnumOptionError < ManifestError
+  class InvalidEnumOptionError < RuntimeError
     attr_reader :enum
     attr_reader :given_value
     def initialize(enum, given_value)

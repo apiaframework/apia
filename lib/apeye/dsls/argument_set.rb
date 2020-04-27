@@ -18,9 +18,7 @@ module APeye
       end
 
       def argument(name, type: nil, **options, &block)
-        if type.nil?
-          raise ManifestError, "Field #{name} is missing a type"
-        elsif type.is_a?(Array)
+        if type.is_a?(Array)
           options[:type] = type[0]
           options[:array] = true
         else

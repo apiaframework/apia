@@ -2,6 +2,7 @@
 
 require 'date'
 require 'apeye/scalar'
+require 'apeye/errors/parse_error'
 
 module APeye
   module Scalars
