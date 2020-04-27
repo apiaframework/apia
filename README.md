@@ -143,7 +143,7 @@ module CoreAPI
 
     # Define an action within the controller by providing a name that you
     # wish to use for it.
-    action :create do
+    endpoint :create do
       name 'Create a new user'
 
       # Optionally set the authenticator use (if not defined, will use the
@@ -165,7 +165,7 @@ module CoreAPI
       # All argument validations will run before actually executing this action.
       #
       # The request and the response are provided for you to work with.
-      action do |request, response|
+      endpoint do |request, response|
         user = User.new
 
         # You can access the validated and typecast arguments provided

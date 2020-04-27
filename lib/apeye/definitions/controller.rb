@@ -8,9 +8,11 @@ module APeye
       attr_accessor :name
       attr_accessor :description
       attr_accessor :authenticator
+      attr_reader :endpoints
 
       def initialize(name)
         @name = name
+        @endpoints = {}
       end
 
       def dsl
