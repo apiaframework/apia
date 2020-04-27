@@ -130,10 +130,25 @@ module CoreAPI
 
   class UsersController < APeye::Controller
 
+    # Set the description for thiscontroller
+    description 'Handles user stuff'
+
+    # Specify how you wish this controller to be authenticated. You can
+    # choose a single authenticator per controller which will handle
+    # pre-action authentication actions.
+    #
+    # This will be the default authenticator for all actions in this controller.
+    # Unless overriden on a per-action basis.
+    authenticator UserAuthenticator
+
     # Define an action within the controller by providing a name that you
     # wish to use for it.
     action :create do
       name 'Create a new user'
+
+      # Optionally set the authenticator use (if not defined, will use the
+      # controller default, or the API default)
+      authenticator DefaultAuthenticator
 
       # Define any arguments that you'd like to receive for this action.
       # By default, all arguments are required.

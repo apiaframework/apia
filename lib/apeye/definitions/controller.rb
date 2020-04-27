@@ -1,21 +1,20 @@
 # frozen_string_literal: true
 
-require 'apeye/dsls/api'
+require 'apeye/dsls/controller'
 
 module APeye
   module Definitions
-    class API
+    class Controller
       attr_accessor :name
+      attr_accessor :description
       attr_accessor :authenticator
-      attr_reader :controllers
 
       def initialize(name)
         @name = name
-        @controllers = {}
       end
 
       def dsl
-        @dsl ||= DSLs::API.new(self)
+        @dsl ||= DSLs::Controller.new(self)
       end
     end
   end

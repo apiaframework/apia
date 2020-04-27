@@ -11,8 +11,7 @@ describe APeye::API do
       api = APeye::API.create do
         authenticator authenticator
       end
-      expect(api.definition.authenticators).to be_a Array
-      expect(api.definition.authenticators[0]).to eq authenticator
+      expect(api.definition.authenticator).to eq authenticator
     end
   end
 

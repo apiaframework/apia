@@ -12,7 +12,7 @@ module APeye
       end
 
       def authenticator(klass)
-        @definition.authenticators << klass
+        @definition.authenticator = klass
       end
     end
   end
