@@ -2,6 +2,7 @@
 
 require 'apeye/defineable'
 require 'apeye/definitions/api'
+require 'apeye/object_set'
 
 module APeye
   class API
@@ -12,9 +13,9 @@ module APeye
     end
 
     def self.objects
-      set = super
-      definition.authenticators.each { |auth| set |= auth.objects }
-      definition.controllers.each { |con| set |= con.objects }
+      set = ObjectSet.new([self])
+      definition.authenticators.each { |auth| set.add_object(auth) }
+      definition.controllers.each { |con| set.add_object(con) }
       set
     end
   end

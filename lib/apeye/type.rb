@@ -8,8 +8,22 @@ module APeye
   class Type
     extend Defineable
 
+    # Return the definition for this type
+    #
+    # @return [APeye::Definitions::Type]
     def self.definition
       @definition ||= Definitions::Type.new(name&.split('::')&.last)
+    end
+
+    # Collate all objects that this type references and add them to the
+    # given object set
+    #
+    # @param set [APeye::ObjectSet]
+    # @return [void]
+    def self.collate_objects(set)
+      definition.fields.values.each do |field|
+        set.add_object(field.type)
+      end
     end
 
     # Initialize an instance of this type with the value provided

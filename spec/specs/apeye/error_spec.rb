@@ -34,24 +34,30 @@ describe APeye::Error do
     end
   end
 
-  context '.objects' do
-    it 'should return itself' do
-      error = APeye::Error.create
-      expect(error.objects).to include error
-    end
-
+  context '.collate_objects' do
     it 'should return the types of any fields on the object' do
+      nested_type = APeye::Type.create do
+        field :age, type: :integer
+      end
+
       other_type = APeye::Type.create do
         field :name, type: :string
+        field :other, type: nested_type
       end
 
       error = APeye::Error.create do
         field :message, type: :string
+        field :pin, type: :integer
         field :actor, type: other_type
       end
 
-      expect(error.objects).to include APeye::Scalars::String
-      expect(error.objects).to include other_type
+      set = APeye::ObjectSet.new
+      error.collate_objects(set)
+      expect(set).to include APeye::Scalars::String
+      expect(set).to include other_type
+      expect(set).to include nested_type
+      expect(set).to include APeye::Scalars::Integer
+      expect(set.size).to eq 4
     end
   end
 

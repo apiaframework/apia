@@ -5,7 +5,7 @@ require 'apeye/argument_set'
 
 describe APeye::ArgumentSet do
   context '.name' do
-    it 'should return the name of the enum' do
+    it 'should allow the name to eb defined' do
       type = APeye::ArgumentSet.create do
         name_override 'UserArguments'
       end
@@ -39,6 +39,29 @@ describe APeye::ArgumentSet do
       end
       expect(as.definition.arguments[:user].required?).to be false
       expect(as.definition.arguments[:book].required?).to be true
+    end
+  end
+
+  context '.collate_objects' do
+    it 'should add types from arguments to the set' do
+      author_as = APeye::ArgumentSet.create
+      book_as = APeye::ArgumentSet.create do
+        argument :name, type: :string
+        argument :author, type: author_as
+      end
+      as = APeye::ArgumentSet.create do
+        argument :name, type: :string
+        argument :age, type: :integer
+        argument :book, type: book_as
+      end
+      set = APeye::ObjectSet.new
+      as.collate_objects(set)
+      expect(set.size).to eq 4
+      expect(set).to_not include as
+      expect(set).to include book_as
+      expect(set).to include author_as
+      expect(set).to include APeye::Scalars::String
+      expect(set).to include APeye::Scalars::Integer
     end
   end
 

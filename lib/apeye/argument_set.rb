@@ -13,6 +13,12 @@ module APeye
       @definition ||= Definitions::ArgumentSet.new(name&.split('::')&.last)
     end
 
+    def self.collate_objects(set)
+      definition.arguments.values.each do |argument|
+        set.add_object(argument.type)
+      end
+    end
+
     def initialize(hash, path: [])
       @path = path
       @source = hash.each_with_object({}) do |(key, value), source|

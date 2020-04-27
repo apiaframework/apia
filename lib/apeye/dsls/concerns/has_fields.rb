@@ -18,10 +18,6 @@ module APeye
           field = Definitions::Field.new(name, **options)
           field.dsl.instance_eval(&block) if block_given?
 
-          if field.type.nil?
-            raise ManifestError, "Field #{name} is missing a type"
-          end
-
           @definition.fields[name.to_sym] = field
         end
       end

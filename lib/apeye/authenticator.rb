@@ -11,10 +11,10 @@ module APeye
       @definition ||= Definitions::Authenticator.new(name&.split('::')&.last)
     end
 
-    def self.objects
-      set = super
-      definition.potential_errors.each { |error| set |= error.objects }
-      set
+    def self.collate_objects(set)
+      definition.potential_errors.each do |error|
+        set.add_object(error)
+      end
     end
   end
 end

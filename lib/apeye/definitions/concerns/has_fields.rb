@@ -12,7 +12,7 @@ module APeye
         # fields
         #
         # @return [Set]
-        def types
+        def types(_set = nil)
           Set.new(@fields.values.map(&:types).flatten.uniq)
         end
 

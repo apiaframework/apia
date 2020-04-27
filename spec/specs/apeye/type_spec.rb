@@ -39,6 +39,39 @@ describe APeye::Type do
     end
   end
 
+  context '.collate_objects' do
+    it 'should add the types from all fields' do
+      cat_type = APeye::Type.create
+      type = APeye::Type.create
+      type.field :name, type: :string
+      type.field :cat, type: cat_type
+
+      set = APeye::ObjectSet.new
+      type.collate_objects(set)
+      expect(set).to include APeye::Scalars::String
+      expect(set).to include cat_type
+      expect(set).to_not include type
+    end
+
+    it 'should work with nested fields' do
+      human_type = APeye::Type.create
+      cat_type = APeye::Type.create
+      dog_type = APeye::Type.create
+      cat_type.field :owner, type: human_type
+      cat_type.field :enemies, type: [dog_type]
+      dog_type.field :owner, type: human_type
+      human_type.field :cats, type: [cat_type]
+      human_type.field :dogs, type: [dog_type]
+
+      set = APeye::ObjectSet.new
+      human_type.collate_objects(set)
+      expect(set).to include human_type
+      expect(set).to include cat_type
+      expect(set).to include dog_type
+      expect(set.size).to eq 3
+    end
+  end
+
   context '#include?' do
     it 'should return true if there are no conditions' do
       type = APeye::Type.create.new({})

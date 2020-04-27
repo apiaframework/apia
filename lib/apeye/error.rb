@@ -30,13 +30,15 @@ module APeye
       @definition ||= Definitions::Error.new(name&.split('::')&.last)
     end
 
-    # Return all objects that are referenced by this object.
+    # Collate all objects that this error references and add them to the
+    # given object set
     #
-    # @return [Set]
-    def self.objects
-      set = super
-      definition.fields.values.each { |field| set << field.type }
-      set
+    # @param set [APeye::ObjectSet]
+    # @return [void]
+    def self.collate_objects(set)
+      definition.fields.values.each do |field|
+        set.add_object(field.type)
+      end
     end
 
     # Validate this class is valid
