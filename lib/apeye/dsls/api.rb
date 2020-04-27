@@ -11,8 +11,12 @@ module APeye
         @definition.name = name
       end
 
-      def authenticator(klass)
-        @definition.authenticator = klass
+      def authenticator(klass_or_name = nil, &block)
+        @definition.authenticator = if block_given?
+                                      APeye::Authenticator.create(klass_or_name || "#{@definition.name}Authenticator", &block)
+                                    else
+                                      klass_or_name
+                                    end
       end
     end
   end

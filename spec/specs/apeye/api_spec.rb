@@ -13,6 +13,25 @@ describe APeye::API do
       end
       expect(api.definition.authenticator).to eq authenticator
     end
+
+    it 'should allow an anonymous authenticator to be added' do
+      api = APeye::API.create('CoreAPI') do
+        authenticator do
+          type :bearer
+        end
+      end
+      expect(api.definition.authenticator.definition.name).to eq 'CoreAPIAuthenticator'
+      expect(api.definition.authenticator.definition.type).to eq :bearer
+    end
+
+    it 'should allow an authenticator to be named inline' do
+      api = APeye::API.create('CoreAPI') do
+        authenticator 'MainAuthenticator' do
+          type :bearer
+        end
+      end
+      expect(api.definition.authenticator.definition.name).to eq 'MainAuthenticator'
+    end
   end
 
   context '.objects' do
