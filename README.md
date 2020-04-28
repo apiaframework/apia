@@ -144,7 +144,8 @@ module CoreAPI
     # Define an action within the controller by providing a name that you
     # wish to use for it.
     endpoint :create do
-      name 'Create a new user'
+      label 'Create a new user'
+      description "This action will create a new user"
 
       # Optionally set the authenticator use (if not defined, will use the
       # controller default, or the API default)
@@ -201,16 +202,6 @@ module CoreAPI
     description 'The API token provided is invalid'
   end
 
-  class InvalidNetworkError < APeye::Error
-    code :invalid_network
-    http_code 403
-    description 'The IP address authenticating from is invalid'
-
-    field :ip_address, type: :string do
-      description 'The IP address authenticating from'
-    end
-  end
-
   class Authenticator < APeye::Authenticator
 
     # Define the type of authentication you wish to use. The only
@@ -218,8 +209,16 @@ module CoreAPI
     type :bearer
 
     # Define which errors can be potentially raised by the
-    # authentication action
-    potential_error InvalidAPITokenError
+    # authenticator.
+    potential_error 'InvalidNetworkError' do
+      description 'You are connecting to the API from an IP address that is not permitted'
+      code :invalid_network_error
+      http_status 403
+      field :ip_address, type: :string do
+        description 'The IP address given'
+      end
+    end
+
     potential_error InvalidNetworkError
 
     # Define the action to take to set the identity variable.
@@ -228,12 +227,18 @@ module CoreAPI
       given_token = request.headers['Authorization'].sub(/\ABearer /, '')
       api_token = APIToken.find_by(token: given_token)
       if api_token.nil?
+        # Raise an error by specifying the name of the error class
+        # that you wish to raise. It must be specified as a potential
+        # error for this endpoint.
         response.error InvalidAPITokenError
         return
       end
 
       unless api_token.valid_ip_address?(request.ip)
-        response.error InvalidNetworkError do |error|
+        # If you have defined an anonymous error you can raise an error
+        # by giving the name of the error you have defined within
+        # this endpoint.
+        response.error 'InvalidNetworkError' do |error|
           error.add_field :ip_address, request.ip
         end
         return

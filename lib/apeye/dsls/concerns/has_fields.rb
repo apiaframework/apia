@@ -18,7 +18,7 @@ module APeye
           field = Definitions::Field.new(name, **options)
           field.dsl.instance_eval(&block) if block_given?
 
-          @definition.fields[name.to_sym] = field
+          @definition.add_field(field)
         end
       end
     end

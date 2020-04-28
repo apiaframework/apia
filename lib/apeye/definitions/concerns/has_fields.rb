@@ -8,6 +8,14 @@ module APeye
           @fields ||= {}
         end
 
+        # Add a new field
+        #
+        # @param field [APeye::Definitions::Field]
+        # @return [APeye::Definitions::Field]
+        def add_field(field)
+          fields[field.name] = field
+        end
+
         # Return an array of unique types that are referenced by the
         # fields
         #
