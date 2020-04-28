@@ -17,6 +17,8 @@ module APeye
       def dsl
         @dsl ||= DSLs::API.new(self)
       end
+
+      def validate(errors); end
     end
   end
 end
