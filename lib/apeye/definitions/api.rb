@@ -23,8 +23,10 @@ module APeye
       # @param errors [APeye::ManifestErrors]
       # @return [void]
       def validate(errors)
-        unless authenticator.respond_to?(:ancestors) && authenticator.ancestors.include?(APeye::Authenticator)
-          errors.add self, 'InvalidAuthenticator', 'The authenticator must be a class that inherits from APeye::Authenticator'
+        if @authenticator
+          unless @authenticator.respond_to?(:ancestors) && @authenticator.ancestors.include?(APeye::Authenticator)
+            errors.add self, 'InvalidAuthenticator', 'The authenticator must be a class that inherits from APeye::Authenticator'
+          end
         end
 
         @controllers.each do |name, controller|

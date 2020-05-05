@@ -2,23 +2,33 @@
 
 require 'spec_helper'
 require 'apeye/definitions/api'
+require 'apeye/manifest_errors'
+require 'apeye/authenticator'
 
 describe APeye::Definitions::API do
   context '#validate' do
-    it 'should not add errors if the authenticator is an authenticator' do
+    it 'should have no errors for a valid API' do
       api = described_class.new('MyAPI')
-      api.authenticator = APeye::Authenticator.create('MyAuthenticator')
+      api.controllers[:test] = APeye::Controller.create('MyController')
       errors = APeye::ManifestErrors.new
       api.validate(errors)
-      expect(errors.for(api)).to_not include 'InvalidAuthenticator'
+      expect(errors.for(api)).to be_empty
     end
 
-    it 'should add errors if the authenticator is not an authenticator' do
+    it 'should not add an error if the authenticator is missing' do
       api = described_class.new('MyAPI')
-      api.authenticator = 'notanauth'
       errors = APeye::ManifestErrors.new
       api.validate(errors)
-      expect(errors.for(api)).to include 'InvalidAuthenticator'
+      expect(errors.for(api)).to be_empty
+    end
+
+    it 'should not add any errors if a controller is valid' do
+      api = described_class.new('MyAPI')
+      api.controllers[:valid] = APeye::Controller.create('MyController')
+      errors = APeye::ManifestErrors.new
+      api.validate(errors)
+      expect(errors.for(api)).to_not include 'InvalidControllerName'
+      expect(errors.for(api)).to_not include 'InvalidController'
     end
 
     it 'should add errors if the authenticator is not an authenticator' do
