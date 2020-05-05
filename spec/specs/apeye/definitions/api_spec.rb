@@ -5,8 +5,53 @@ require 'apeye/definitions/api'
 
 describe APeye::Definitions::API do
   context '#validate' do
-    it 'should add errors if the authenticator is not an authenticator'
-    it 'should add an error if any controller does not have a validate name'
-    it 'should add an error if any controller is not a valid controller'
+    it 'should not add errors if the authenticator is an authenticator' do
+      api = described_class.new('MyAPI')
+      api.authenticator = APeye::Authenticator.create('MyAuthenticator')
+      errors = APeye::ManifestErrors.new
+      api.validate(errors)
+      expect(errors.for(api)).to_not include 'InvalidAuthenticator'
+    end
+
+    it 'should add errors if the authenticator is not an authenticator' do
+      api = described_class.new('MyAPI')
+      api.authenticator = 'notanauth'
+      errors = APeye::ManifestErrors.new
+      api.validate(errors)
+      expect(errors.for(api)).to include 'InvalidAuthenticator'
+    end
+
+    it 'should add errors if the authenticator is not an authenticator' do
+      api = described_class.new('MyAPI')
+      api.authenticator = APeye::Enum.create('MyEnum')
+      errors = APeye::ManifestErrors.new
+      api.validate(errors)
+      expect(errors.for(api)).to include 'InvalidAuthenticator'
+    end
+
+    it 'should not add any errors if a controller is valid' do
+      api = described_class.new('MyAPI')
+      api.controllers[:valid] = APeye::Controller.create('MyController')
+      errors = APeye::ManifestErrors.new
+      api.validate(errors)
+      expect(errors.for(api)).to_not include 'InvalidControllerName'
+      expect(errors.for(api)).to_not include 'InvalidController'
+    end
+
+    it 'should add an error if any controller does not have a validate name' do
+      api = described_class.new('MyAPI')
+      api.controllers[:'invalid+name'] = APeye::Controller.create('MyController')
+      errors = APeye::ManifestErrors.new
+      api.validate(errors)
+      expect(errors.for(api)).to include 'InvalidControllerName'
+    end
+
+    it 'should add an error if any controller is not a valid controller' do
+      api = described_class.new('MyAPI')
+      api.controllers[:name] = APeye::Authenticator.create('MyAuthenticator')
+      errors = APeye::ManifestErrors.new
+      api.validate(errors)
+      expect(errors.for(api)).to include 'InvalidController'
+    end
   end
 end
