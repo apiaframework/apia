@@ -15,8 +15,12 @@ module APeye
         @definition.type = type
       end
 
-      def potential_error(error)
-        @definition.potential_errors << error
+      def potential_error(klass_or_name, &block)
+        @definition.potential_errors << if block_given?
+                                          APeye::Error.create(klass_or_name, &block)
+                                        else
+                                          error
+                                       end
       end
 
       def action(&block)
