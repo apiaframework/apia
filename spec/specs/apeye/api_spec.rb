@@ -3,6 +3,7 @@
 require 'spec_helper'
 require 'apeye/api'
 require 'apeye/authenticator'
+require 'apeye/controller'
 
 describe APeye::API do
   context '.authenticator' do
@@ -31,6 +32,15 @@ describe APeye::API do
         end
       end
       expect(api.definition.authenticator.definition.name).to eq 'MainAuthenticator'
+    end
+  end
+
+  context '.controller' do
+    it 'should be able to add a controller' do
+      controller = APeye::Controller.create('UsersController')
+      api = APeye::API.create('CoreAPI')
+      api.controller(:users, controller)
+      expect(api.definition.controllers[:users]).to eq controller
     end
   end
 

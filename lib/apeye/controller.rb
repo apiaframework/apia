@@ -16,5 +16,16 @@ module APeye
     def self.definition
       @definition ||= Definitions::Controller.new(name&.split('::')&.last)
     end
+
+    # Collate all objects that this controller references and add them to the
+    # given object set
+    #
+    # @param set [APeye::ObjectSet]
+    # @return [void]
+    def self.collate_objects(set)
+      definition.endpoints.values.each do |endpoint|
+        set.add_object(endpoint)
+      end
+    end
   end
 end

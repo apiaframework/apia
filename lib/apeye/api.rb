@@ -15,8 +15,12 @@ module APeye
     def self.objects
       set = ObjectSet.new([self])
       set.add_object(definition.authenticator) if definition.authenticator
-      definition.controllers.each { |con| set.add_object(con) }
+      definition.controllers.values.each { |con| set.add_object(con) }
       set
+    end
+
+    def initialize
+      # Nothing to do here yet...
     end
   end
 end

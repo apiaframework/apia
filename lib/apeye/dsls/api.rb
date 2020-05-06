@@ -18,6 +18,10 @@ module APeye
                                       klass_or_name
                                     end
       end
+
+      def controller(name, klass)
+        @definition.controllers[name.to_sym] = klass
+      end
     end
   end
 end

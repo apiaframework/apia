@@ -19,7 +19,7 @@ module APeye
         @definition.potential_errors << if block_given?
                                           APeye::Error.create(klass_or_name, &block)
                                         else
-                                          error
+                                          klass_or_name
                                        end
       end
 
