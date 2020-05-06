@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'apeye/definitions/argument_set'
+require 'apeye/definitions/argument'
+require 'apeye/manifest_errors'
 
 describe APeye::Definitions::Argument do
   context '#type' do
@@ -50,28 +51,72 @@ describe APeye::Definitions::Argument do
     end
   end
 
-  context '#validate' do
+  context '#validate_value' do
     it 'should return an empty array when no validations are defined' do
       arg = APeye::Definitions::Argument.new(:name, type: :string)
-      expect(arg.validate('hello')).to be_a Array
-      expect(arg.validate('hello')).to be_empty
+      expect(arg.validate_value('hello')).to be_a Array
+      expect(arg.validate_value('hello')).to be_empty
     end
 
     it 'should return the name of any validations that are not true' do
       arg = APeye::Definitions::Argument.new(:name, type: :string)
       arg.validations << { name: 'example1', block: proc { false } }
       arg.validations << { name: 'example2', block: proc { true } }
-      expect(arg.validate('hello')).to be_a Array
-      expect(arg.validate('hello').size).to eq 1
-      expect(arg.validate('hello')).to include('example1')
+      expect(arg.validate_value('hello')).to be_a Array
+      expect(arg.validate_value('hello').size).to eq 1
+      expect(arg.validate_value('hello')).to include('example1')
     end
 
     it 'should an empty array of all validations are true' do
       arg = APeye::Definitions::Argument.new(:name, type: :string)
       arg.validations << { name: 'example1', block: proc { true } }
       arg.validations << { name: 'example2', block: proc { true } }
-      expect(arg.validate('hello')).to be_a Array
-      expect(arg.validate('hello')).to be_empty
+      expect(arg.validate_value('hello')).to be_a Array
+      expect(arg.validate_value('hello')).to be_empty
+    end
+  end
+
+  context '#validate' do
+    it 'should add no errors for a valid argument' do
+      arg = APeye::Definitions::Argument.new(:example, type: :string)
+      errors = APeye::ManifestErrors.new
+      arg.validate(errors)
+      expect(errors.for(arg)).to be_empty
+    end
+
+    it 'should add an error if the name is missing' do
+      arg = APeye::Definitions::Argument.new(nil, type: :string)
+      errors = APeye::ManifestErrors.new
+      arg.validate(errors)
+      expect(errors.for(arg)).to include 'MissingName'
+    end
+
+    it 'should add an error if the name is invalid' do
+      arg = APeye::Definitions::Argument.new(:'invalid+name', type: :string)
+      errors = APeye::ManifestErrors.new
+      arg.validate(errors)
+      expect(errors.for(arg)).to include 'InvalidName'
+    end
+
+    it 'should add an error if the type is missing' do
+      arg = APeye::Definitions::Argument.new(:name)
+      errors = APeye::ManifestErrors.new
+      arg.validate(errors)
+      expect(errors.for(arg)).to include 'MissingType'
+    end
+
+    it 'should add an error if the type is a string' do
+      arg = APeye::Definitions::Argument.new(:name, type: 'asd')
+      errors = APeye::ManifestErrors.new
+      arg.validate(errors)
+      expect(errors.for(arg)).to include 'MissingType'
+    end
+
+    it 'should add an error if the type is not an APeye::Type' do
+      arg = APeye::Definitions::Argument.new(:name, type: APeye::Enum.create('MyEnum'))
+      errors = APeye::ManifestErrors.new
+      arg.validate(errors)
+      expect(errors.for(arg)).to include 'InvalidType'
     end
   end
 end

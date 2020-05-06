@@ -20,6 +20,20 @@ module APeye
         @dsl ||= DSLs::Argument.new(self)
       end
 
+      def validate(errors)
+        if @name.nil?
+          errors.add self, 'MissingName', 'Arguments must have a name'
+        elsif @name.to_s !~ /\A[a-z0-9\-\_]+\z/
+          errors.add self, 'InvalidName', 'Argument name must only include letters, numbers, hyphens and underscores'
+        end
+
+        if type.nil?
+          errors.add self, 'MissingType', 'Arguments must have a type'
+        elsif !(type.respond_to?(:ancestors) && (type.ancestors.include?(APeye::Type) || type.ancestors.include?(APeye::Scalar)))
+          errors.add self, 'InvalidType', 'Type must be a class that inherits from APeye::Type or APeye::Scalar'
+        end
+      end
+
       # Return the type of object (either a ArgumentSet or a Scalar) which
       # this argument represents.
       #
@@ -53,7 +67,7 @@ module APeye
       #
       # @param value [Object]
       # @return [Array]
-      def validate(value)
+      def validate_value(value)
         @validations.each_with_object([]) do |validation, errors|
           errors << validation[:name] unless validation[:block].call(value)
         end

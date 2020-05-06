@@ -26,7 +26,7 @@ module APeye
         next unless argument
 
         value = parse_value(argument, value)
-        validation_errors = argument.validate(value)
+        validation_errors = argument.validate_value(value)
         unless validation_errors.empty?
           raise InvalidArgumentError.new(
             argument,
