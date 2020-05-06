@@ -1,3 +1,8 @@
+PATH
+  remote: .
+  specs:
+    apeye (1.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -20,6 +25,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  apeye!
   rspec
   rspec-core
   rspec-expectations
