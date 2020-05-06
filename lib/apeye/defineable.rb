@@ -2,6 +2,12 @@
 
 module APeye
   module Defineable
+    def inspect
+      type = ancestors.find { |c| c.name =~ /\AAPeye::/ }
+      name = self.name || ('Anonymous:' + definition.name)
+      "<#{name} [#{type}]>"
+    end
+
     def define(&block)
       definition.dsl.instance_eval(&block) if block_given?
       definition
