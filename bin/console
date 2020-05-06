@@ -4,5 +4,12 @@
 require 'bundler/setup'
 require 'apeye'
 
+if example_name = ARGV.shift
+  example_root = File.expand_path('../examples', __dir__)
+  $LOAD_PATH.unshift(example_root)
+  puts "Loading example #{example_name}"
+  require "#{example_name}/base"
+end
+
 require 'irb'
 IRB.start(__FILE__)
