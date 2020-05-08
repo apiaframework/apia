@@ -24,5 +24,17 @@ module APeye
         set.add_object(field.type)
       end
     end
+
+    # Run this request by providing a request to execute it with.
+    #
+    # @param request [APeye::Request]
+    # @return [APeye::Response]
+    def self.execute(request)
+      response = Response.new(request, self)
+      # TODO: process arguments into the request as appropriate
+      # TODO: execute any authenticator that needs to be created
+      definition.endpoint.call(request, response)
+      response
+    end
   end
 end

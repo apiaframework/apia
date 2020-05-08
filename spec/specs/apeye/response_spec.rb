@@ -45,5 +45,25 @@ describe APeye::Response do
       response.status = 403
       expect(response.rack_triplet[0]).to eq 403
     end
+
+    it 'should return the headers' do
+      endpoint = APeye::Endpoint.create('ExampleEndpoint')
+      response = APeye::Response.new(request, endpoint)
+      response.add_header 'x-example', 'hello world'
+      expect(response.rack_triplet[1]['x-example']).to eq 'hello world'
+    end
+
+    it 'should always provide the content-type as json' do
+      endpoint = APeye::Endpoint.create('ExampleEndpoint')
+      response = APeye::Response.new(request, endpoint)
+      expect(response.rack_triplet[1]['content-type']).to eq 'application/json'
+    end
+
+    it 'should always set a content-length' do
+      endpoint = APeye::Endpoint.create('ExampleEndpoint')
+      response = APeye::Response.new(request, endpoint)
+      expect(response.rack_triplet[2][0]).to eq '{}'
+      expect(response.rack_triplet[1]['content-length']).to eq '2'
+    end
   end
 end

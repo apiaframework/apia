@@ -44,4 +44,7 @@ describe APeye::Endpoint do
       expect(endpoint.definition.endpoint.call).to eq 1234
     end
   end
+
+  context '#execute' do
+  end
 end

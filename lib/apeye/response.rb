@@ -51,8 +51,8 @@ module APeye
       [
         @status,
         @headers.merge(
-          'Content-Length' => body.bytesize.to_s,
-          'Content-Type' => 'application/json'
+          'content-length' => body.bytesize.to_s,
+          'content-type' => 'application/json'
         ),
         [body]
       ]
