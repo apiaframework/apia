@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-require 'rack/request'
+require 'json'
+require 'apeye/rack_error'
+require 'apeye/request'
+require 'apeye/response'
 
 module APeye
   class Rack
@@ -29,12 +32,45 @@ module APeye
     # @param env [Hash]
     # @return [Array] a rack triplet
     def call(env)
-      path_components = self.class.parse_path(path)
+      path_components = parse_path(env['PATH_INFO'])
       return @app.call(env) if path_components.nil?
 
-      rack_request = ::Rack::Request.new(env)
+      endpoint = find_endpoint(path_components)
 
-      [200, {}, [@api.inspect]]
+      request = APeye::Request.new(env)
+      response = APeye::Response.new(request, endpoint)
+
+      # TODO: replace this with something that actually runs
+      # authenticators, conditions and catches errors etc...
+      endpoint.definition.endpoint.call(request, response)
+
+      response.rack_triplet
+    rescue RackError => e
+      e.triplet
+    end
+
+    private
+
+    def find_endpoint(path_components)
+      if path_components[:controller].nil?
+        raise RackError.new(404, 'InvalidController', 'No controller could be determined from the URL path')
+      end
+
+      if path_components[:endpoint].nil?
+        raise RackError.new(404, 'EndpointMissing', 'No endpoint could be determined from the URL path')
+      end
+
+      controller = @api.definition.controllers[path_components[:controller].to_sym]
+      if controller.nil?
+        raise RackError.new(404, 'InvalidController', "#{path_components[:controller]} is not a valid controller name")
+      end
+
+      endpoint = controller.definition.endpoints[path_components[:endpoint].to_sym]
+      if endpoint.nil?
+        raise RackError.new(404, 'InvalidEndpoint', "#{path_components[:endpoint]} is not a valid endpoint name for the #{controller.definition.name} controller")
+      end
+
+      endpoint
     end
   end
 end
