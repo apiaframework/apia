@@ -75,13 +75,13 @@ describe APeye::Type do
   context '#include?' do
     it 'should return true if there are no conditions' do
       type = APeye::Type.create('ExampleType').new({})
-      request = APeye::Request.new
+      request = APeye::Request.empty
       expect(type.include?(request)).to be true
     end
 
     it 'should return true if all the conditions evaluate positively' do
       object = { a: 'b' }
-      request = APeye::Request.new
+      request = APeye::Request.empty
 
       obj_from_condition = nil
       req_from_condition = nil
@@ -112,7 +112,7 @@ describe APeye::Type do
           false
         end
       end.new({})
-      request = APeye::Request.new
+      request = APeye::Request.empty
       expect(type.include?(request)).to be false
     end
   end

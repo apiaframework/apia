@@ -5,7 +5,7 @@ require 'apeye/response'
 require 'apeye/endpoint'
 
 describe APeye::Response do
-  subject(:request) { APeye::Request.new }
+  subject(:request) { APeye::Request.empty }
 
   context '#hash' do
     it 'should return a hash of all fields added to the response' do
