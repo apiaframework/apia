@@ -4,7 +4,7 @@ require 'rack/request'
 
 module APeye
   class Rack
-    PATH_COMPONENT_REGEX = %r{\/?(?:(?<controller>[\w-]+)\/?(?:(?<endpoint>[\w-]+)\/?)?)?$}.freeze
+    PATH_COMPONENT_REGEX = %r{(?:\/(?:(?<controller>[\w-]+)\/?(?:(?<endpoint>[\w-]+)\/?)?)?)?$}.freeze
 
     def initialize(app, api, namespace)
       @app = app
