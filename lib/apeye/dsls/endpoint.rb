@@ -27,6 +27,10 @@ module APeye
         @definition.potential_errors << error
       end
 
+      def argument(*args, &block)
+        @definition.argument_set.argument(*args, &block)
+      end
+
       def endpoint(&block)
         @definition.endpoint = block
       end

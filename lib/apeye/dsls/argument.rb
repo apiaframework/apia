@@ -18,6 +18,10 @@ module APeye
       def condition(&block)
         @definition.options[:condition] = block
       end
+
+      def description(description)
+        @definition.options[:description] = description
+      end
     end
   end
 end

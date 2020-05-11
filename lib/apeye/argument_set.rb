@@ -19,7 +19,19 @@ module APeye
       end
     end
 
+    def self.create_from_request(request)
+      new(request.json_body || request.params || {})
+    end
+
+    def inspect
+      "<#{self.class.definition.name} #{@source.inspect}>"
+    end
+
     def initialize(hash, path: [])
+      unless hash.is_a?(Hash)
+        raise APeye::RuntimeError, 'Hash was expected for argument'
+      end
+
       @path = path
       @source = hash.each_with_object({}) do |(key, value), source|
         argument = self.class.definition.arguments[key.to_sym]
@@ -31,6 +43,7 @@ module APeye
           raise InvalidArgumentError.new(
             argument,
             value,
+            issue: :validation_error,
             validation_errors: validation_errors,
             path: @path + [argument]
           )
@@ -63,6 +76,7 @@ module APeye
           raise InvalidArgumentError.new(
             argument,
             type,
+            issue: :invalid_scalar_type,
             index: index,
             path: @path + [argument]
           )
@@ -80,7 +94,7 @@ module APeye
         next unless arg.required?
         next if self[arg.name]
 
-        raise MissingArgumentError, arg
+        raise MissingArgumentError.new(arg, path: @path + [arg])
       end
     end
   end

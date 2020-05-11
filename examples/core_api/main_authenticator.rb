@@ -11,10 +11,10 @@ module CoreAPI
     end
 
     action do |request, response|
-      given_token = request.headers['Authorization'].sub(/\ABearer /, '')
+      given_token = request.headers['authorization']&.sub(/\ABearer /, '')
       case given_token
       when 'example'
-        request.set_identity(name: 'Example User', id: 1234)
+        request.identity = { name: 'Example User', id: 1234 }
       else
         response.error 'InvalidToken'
       end

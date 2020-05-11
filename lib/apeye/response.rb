@@ -5,6 +5,7 @@ require 'json'
 module APeye
   class Response
     attr_accessor :status
+    attr_accessor :body
     attr_reader :fields
     attr_reader :headers
 
@@ -47,7 +48,7 @@ module APeye
     #
     # @return [Array]
     def rack_triplet
-      body = hash.to_json
+      body = (@body || hash).to_json
       [
         @status,
         @headers.merge(

@@ -16,5 +16,11 @@ module APeye
         set.add_object(error)
       end
     end
+
+    def self.execute(request, response)
+      return if definition.action.nil?
+
+      definition.action.call(request, response)
+    end
   end
 end

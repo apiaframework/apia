@@ -31,9 +31,22 @@ module APeye
     # @return [APeye::Response]
     def self.execute(request)
       response = Response.new(request, self)
-      # TODO: process arguments into the request as appropriate
-      # TODO: execute any authenticator that needs to be created
-      definition.endpoint.call(request, response)
+
+      begin
+        # Determine an authenticator and execute it before the request happens
+        authenticator = definition.authenticator || request.controller.definition.authenticator || request.api.definition.authenticator
+        authenticator&.execute(request, response)
+
+        # Process arguments into the request. This happens after the authentication
+        # stage because a) authenticators shouldn't be using endpoint specific args
+        # and b) the argument conditions may need to know the identity.
+        request.arguments = definition.argument_set.create_from_request(request)
+
+        definition.endpoint.call(request, response)
+      rescue APeye::RuntimeError => e
+        response.body = { error: e.hash }
+        response.status = e.http_status
+      end
       response
     end
   end

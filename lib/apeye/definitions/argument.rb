@@ -34,6 +34,13 @@ module APeye
         end
       end
 
+      # Return the description for this argument
+      #
+      # @return [String, nil]
+      def description
+        @options[:description]
+      end
+
       # Return the type of object (either a ArgumentSet or a Scalar) which
       # this argument represents.
       #

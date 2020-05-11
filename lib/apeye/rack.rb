@@ -35,15 +35,14 @@ module APeye
       path_components = parse_path(env['PATH_INFO'])
       return @app.call(env) if path_components.nil?
 
-      endpoint = find_endpoint(path_components)
+      controller, endpoint = find_endpoint(path_components)
 
       request = APeye::Request.new(env)
-      response = APeye::Response.new(request, endpoint)
+      request.api = @api
+      request.controller = controller
+      request.endpoint = endpoint
 
-      # TODO: replace this with something that actually runs
-      # authenticators, conditions and catches errors etc...
-      endpoint.definition.endpoint.call(request, response)
-
+      response = endpoint.execute(request)
       response.rack_triplet
     rescue RackError => e
       e.triplet
@@ -70,7 +69,7 @@ module APeye
         raise RackError.new(404, 'InvalidEndpoint', "#{path_components[:endpoint]} is not a valid endpoint name for the #{controller.definition.name} controller")
       end
 
-      endpoint
+      [controller, endpoint]
     end
   end
 end
