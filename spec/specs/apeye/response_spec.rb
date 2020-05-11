@@ -65,5 +65,13 @@ describe APeye::Response do
       expect(response.rack_triplet[2][0]).to eq '{}'
       expect(response.rack_triplet[1]['content-length']).to eq '2'
     end
+
+    it 'should return the body if one has been set' do
+      endpoint = APeye::Endpoint.create('ExampleEndpoint')
+      response = APeye::Response.new(request, endpoint)
+      response.body = { hello: 'world' }
+      expect(response.rack_triplet[2][0]).to eq '{"hello":"world"}'
+      expect(response.rack_triplet[1]['content-length']).to eq '17'
+    end
   end
 end

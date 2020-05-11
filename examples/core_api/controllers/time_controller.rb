@@ -35,7 +35,7 @@ module CoreAPI
           end
         end
 
-        endpoint do |request, response|
+        action do |request, response|
           response.add_field :method, request.request_method
           response.add_field :arguments, request.arguments.inspect
           response.add_field :json, request.json_body.inspect

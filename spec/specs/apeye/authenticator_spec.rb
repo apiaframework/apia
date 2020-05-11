@@ -47,4 +47,28 @@ describe APeye::Authenticator do
       expect(set).to include error
     end
   end
+
+  context '.execute' do
+    it 'should return if no action is specified' do
+      auth = APeye::Authenticator.create('ExampleAuthenticator')
+      endpoint = APeye::Endpoint.create('ExampleEndpoint')
+      request = APeye::Request.empty
+      response = APeye::Response.new(request, endpoint)
+      expect(auth.execute(request, response)).to be_nil
+    end
+
+    it 'should call the action providing the request & response' do
+      executed_block = false
+      auth = APeye::Authenticator.create('ExampleAuthenticator') do
+        action do |_req, res|
+          res.add_header 'x-executed', 123
+        end
+      end
+      endpoint = APeye::Endpoint.create('ExampleEndpoint')
+      request = APeye::Request.empty
+      response = APeye::Response.new(request, endpoint)
+      auth.execute(request, response)
+      expect(response.headers['x-executed']).to eq '123'
+    end
+  end
 end

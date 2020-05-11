@@ -31,8 +31,8 @@ module APeye
         @definition.argument_set.argument(*args, &block)
       end
 
-      def endpoint(&block)
-        @definition.endpoint = block
+      def action(&block)
+        @definition.action = block
       end
     end
   end

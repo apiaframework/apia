@@ -43,7 +43,7 @@ module APeye
           raise InvalidArgumentError.new(
             argument,
             value,
-            issue: :validation_error,
+            issue: :validation_errors,
             validation_errors: validation_errors,
             path: @path + [argument]
           )

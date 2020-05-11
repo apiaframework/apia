@@ -33,7 +33,7 @@ module APeye
     # @param value [String]
     # @return [void]
     def add_header(name, value)
-      @headers[name.to_s] = value
+      @headers[name.to_s] = value&.to_s
     end
 
     # Return the full hash of data that should be returned for this
@@ -41,21 +41,28 @@ module APeye
     #
     # @return [Hash]
     def hash
-      @endpoint.definition.generate_hash_for_fields(@fields, request: @request)
+      @hash ||= @endpoint.definition.generate_hash_for_fields(@fields, request: @request)
+    end
+
+    # Return the body that should be returned for this response
+    #
+    # @return [Hash]
+    def body
+      @body || hash
     end
 
     # Return the rack triplet for this response
     #
     # @return [Array]
     def rack_triplet
-      body = (@body || hash).to_json
+      body_as_json = body.to_json
       [
         @status,
         @headers.merge(
-          'content-length' => body.bytesize.to_s,
+          'content-length' => body_as_json.bytesize.to_s,
           'content-type' => 'application/json'
         ),
-        [body]
+        [body_as_json]
       ]
     end
   end

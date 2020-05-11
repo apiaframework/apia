@@ -17,6 +17,13 @@ describe APeye::Definitions::Argument do
     end
   end
 
+  context '#description' do
+    it 'should return the description' do
+      arg = APeye::Definitions::Argument.new(:name, type: :string, description: 'Some description')
+      expect(arg.description).to eq 'Some description'
+    end
+  end
+
   context '#required?' do
     it 'should return true if required' do
       arg = APeye::Definitions::Argument.new(:name, type: :string, required: true)

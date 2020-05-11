@@ -12,7 +12,7 @@ module APeye
       attr_accessor :label
       attr_accessor :description
       attr_accessor :authenticator
-      attr_accessor :endpoint
+      attr_accessor :action
       attr_reader :argument_set
       attr_reader :potential_errors
       attr_reader :arguments
@@ -22,7 +22,7 @@ module APeye
         @potential_errors = []
         @arguments = {}
         @fields = {}
-        @argument_set = APeye::ArgumentSet.create('BaseArgumentSet')
+        @argument_set = APeye::ArgumentSet.create('BaseEndpointArgumentSet')
       end
 
       def dsl

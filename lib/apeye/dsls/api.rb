@@ -19,8 +19,12 @@ module APeye
                                     end
       end
 
-      def controller(name, klass)
-        @definition.controllers[name.to_sym] = klass
+      def controller(name, klass = nil, &block)
+        @definition.controllers[name.to_sym] = if block_given?
+                                                 APeye::Controller.create("AnonymousController.#{name}", &block)
+                                               else
+                                                 klass
+                                               end
       end
     end
   end

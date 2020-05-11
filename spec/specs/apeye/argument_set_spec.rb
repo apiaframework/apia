@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'apeye/argument_set'
+require 'rack/mock'
 
 describe APeye::ArgumentSet do
   context '.name' do
@@ -65,6 +66,38 @@ describe APeye::ArgumentSet do
     end
   end
 
+  context '.create_from_requst' do
+    it 'should create a new set using the JSON body if provided' do
+      env = Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"john"}')
+      request = APeye::Request.new(env)
+      as = APeye::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :string
+      end
+      as_instance = as.create_from_request(request)
+      expect(as_instance['name']).to eq 'john'
+    end
+
+    it 'should create a new set using HTTP params if provided' do
+      env = Rack::MockRequest.env_for('/?name=michael')
+      request = APeye::Request.new(env)
+      as = APeye::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :string
+      end
+      as_instance = as.create_from_request(request)
+      expect(as_instance['name']).to eq 'michael'
+    end
+
+    it 'should create a new empty set if nothing provided' do
+      env = Rack::MockRequest.env_for('/')
+      request = APeye::Request.new(env)
+      as = APeye::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :string
+      end
+      as_instance = as.create_from_request(request)
+      expect(as_instance['name']).to eq nil
+    end
+  end
+
   context '#initialize' do
     it 'should return a hash of all arguments with their values' do
       as = APeye::ArgumentSet.create('ExampleSet') do
@@ -109,6 +142,7 @@ describe APeye::ArgumentSet do
         as.new(name: 'Not Dave')
       end.to raise_error APeye::InvalidArgumentError do |e|
         expect(e.argument.name).to eq :name
+        expect(e.issue).to eq :validation_errors
         expect(e.validation_errors).to include 'must start with dave'
       end
     end
@@ -131,6 +165,7 @@ describe APeye::ArgumentSet do
         as.new(names: ['Adam', 1323])
       end.to raise_error APeye::InvalidArgumentError do |e|
         expect(e.argument.name).to eq :names
+        expect(e.issue).to eq :invalid_scalar_type
         expect(e.index).to eq 1
       end
     end
@@ -178,11 +213,21 @@ describe APeye::ArgumentSet do
       end.to raise_error APeye::InvalidArgumentError do |e|
         expect(e.index).to be nil
         expect(e.argument.name).to eq :name
+        expect(e.issue).to eq :invalid_scalar_type
         expect(e.path.size).to eq 3
         expect(e.path[0].name).to eq :book
         expect(e.path[1].name).to eq :user
         expect(e.path[2].name).to eq :name
       end
+    end
+
+    it 'should raise an error if initialized with anything other than a hash' do
+      as = APeye::ArgumentSet.create('ExampleSet')
+      expect { as.new({}) }.to_not raise_error
+      expect { as.new([]) }.to raise_error APeye::RuntimeError
+      expect { as.new(nil) }.to raise_error APeye::RuntimeError
+      expect { as.new(1234) }.to raise_error APeye::RuntimeError
+      expect { as.new('SomeString') }.to raise_error APeye::RuntimeError
     end
   end
 end

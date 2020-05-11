@@ -12,8 +12,8 @@ module APeye
     attr_accessor :identity
     attr_accessor :arguments
 
-    def self.empty
-      new({})
+    def self.empty(options: {})
+      new(options)
     end
 
     def headers
@@ -24,7 +24,6 @@ module APeye
       return unless content_type =~ %r{\Aapplication/json}
 
       @json_body ||= begin
-        body.rewind
         JSON.parse(body.read)
                      rescue JSON::ParserError => e
                        raise InvalidJSONError, e.message
