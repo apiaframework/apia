@@ -55,7 +55,17 @@ describe Moonstone::Rack do
       expect(rack.development?).to be false
     end
 
-    it 'should be true if RACK_ENV is set to development'
+    it 'should be true if RACK_ENV is set to development' do
+      allow(ENV).to receive(:[]).with('RACK_ENV').and_return 'development'
+      rack = Moonstone::Rack.new(nil, nil, '/api/core')
+      expect(rack.development?).to be true
+    end
+
+    it 'should be false if RACK_ENV is development but the development option is false' do
+      allow(ENV).to receive(:[]).with('RACK_ENV').and_return 'development'
+      rack = Moonstone::Rack.new(nil, nil, '/api/core', development: false)
+      expect(rack.development?).to be false
+    end
   end
 
   context '#call' do

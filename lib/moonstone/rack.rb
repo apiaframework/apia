@@ -22,6 +22,9 @@ module Moonstone
     #
     # @return [Boolean]
     def development?
+      env_is_dev = ENV['RACK_ENV'] == 'development'
+      return true if env_is_dev && @options[:development].nil?
+
       @options[:development] == true
     end
 
