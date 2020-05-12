@@ -36,12 +36,22 @@ module Moonstone
       last[:_routes]
     end
 
-    def self.strip_slashes(string)
-      string.sub(%r{\A/+}, '').sub(%r{/\z}, '')
-    end
+    class << self
+      # Remove slashes from the start and end of a given string
+      #
+      # @param string [String]
+      # @return [String]
+      def strip_slashes(string)
+        string.sub(%r{\A/+}, '').sub(%r{/\z}, '')
+      end
 
-    def self.split_path(path)
-      strip_slashes(path).split('/')
+      # Split a URL part into its appropriate parts
+      #
+      # @param path [String]
+      # @return [Array<String>]
+      def split_path(path)
+        strip_slashes(path).split('/')
+      end
     end
   end
 end
