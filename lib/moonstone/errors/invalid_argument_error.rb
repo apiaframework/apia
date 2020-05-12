@@ -13,16 +13,16 @@ module Moonstone
     attr_reader :type_instance
     attr_reader :index
     attr_reader :path
-    attr_reader :validation_errors
+    attr_reader :errors
     attr_reader :issue
 
-    def initialize(argument, type_instance, issue: nil, index: nil, path: [], validation_errors: [])
+    def initialize(argument, type_instance, issue: nil, index: nil, path: [], errors: [])
       @argument = argument
       @type_instance = type_instance
       @index = index
       @path = path
       @issue = issue
-      @validation_errors = validation_errors
+      @errors = errors
     end
 
     def http_status
@@ -41,7 +41,7 @@ module Moonstone
           path: @path.map(&:name),
           index: @index,
           issue: @issue&.to_s,
-          validation_errors: @validation_errors,
+          errors: @errors,
           argument: {
             name: argument.name,
             description: argument.description

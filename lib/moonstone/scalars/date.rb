@@ -27,7 +27,7 @@ module Moonstone
         new(date)
       rescue ::ArgumentError => e
         if e.message =~ /invalid date/
-          raise Moonstone::ParseError, 'Invalid date was entered'
+          raise Moonstone::ParseError, 'Invalid date was entered (make sure the day exists)'
         end
 
         raise

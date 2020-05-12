@@ -17,6 +17,14 @@ module CoreAPI
         end
       end
 
+      endpoint :format do
+        field :time, type: :string
+        argument :time, type: :date, required: true
+        action do |request, response|
+          response.add_field :time, request.arguments[:time].inspect
+        end
+      end
+
       endpoint :tomorrow do
         field :method, type: :string
         field :arguments, type: :string

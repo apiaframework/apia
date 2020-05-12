@@ -44,7 +44,7 @@ module Moonstone
             argument,
             value,
             issue: :validation_errors,
-            validation_errors: validation_errors,
+            errors: validation_errors,
             path: @path + [argument]
           )
         end
@@ -71,7 +71,20 @@ module Moonstone
         end
 
       elsif argument.type.ancestors.include?(Moonstone::Scalar)
-        type = argument.type.new(value)
+
+        begin
+          type = argument.type.parse(value)
+        rescue Moonstone::ParseError => e
+          raise InvalidArgumentError.new(
+            argument,
+            nil,
+            issue: :parse_error,
+            errors: [e.message],
+            index: index,
+            path: @path + [argument]
+          )
+        end
+
         unless type.valid?
           raise InvalidArgumentError.new(
             argument,

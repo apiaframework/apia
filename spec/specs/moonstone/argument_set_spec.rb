@@ -143,7 +143,7 @@ describe Moonstone::ArgumentSet do
       end.to raise_error Moonstone::InvalidArgumentError do |e|
         expect(e.argument.name).to eq :name
         expect(e.issue).to eq :validation_errors
-        expect(e.validation_errors).to include 'must start with dave'
+        expect(e.errors).to include 'must start with dave'
       end
     end
 
