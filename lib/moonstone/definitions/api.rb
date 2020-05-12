@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'moonstone/dsls/api'
+require 'moonstone/route_set'
 
 module Moonstone
   module Definitions
@@ -8,10 +9,12 @@ module Moonstone
       attr_accessor :name
       attr_accessor :authenticator
       attr_reader :controllers
+      attr_reader :route_set
 
       def initialize(name)
         @name = name
         @controllers = {}
+        @route_set = RouteSet.new
       end
 
       def dsl
