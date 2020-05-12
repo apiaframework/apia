@@ -9,7 +9,7 @@ module APeye
     end
 
     def triplet
-      body = { error: { code: @code, message: @message } }.to_json
+      body = { error: { code: @code, description: @message } }.to_json
       [@http_status, { 'Content-Type' => 'application/json', 'Content-Length' => body.bytesize.to_s }, [body]]
     end
   end

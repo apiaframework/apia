@@ -23,7 +23,7 @@ module APeye
     def hash
       {
         code: 'missing_required_argument',
-        message: "The '#{path_string}' argument is required but has not been provided",
+        description: "The '#{path_string}' argument is required but has not been provided",
         detail: {
           path: @path.map(&:name),
           argument: {

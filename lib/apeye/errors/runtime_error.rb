@@ -18,7 +18,7 @@ module APeye
     def hash
       {
         code: 'generic_runtime_error',
-        message: message,
+        description: message,
         detail: {
           class: self.class.name
         }

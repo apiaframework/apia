@@ -36,7 +36,7 @@ module APeye
     def hash
       {
         code: 'invalid_argument',
-        message: "The '#{path_string}' argument is invalid",
+        description: "The '#{path_string}' argument is invalid",
         detail: {
           path: @path.map(&:name),
           index: @index,

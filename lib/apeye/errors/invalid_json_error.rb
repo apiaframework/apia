@@ -11,7 +11,7 @@ module APeye
     def hash
       {
         code: 'invalid_json_body',
-        message: 'The JSON body provided with this request is invalid',
+        description: 'The JSON body provided with this request is invalid',
         detail: {
           details: message
         }
