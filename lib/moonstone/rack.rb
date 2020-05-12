@@ -12,7 +12,7 @@ module Moonstone
     def initialize(app, api, namespace, **options)
       @app = app
       @api = api
-      @namespace = namespace.sub(%r{/+\z}, '')
+      @namespace = '/' + namespace.sub(%r{\A/+}, '').sub(%r{/+\z}, '')
       @options = options
     end
 

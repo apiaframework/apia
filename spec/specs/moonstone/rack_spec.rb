@@ -69,13 +69,127 @@ describe Moonstone::Rack do
   end
 
   context '#call' do
-    it 'should return the base application if the namespace does not match'
-    it 'should execute the endpoint and return the response triplet'
-    it 'should catch rack errors and return an error triplet'
-    it 'should catch other errors and return a detailed error triplet in development only'
-    it 'should catch other errors and return a basic error triplet in non-development mode'
-    it 'should validate the whole API in development'
-    it 'should return an error if the request method is not valid for the endpoint'
+    subject(:app) do
+      Class.new do
+        def call(_env)
+          [200, {}, ['Hello world!']]
+        end
+      end.new
+    end
+    it 'should return the base application if the namespace does not match' do
+      api = Moonstone::API.create('MyAPI')
+      rack = described_class.new(app, api, 'api/v1')
+      ['invalid', 'api', 'api/v1/test/test/test'].each do |path|
+        env = ::Rack::MockRequest.env_for(path)
+        result = rack.call(env)
+        expect(result).to be_a Array
+        expect(result[2][0]).to eq 'Hello world!'
+      end
+    end
+
+    it 'should execute the endpoint and return the response triplet' do
+      api = Moonstone::API.create('MyAPI') do
+        controller :test do
+          endpoint :test do
+            action do |_req, res|
+              res.add_header 'x-demo', 'hello'
+            end
+          end
+        end
+      end
+      rack = described_class.new(app, api, 'api/v1', development: true)
+      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
+      expect(result).to be_a Array
+      expect(result[1]['x-demo']).to eq 'hello'
+    end
+
+    it 'should catch rack errors and return an error triplet' do
+      api = Moonstone::API.create('MyAPI')
+      rack = described_class.new(app, api, 'api/v1', development: true)
+      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
+      expect(result).to be_a Array
+      expect(result[0]).to eq 404
+      expect(result[2][0]).to include 'endpoint_missing'
+    end
+
+    it 'should catch other errors and return a detailed error triplet in development only' do
+      api = Moonstone::API.create('MyAPI') do
+        controller :test do
+          endpoint :test do
+            action do |_req, _res|
+              1 / 0
+            end
+          end
+        end
+      end
+      rack = described_class.new(app, api, 'api/v1', development: true)
+      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
+      expect(result).to be_a Array
+      expect(result[0]).to eq 500
+      expect(result[2][0]).to include '{"class":"ZeroDivisionError"'
+    end
+
+    it 'should catch other errors and return a basic error triplet in non-development mode' do
+      api = Moonstone::API.create('MyAPI') do
+        controller :test do
+          endpoint :test do
+            action do |_req, _res|
+              1 / 0
+            end
+          end
+        end
+      end
+      rack = described_class.new(app, api, 'api/v1')
+      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
+      expect(result).to be_a Array
+      expect(result[0]).to eq 500
+      expect(result[2][0]).to_not include '{"class":"ZeroDivisionError"'
+    end
+
+    it 'should validate the whole API in development' do
+      api = Moonstone::API.create('MyAPI') do
+        authenticator {}
+      end
+      rack = described_class.new(app, api, 'api/v1', development: true)
+      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
+      expect(result).to be_a Array
+      expect(result[0]).to eq 500
+      expect(result[2][0]).to include '{"code":"manifest_error"'
+    end
+
+    it 'should not validate the whole API when not in development' do
+      api = Moonstone::API.create('MyAPI') do
+        authenticator {}
+        controller :test do
+          endpoint :test do
+            action { |_req, res| res.add_header 'x-demo', 'test' }
+          end
+        end
+      end
+      rack = described_class.new(app, api, 'api/v1')
+      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
+      expect(result).to be_a Array
+      expect(result[0]).to eq 200
+      expect(result[1]['x-demo']).to eq 'test'
+    end
+
+    it 'should return an error if the request method is not valid for the endpoint' do
+      api = Moonstone::API.create('MyAPI') do
+        controller :test do
+          endpoint :test do
+            http_method :post
+            action do |_req, res|
+              res.add_header 'x-demo', 'hello'
+            end
+          end
+        end
+      end
+      rack = described_class.new(app, api, 'api/v1', development: true)
+      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
+      expect(result).to be_a Array
+      expect(result[0]).to eq 400
+      expect(result[2][0]).to include '{"code":"invalid_http_method"'
+    end
   end
 
   context '.json_triplet' do
