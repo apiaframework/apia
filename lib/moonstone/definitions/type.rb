@@ -20,6 +20,8 @@ module Moonstone
       def dsl
         @dsl ||= DSLs::Type.new(self)
       end
+
+      def validate(errors); end
     end
   end
 end

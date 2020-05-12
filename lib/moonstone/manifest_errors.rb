@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
+require 'moonstone/errors/manifest_error'
+
 module Moonstone
   class ManifestErrors
+    attr_reader :errors
+
     def initialize
       @errors = {}
     end
@@ -13,6 +17,12 @@ module Moonstone
 
     def for(object)
       @errors[object] || Errors.new
+    end
+
+    def raise_if_needed
+      return if @errors.empty?
+
+      raise ManifestError, self
     end
 
     class Errors
@@ -30,6 +40,14 @@ module Moonstone
 
       def empty?
         @errors.empty?
+      end
+
+      def each(&block)
+        @errors.each(&block)
+      end
+
+      def map(&block)
+        @errors.map(&block)
       end
     end
   end

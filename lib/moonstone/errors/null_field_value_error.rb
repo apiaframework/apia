@@ -12,5 +12,21 @@ module Moonstone
     def to_s
       "Value for `#{field.name}` is null (but cannot be)"
     end
+
+    def http_status
+      500
+    end
+
+    def hash
+      {
+        code: 'null_value_for_non_null_field',
+        description: to_s,
+        detail: {
+          field: {
+            name: @field.name
+          }
+        }
+      }
+    end
   end
 end

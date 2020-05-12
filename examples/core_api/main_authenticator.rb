@@ -18,7 +18,7 @@ module CoreAPI
       when 'example'
         request.identity = { name: 'Example User', id: 1234 }
       else
-        raise_error 'InvalidToken', given_token: 123
+        raise_error 'InvalidToken', given_token: given_token.to_s
       end
     end
   end

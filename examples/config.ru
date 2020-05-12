@@ -7,7 +7,7 @@ require 'moonstone'
 require 'moonstone/rack'
 require 'core_api/base'
 
-use Moonstone::Rack, CoreAPI::Base, '/core/v1'
+use Moonstone::Rack, CoreAPI::Base, '/core/v1', development: true
 
 app = proc do
   [400, { 'Content-Type' => 'text/plain' }, ['Moonstone Example API Server. Make a request to a an example API for example /core/v1.']]

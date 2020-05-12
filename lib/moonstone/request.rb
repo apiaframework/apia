@@ -12,6 +12,7 @@ module Moonstone
     attr_accessor :identity
     attr_accessor :arguments
     attr_accessor :authenticator
+    attr_accessor :namespace
 
     def self.empty(options: {})
       new(options)

@@ -3,6 +3,7 @@
 require 'moonstone/defineable'
 require 'moonstone/definitions/api'
 require 'moonstone/object_set'
+require 'moonstone/manifest_errors'
 
 module Moonstone
   class API
@@ -19,8 +20,19 @@ module Moonstone
       set
     end
 
-    def initialize
-      # Nothing to do here yet...
+    # Validate all objects in the API and return them
+    #
+    # @return [Moonstone::ManifestErrors]
+    def self.validate_all
+      errors = ManifestErrors.new
+      objects.each do |object|
+        if object.respond_to?(:definition)
+          object.definition.validate(errors)
+        else
+          warn "Not validating #{object}"
+        end
+      end
+      errors
     end
   end
 end
