@@ -71,21 +71,21 @@ module Moonstone
 
     def find_endpoint(path_components)
       if path_components[:controller].nil?
-        raise RackError.new(404, 'InvalidController', 'No controller could be determined from the URL path')
+        raise RackError.new(404, 'controller_missing', 'No controller could be determined from the URL path')
       end
 
       if path_components[:endpoint].nil?
-        raise RackError.new(404, 'EndpointMissing', 'No endpoint could be determined from the URL path')
+        raise RackError.new(404, 'endpoint_missing', 'No endpoint could be determined from the URL path')
       end
 
       controller = @api.definition.controllers[path_components[:controller].to_sym]
       if controller.nil?
-        raise RackError.new(404, 'InvalidController', "#{path_components[:controller]} is not a valid controller name")
+        raise RackError.new(404, 'controller_invalid', "#{path_components[:controller]} is not a valid controller name")
       end
 
       endpoint = controller.definition.endpoints[path_components[:endpoint].to_sym]
       if endpoint.nil?
-        raise RackError.new(404, 'InvalidEndpoint', "#{path_components[:endpoint]} is not a valid endpoint name for the #{controller.definition.name} controller")
+        raise RackError.new(404, 'endpoint_invalid', "#{path_components[:endpoint]} is not a valid endpoint name for the #{controller.definition.name} controller")
       end
 
       [controller, endpoint]
@@ -112,7 +112,7 @@ module Moonstone
       body_as_json = body.to_json
       [
         status,
-        headers.merge('Content-Type' => 'application/json', 'Content-Length' => body_as_json.bytesize.to_s),
+        headers.merge('content-type' => 'application/json', 'content-length' => body_as_json.bytesize.to_s),
         [body_as_json]
       ]
     end

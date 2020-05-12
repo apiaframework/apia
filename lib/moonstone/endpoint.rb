@@ -61,6 +61,7 @@ module Moonstone
       catch_errors(response) do
         response.body = { error: e.hash }
         response.status = e.http_status
+        response.headers['x-api-schema'] = 'json-error'
       end
     end
   end

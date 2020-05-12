@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'json'
+require 'moonstone/rack'
 
 module Moonstone
   class Response
@@ -55,15 +56,7 @@ module Moonstone
     #
     # @return [Array]
     def rack_triplet
-      body_as_json = body.to_json
-      [
-        @status,
-        @headers.merge(
-          'content-length' => body_as_json.bytesize.to_s,
-          'content-type' => 'application/json'
-        ),
-        [body_as_json]
-      ]
+      Rack.json_triplet(body, headers: @headers, status: @status)
     end
   end
 end

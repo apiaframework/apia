@@ -9,8 +9,7 @@ module Moonstone
     end
 
     def triplet
-      body = { error: { code: @code, description: @message } }.to_json
-      [@http_status, { 'Content-Type' => 'application/json', 'Content-Length' => body.bytesize.to_s }, [body]]
+      Rack.error_triplet(@code, description: @message, status: @http_status)
     end
   end
 end
