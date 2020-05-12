@@ -26,11 +26,9 @@ module Moonstone
     def self.validate_all
       errors = ManifestErrors.new
       objects.each do |object|
-        if object.respond_to?(:definition)
-          object.definition.validate(errors)
-        else
-          warn "Not validating #{object}"
-        end
+        next unless object.respond_to?(:definition)
+
+        object.definition.validate(errors)
       end
       errors
     end
