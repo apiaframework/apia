@@ -54,6 +54,17 @@ describe Moonstone::Rack do
       rack = Moonstone::Rack.new(nil, nil, '/api/core', development: false)
       expect(rack.development?).to be false
     end
+
+    it 'should be true if RACK_ENV is set to development'
+  end
+
+  context '#call' do
+    it 'should return the base application if the namespace does not match'
+    it 'should execute the endpoint and return the response triplet'
+    it 'should catch rack errors and return an error triplet'
+    it 'should catch other errors and return a detailed error triplet in development only'
+    it 'should catch other errors and return a basic error triplet in non-development mode'
+    it 'should validate the whole API in development'
   end
 
   context '.json_triplet' do

@@ -36,6 +36,14 @@ describe Moonstone::Endpoint do
     end
   end
 
+  context '.http_method' do
+    it 'should allow the HTTP method to be set'
+  end
+
+  context '.http_status' do
+    it 'should allow the default HTTP status to be set'
+  end
+
   context '.action' do
     it 'should allow the endpoint action to be defined' do
       endpoint = Moonstone::Endpoint.create('ExampleEndpoint') do

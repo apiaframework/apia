@@ -56,4 +56,9 @@ describe Moonstone::API do
       expect(api.objects).to include auth
     end
   end
+
+  context '.validate_all' do
+    it 'should return a manifest errors object'
+    it 'should find errors on any objects that may exist'
+  end
 end
