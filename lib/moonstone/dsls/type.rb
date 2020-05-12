@@ -12,10 +12,6 @@ module Moonstone
         @definition = definition
       end
 
-      def name_override(value)
-        @definition.name = value
-      end
-
       def description(value)
         @definition.description = value
       end

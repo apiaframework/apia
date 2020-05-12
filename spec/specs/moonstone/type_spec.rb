@@ -18,13 +18,6 @@ describe Moonstone::Type do
       end
       expect(MyDemoType.definition.name).to eq 'MyDemoType'
     end
-
-    it 'should work with overrides too' do
-      type = Moonstone::Type.create('User') do
-        name_override 'UserOver'
-      end
-      expect(type.definition.name).to eq 'UserOver'
-    end
   end
 
   context '.condition' do

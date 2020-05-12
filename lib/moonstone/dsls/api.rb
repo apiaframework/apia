@@ -7,10 +7,6 @@ module Moonstone
         @definition = definition
       end
 
-      def name_override(name)
-        @definition.name = name
-      end
-
       def authenticator(klass_or_name = nil, &block)
         @definition.authenticator = if block_given?
                                       Moonstone::Authenticator.create(klass_or_name || "#{@definition.name}Authenticator", &block)

@@ -4,15 +4,6 @@ require 'spec_helper'
 require 'moonstone/enum'
 
 describe Moonstone::Enum do
-  context '.name' do
-    it 'should return the name of the enum' do
-      type = Moonstone::Enum.create('ExampleEnum') do
-        name_override 'UserType'
-      end
-      expect(type.definition.name).to eq 'UserType'
-    end
-  end
-
   context '.value' do
     it 'should be able to add values' do
       enum = Moonstone::Enum.create('ExampleEnum') do

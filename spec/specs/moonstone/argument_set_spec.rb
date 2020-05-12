@@ -5,15 +5,6 @@ require 'moonstone/argument_set'
 require 'rack/mock'
 
 describe Moonstone::ArgumentSet do
-  context '.name' do
-    it 'should allow the name to eb defined' do
-      type = Moonstone::ArgumentSet.create('ExampleSet') do
-        name_override 'UserArguments'
-      end
-      expect(type.definition.name).to eq 'UserArguments'
-    end
-  end
-
   context '.argument' do
     it 'should define an argument' do
       as = Moonstone::ArgumentSet.create('ExampleSet') do
