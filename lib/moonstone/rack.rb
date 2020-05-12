@@ -108,23 +108,39 @@ module Moonstone
       )
     end
 
-    def self.json_triplet(body, status: 200, headers: {})
-      body_as_json = body.to_json
-      [
-        status,
-        headers.merge('content-type' => 'application/json', 'content-length' => body_as_json.bytesize.to_s),
-        [body_as_json]
-      ]
-    end
+    class << self
+      # Return a JSON-ready triplet for the given body.
+      #
+      # @param body [Hash, Array]
+      # @param status [Integer]
+      # @param headers [Hash]
+      # @return [Array]
+      def json_triplet(body, status: 200, headers: {})
+        body_as_json = body.to_json
+        [
+          status,
+          headers.merge('content-type' => 'application/json', 'content-length' => body_as_json.bytesize.to_s),
+          [body_as_json]
+        ]
+      end
 
-    def self.error_triplet(code, description: nil, detail: {}, status: 500, headers: {})
-      json_triplet({
-                     error: {
-                       code: code,
-                       description: description,
-                       detail: detail
-                     }
-                   }, status: status, headers: headers.merge('x-api-schema' => 'json-error'))
+      # Return a triplet for a given error using the standard error schema
+      #
+      # @param code [String]
+      # @param description [String]
+      # @param detail [Hash]
+      # @param status [Integer]
+      # @param headers [Hash]
+      # @return [Array]
+      def error_triplet(code, description: nil, detail: {}, status: 500, headers: {})
+        json_triplet({
+                       error: {
+                         code: code,
+                         description: description,
+                         detail: detail
+                       }
+                     }, status: status, headers: headers.merge('x-api-schema' => 'json-error'))
+      end
     end
   end
 end

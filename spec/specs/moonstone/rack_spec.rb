@@ -38,4 +38,78 @@ describe Moonstone::Rack do
       expect(rack.parse_path('/api/core/my-controller/some_endpoint/')[:endpoint]).to eq 'some_endpoint'
     end
   end
+
+  context '.json_triplet' do
+    it 'should return json encoded data' do
+      data = { hello: 'world' }
+      triplet = Moonstone::Rack.json_triplet(data)
+      expect(triplet).to be_a Array
+      expect(triplet[0]).to eq 200
+      expect(triplet[1]).to be_a Hash
+      expect(triplet[2]).to be_a Array
+      expect(triplet[2][0]).to eq '{"hello":"world"}'
+    end
+
+    it 'should set the content type' do
+      data = { hello: 'world' }
+      triplet = Moonstone::Rack.json_triplet(data)
+      expect(triplet).to be_a Array
+      expect(triplet[1]['content-type']).to eq 'application/json'
+    end
+
+    it 'should set the content length' do
+      data = { hello: 'world' }
+      triplet = Moonstone::Rack.json_triplet(data)
+      expect(triplet).to be_a Array
+      expect(triplet[1]['content-length']).to eq '17'
+    end
+
+    it 'should set the status' do
+      data = { hello: 'world' }
+      triplet = Moonstone::Rack.json_triplet(data, status: 400)
+      expect(triplet).to be_a Array
+      expect(triplet[0]).to eq 400
+    end
+
+    it 'should merge additional headers' do
+      data = { hello: 'world' }
+      triplet = Moonstone::Rack.json_triplet(data, headers: { 'x-something' => 'hello' })
+      expect(triplet).to be_a Array
+      expect(triplet[1]).to be_a Hash
+      expect(triplet[1]['x-something']).to eq 'hello'
+      expect(triplet[1]['content-length']).to eq '17'
+      expect(triplet[1]['content-type']).to eq 'application/json'
+    end
+  end
+
+  context '.error_triplet' do
+    it 'should format the JSON appropriately' do
+      triplet = Moonstone::Rack.error_triplet('example_error', description: 'Some example', detail: { hello: 'world' })
+      expect(triplet).to be_a Array
+      expect(triplet[0]).to eq 500
+      expect(triplet[1]).to be_a Hash
+      expect(triplet[2]).to be_a Array
+      expect(triplet[2][0]).to eq '{"error":{"code":"example_error","description":"Some example","detail":{"hello":"world"}}}'
+    end
+
+    it 'should add the x-api-schema header' do
+      triplet = Moonstone::Rack.error_triplet('example_error', description: 'Some example', detail: { hello: 'world' })
+      expect(triplet).to be_a Array
+      expect(triplet[1]['x-api-schema']).to eq 'json-error'
+    end
+
+    it 'should allow the status to be set' do
+      triplet = Moonstone::Rack.error_triplet('example_error', status: 401)
+      expect(triplet).to be_a Array
+      expect(triplet[0]).to eq 401
+    end
+
+    it 'should allow the headers to be merged' do
+      triplet = Moonstone::Rack.error_triplet('example_error', headers: { 'x-something' => 'testing' })
+      expect(triplet).to be_a Array
+      expect(triplet[1]['x-something']).to eq 'testing'
+      expect(triplet[1]['x-api-schema']).to eq 'json-error'
+      expect(triplet[1]['content-type']).to eq 'application/json'
+    end
+  end
 end

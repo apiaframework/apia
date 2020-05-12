@@ -147,6 +147,12 @@ module CoreAPI
       label 'Create a new user'
       description "This action will create a new user"
 
+      # Specify the HTTP method that must be used when submitting this request
+      method :post
+
+      # Specify the HTTP status that should be returned for a successful response
+      http_status 201
+
       # Optionally set the authenticator use (if not defined, will use the
       # controller default, or the API default)
       authenticator DefaultAuthenticator
