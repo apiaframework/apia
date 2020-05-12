@@ -10,6 +10,7 @@ module CoreAPI
       endpoint :now do
         label 'Current time'
         description 'Returns the current time'
+        http_method :post
         field :time, type: Types::TimeType
         action do |_request, response|
           time = Time.now
@@ -19,6 +20,7 @@ module CoreAPI
 
       endpoint :format do
         field :time, type: :string
+        http_method :post
         argument :time, type: :date, required: true
         action do |request, response|
           response.add_field :time, request.arguments[:time].inspect

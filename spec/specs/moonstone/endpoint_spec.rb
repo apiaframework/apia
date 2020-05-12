@@ -70,8 +70,6 @@ describe Moonstone::Endpoint do
   end
 
   context '.execute' do
-    it 'should set an error if the HTTP method is invalid for the given endpoint'
-
     context 'authenticators' do
       it 'should call the endpoint authenticator if one has been set' do
         request = Moonstone::Request.new(Rack::MockRequest.env_for('/', input: ''))

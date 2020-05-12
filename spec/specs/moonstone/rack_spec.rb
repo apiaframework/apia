@@ -75,6 +75,7 @@ describe Moonstone::Rack do
     it 'should catch other errors and return a detailed error triplet in development only'
     it 'should catch other errors and return a basic error triplet in non-development mode'
     it 'should validate the whole API in development'
+    it 'should return an error if the request method is not valid for the endpoint'
   end
 
   context '.json_triplet' do

@@ -58,6 +58,8 @@ module Moonstone
       request.controller = controller
       request.endpoint = endpoint
 
+      validate_http_method(request)
+
       response = endpoint.execute(request)
       response.rack_triplet
     rescue RackError, Moonstone::ManifestError => e
@@ -96,6 +98,14 @@ module Moonstone
 
     def validate_api
       @api.validate_all.raise_if_needed
+    end
+
+    def validate_http_method(request)
+      return if request.endpoint.definition.http_method == :any
+
+      if request.endpoint.definition.http_method.to_s.downcase != request.request_method.to_s.downcase
+        raise RackError.new(400, 'invalid_http_method', "This endpoint requires the #{request.endpoint.definition.http_method.to_s.upcase} method be used (this request is a #{request.request_method} method)")
+      end
     end
 
     def triplet_for_exception(exception)
