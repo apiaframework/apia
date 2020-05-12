@@ -17,10 +17,10 @@ module APeye
       end
     end
 
-    def self.execute(request, response)
+    def self.execute(environment, response)
       return if definition.action.nil?
 
-      definition.action.call(request, response)
+      environment.call(response, &definition.action)
     end
   end
 end

@@ -11,6 +11,7 @@ module APeye
     attr_accessor :endpoint
     attr_accessor :identity
     attr_accessor :arguments
+    attr_accessor :authenticator
 
     def self.empty(options: {})
       new(options)

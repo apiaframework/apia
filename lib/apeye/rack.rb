@@ -32,7 +32,6 @@ module APeye
     # @param env [Hash]
     # @return [Array] a rack triplet
     def call(env)
-      puts env
       path_components = parse_path(env['PATH_INFO'])
       return @app.call(env) if path_components.nil?
 

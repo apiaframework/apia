@@ -181,7 +181,7 @@ module CoreAPI
         else
           # If something goes wrong, you can set up an error which will be
           # returned instead of the error.
-          response.error ValidationError do
+          raise_error ValidationError do
             field :errors, user.errors
           end
         end

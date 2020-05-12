@@ -2,6 +2,7 @@
 
 require 'apeye/defineable'
 require 'apeye/definitions/endpoint'
+require 'apeye/environment'
 
 module APeye
   class Endpoint
@@ -30,25 +31,37 @@ module APeye
     # @param request [APeye::Request]
     # @return [APeye::Response]
     def self.execute(request)
+      environment = Environment.new(request)
       response = Response.new(request, self)
 
-      begin
+      catch_errors(response) do
         # Determine an authenticator and execute it before the request happens
-        authenticator = definition.authenticator || request.controller&.definition&.authenticator || request.api&.definition&.authenticator
-        authenticator&.execute(request, response)
+        request.authenticator = definition.authenticator || request.controller&.definition&.authenticator || request.api&.definition&.authenticator
+        request.authenticator&.execute(environment, response)
 
         # Process arguments into the request. This happens after the authentication
         # stage because a) authenticators shouldn't be using endpoint specific args
         # and b) the argument conditions may need to know the identity.
         request.arguments = definition.argument_set.create_from_request(request)
 
-        definition.action&.call(request, response)
-      rescue APeye::RuntimeError => e
-        response.body = { error: e.hash }
-        response.status = e.http_status
+        environment.call(response, &definition.action)
       end
 
       response
+    end
+
+    # Catch any runtime errors and update the given response with the appropriate
+    # values.
+    #
+    # @param response [APeye::Response]
+    # @return [void]
+    def self.catch_errors(response)
+      yield
+    rescue APeye::RuntimeError => e
+      catch_errors(response) do
+        response.body = { error: e.hash }
+        response.status = e.http_status
+      end
     end
   end
 end

@@ -4,6 +4,7 @@ require 'spec_helper'
 require 'apeye/authenticator'
 require 'apeye/error'
 require 'apeye/object_set'
+require 'apeye/environment'
 
 describe APeye::Authenticator do
   context '.type' do
@@ -65,9 +66,9 @@ describe APeye::Authenticator do
         end
       end
       endpoint = APeye::Endpoint.create('ExampleEndpoint')
-      request = APeye::Request.empty
-      response = APeye::Response.new(request, endpoint)
-      auth.execute(request, response)
+      environment = APeye::Environment.new(APeye::Request.empty)
+      response = APeye::Response.new(environment, endpoint)
+      auth.execute(environment, response)
       expect(response.headers['x-executed']).to eq '123'
     end
   end

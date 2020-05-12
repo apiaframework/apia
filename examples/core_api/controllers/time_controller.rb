@@ -11,15 +11,9 @@ module CoreAPI
         label 'Current time'
         description 'Returns the current time'
         field :time, type: Types::TimeType
-        endpoint do |_request, response|
+        action do |_request, response|
           time = Time.now
           response.add_field :time, time
-        end
-      end
-
-      class SomeOtherArgumentSet < APeye::ArgumentSet
-        argument :name, type: :string, required: true do
-          description 'The name of the person'
         end
       end
 

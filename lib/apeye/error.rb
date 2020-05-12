@@ -4,6 +4,7 @@ require 'apeye/defineable'
 require 'apeye/definitions/error'
 require 'apeye/type'
 require 'apeye/scalar'
+require 'apeye/errors/error_exception_error'
 
 module APeye
   # An Error represents a specific failure that can be raised by any
@@ -39,6 +40,10 @@ module APeye
       definition.fields.values.each do |field|
         set.add_object(field.type)
       end
+    end
+
+    def self.exception(fields = {})
+      ErrorExceptionError.new(self, fields)
     end
   end
 end
