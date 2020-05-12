@@ -4,7 +4,7 @@ require 'core_api/types/day_enum'
 
 module CoreAPI
   module Types
-    class TimeType < APeye::Type
+    class TimeType < Moonstone::Type
       description 'Represents a time'
 
       field :unix, type: :integer do

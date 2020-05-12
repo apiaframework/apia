@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module CoreAPI
-  class MainAuthenticator < APeye::Authenticator
+  class MainAuthenticator < Moonstone::Authenticator
     type :bearer
 
     potential_error 'InvalidToken' do

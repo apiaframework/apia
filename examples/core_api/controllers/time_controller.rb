@@ -4,7 +4,7 @@ require 'core_api/types/time_type'
 
 module CoreAPI
   module Controllers
-    class TimeController < APeye::Controller
+    class TimeController < Moonstone::Controller
       description 'Returns the current time in varying ways'
 
       endpoint :now do

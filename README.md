@@ -1,12 +1,12 @@
-# APeye
+# Moonstone
 
-APeye is a Ruby REST API framework for building a complete flexible HTTP API in any Ruby application (including Rails).
+Moonstone is a Ruby REST API framework for building a complete flexible HTTP API in any Ruby application (including Rails).
 
 ## Types
 
 ```ruby
 module CoreAPI
-  class UserType < APeye::Type
+  class UserType < Moonstone::Type
 
     description 'Any user on the system'
 
@@ -57,7 +57,7 @@ end
 
 ```ruby
 module CoreAPI
-  class UserStateEnumType < APeye::Enum
+  class UserStateEnumType < Moonstone::Enum
 
     # Define all the values for the enum.
     value 'active'
@@ -72,7 +72,7 @@ module CoreAPI
     end
   end
 
-  class UserType < APeye::Type
+  class UserType < Moonstone::Type
 
     # You can use enums the same as any other type when definining
     # fields on a type.
@@ -86,7 +86,7 @@ end
 
 ```ruby
 module CoreAPI
-  class UserArgumentSet < APeye::ArgumentSet
+  class UserArgumentSet < Moonstone::ArgumentSet
 
     # Most simply, define an argument with a type.
     argument :name, type: :string
@@ -116,7 +116,7 @@ end
 ```ruby
 module CoreAPI
 
-  class ValidationError < APeye::Error
+  class ValidationError < Moonstone::Error
 
     code :validation_error
     http_code 400
@@ -128,7 +128,7 @@ module CoreAPI
 
   end
 
-  class UsersController < APeye::Controller
+  class UsersController < Moonstone::Controller
 
     # Set the description for thiscontroller
     description 'Handles user stuff'
@@ -196,13 +196,13 @@ end
 
 ```ruby
 module CoreAPI
-  class InvalidAPITokenError < APeye::Error
+  class InvalidAPITokenError < Moonstone::Error
     code :invalid_api_token
     http_code 403
     description 'The API token provided is invalid'
   end
 
-  class Authenticator < APeye::Authenticator
+  class Authenticator < Moonstone::Authenticator
 
     # Define the type of authentication you wish to use. The only
     # option available here is :bearer now.
@@ -256,7 +256,7 @@ end
 
 ```ruby
 module CoreAPI
-  class Base < APeye::API
+  class Base < Moonstone::API
 
     # List any authenticators that you wish to be invoked for
     # all requests to this API.
@@ -275,8 +275,8 @@ end
 
 ```ruby
 # In a config.ru
-use APeye::Rack.new(CoreAPI::Base, "/api/core/v1")
+use Moonstone::Rack.new(CoreAPI::Base, "/api/core/v1")
 
 # In Rails middleware
-app.middleware.use APeye::Rack, CoreAPI::Base, "/api/core/v1"
+app.middleware.use Moonstone::Rack, CoreAPI::Base, "/api/core/v1"
 ```

@@ -2,14 +2,14 @@
 
 ```ruby
 # Define an enum
-class UserStatusEnum < APeye::Enum
+class UserStatusEnum < Moonstone::Enum
   option 'active'
   option 'inactive'
   option 'suspended'
 end
 
 # You can define a type of object at any time
-class UserType < APeye::Type
+class UserType < Moonstone::Type
   description 'Represents any user in the system'
 
   field :name, type: :string
@@ -27,11 +27,11 @@ user.hash['status'] #=> 'active'
 
 ```ruby
 # Create your argument setc
-class UserArgumentSet < APeye::ArgumentSet
+class UserArgumentSet < Moonstone::ArgumentSet
   argument :name, type: :string, required: true
 end
 
-class UserCreationArgumentSet < APeye::ArgumentSet
+class UserCreationArgumentSet < Moonstone::ArgumentSet
   argument :name, type: :string
   argument :age, type: :integer
   argument :user, type: UserArgumentSet

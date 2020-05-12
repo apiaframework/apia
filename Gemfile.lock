@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    apeye (1.0.0)
+    moonstone (1.0.0)
       rack
 
 GEM
@@ -27,7 +27,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  apeye!
+  moonstone!
   rspec
   rspec-core
   rspec-expectations

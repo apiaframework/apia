@@ -2,7 +2,7 @@
 
 module CoreAPI
   module Types
-    class DayEnum < APeye::Enum
+    class DayEnum < Moonstone::Enum
       value 'Sunday'
       value 'Monday'
       value 'Tuesday'
