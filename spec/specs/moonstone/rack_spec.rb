@@ -39,6 +39,23 @@ describe Moonstone::Rack do
     end
   end
 
+  context '#development?' do
+    it 'should be false by default' do
+      rack = Moonstone::Rack.new(nil, nil, '/api/core')
+      expect(rack.development?).to be false
+    end
+
+    it 'should be true if the option is set to true' do
+      rack = Moonstone::Rack.new(nil, nil, '/api/core', development: true)
+      expect(rack.development?).to be true
+    end
+
+    it 'should be false if the option is set to false' do
+      rack = Moonstone::Rack.new(nil, nil, '/api/core', development: false)
+      expect(rack.development?).to be false
+    end
+  end
+
   context '.json_triplet' do
     it 'should return json encoded data' do
       data = { hello: 'world' }
