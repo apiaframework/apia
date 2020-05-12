@@ -46,6 +46,13 @@ describe Moonstone::Response do
       expect(response.rack_triplet[0]).to eq 403
     end
 
+    it 'should return the status from the endpoint' do
+      endpoint = Moonstone::Endpoint.create('ExampleEndpoint')
+      endpoint.http_status :created
+      response = Moonstone::Response.new(request, endpoint)
+      expect(response.rack_triplet[0]).to eq 201
+    end
+
     it 'should return the headers' do
       endpoint = Moonstone::Endpoint.create('ExampleEndpoint')
       response = Moonstone::Response.new(request, endpoint)

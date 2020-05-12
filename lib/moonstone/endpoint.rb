@@ -13,12 +13,10 @@ module Moonstone
     end
 
     def self.collate_objects(set)
+      set.add_object(definition.argument_set)
+
       definition.potential_errors.each do |error|
         set.add_object(error)
-      end
-
-      definition.arguments.values.each do |argument|
-        set.add_object(argument.type)
       end
 
       definition.fields.values.each do |field|

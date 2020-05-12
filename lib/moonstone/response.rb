@@ -14,7 +14,7 @@ module Moonstone
       @request = request
       @endpoint = endpoint
 
-      @status = 200
+      @status = @endpoint.definition.http_status_code
       @fields = {}
       @headers = {}
     end

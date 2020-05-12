@@ -19,8 +19,12 @@ module Moonstone
       @errors[object] || Errors.new
     end
 
+    def empty?
+      @errors.empty?
+    end
+
     def raise_if_needed
-      return if @errors.empty?
+      return if empty?
 
       raise ManifestError, self
     end

@@ -34,6 +34,14 @@ module Moonstone
       def action(&block)
         @definition.action = block
       end
+
+      def http_method(status)
+        @definition.http_method = status
+      end
+
+      def http_status(status)
+        @definition.http_status = status
+      end
     end
   end
 end

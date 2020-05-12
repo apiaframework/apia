@@ -37,11 +37,19 @@ describe Moonstone::Endpoint do
   end
 
   context '.http_method' do
-    it 'should allow the HTTP method to be set'
+    it 'should allow the HTTP method to be set' do
+      endpoint = Moonstone::Endpoint.create('ExampleEndpoint')
+      endpoint.http_method :patch
+      expect(endpoint.definition.http_method).to eq :patch
+    end
   end
 
   context '.http_status' do
-    it 'should allow the default HTTP status to be set'
+    it 'should allow the default HTTP status to be set' do
+      endpoint = Moonstone::Endpoint.create('ExampleEndpoint')
+      endpoint.http_status 202
+      expect(endpoint.definition.http_status).to eq 202
+    end
   end
 
   context '.action' do
@@ -62,6 +70,8 @@ describe Moonstone::Endpoint do
   end
 
   context '.execute' do
+    it 'should set an error if the HTTP method is invalid for the given endpoint'
+
     context 'authenticators' do
       it 'should call the endpoint authenticator if one has been set' do
         request = Moonstone::Request.new(Rack::MockRequest.env_for('/', input: ''))
