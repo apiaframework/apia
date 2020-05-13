@@ -8,13 +8,13 @@ module Moonstone
     class Error
       include Definitions::Concerns::HasFields
 
-      attr_accessor :name
+      attr_accessor :id
       attr_accessor :code
       attr_accessor :http_status
       attr_accessor :description
 
-      def initialize(name)
-        @name = name
+      def initialize(id)
+        @id = id
       end
 
       def dsl

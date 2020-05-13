@@ -2,10 +2,13 @@
 
 module Moonstone
   module Defineable
+    def self.class_name_to_aid(name)
+      name.to_s.gsub('::', '/')
+    end
+
     def inspect
       type = ancestors.find { |c| c.name =~ /\AMoonstone::/ }
-      name = self.name || ('Anonymous:' + definition.name)
-      "<#{name} [#{type}]>"
+      "<#{definition.id} [#{type}]>"
     end
 
     def define(&block)
@@ -13,9 +16,9 @@ module Moonstone
       definition
     end
 
-    def create(name, &block)
+    def create(id, &block)
       klass = Class.new(self)
-      klass.definition.name = name
+      klass.definition.id = id
       klass.define(&block)
       klass
     end

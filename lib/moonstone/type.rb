@@ -12,7 +12,7 @@ module Moonstone
     #
     # @return [Moonstone::Definitions::Type]
     def self.definition
-      @definition ||= Definitions::Type.new(name&.split('::')&.last)
+      @definition ||= Definitions::Type.new(Moonstone::Defineable.class_name_to_aid(name))
     end
 
     # Collate all objects that this type references and add them to the
@@ -28,10 +28,10 @@ module Moonstone
 
     def self.name_for(object)
       if object.respond_to?(:ancestors)
-        if object.ancestors.include?(Moonstone::Scalar) && key = Moonstone::Scalars::ALL.key(object)
-          return key.to_s
+        if object.ancestors.include?(Moonstone::Scalar)
+          return object.id
         elsif object.ancestors.include?(Moonstone::Type)
-          return object.definition.name
+          return object.definition.id
         end
       end
 

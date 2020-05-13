@@ -5,13 +5,13 @@ require 'moonstone/dsls/controller'
 module Moonstone
   module Definitions
     class Controller
-      attr_accessor :name
+      attr_accessor :id
       attr_accessor :description
       attr_accessor :authenticator
       attr_reader :endpoints
 
-      def initialize(name)
-        @name = name
+      def initialize(id)
+        @id = id
         @endpoints = {}
       end
 

@@ -8,12 +8,12 @@ module Moonstone
     class Type
       include Definitions::Concerns::HasFields
 
-      attr_accessor :name
+      attr_accessor :id
       attr_accessor :description
       attr_reader :conditions
 
-      def initialize(name)
-        @name = name
+      def initialize(id)
+        @id = id
         @conditions = []
       end
 

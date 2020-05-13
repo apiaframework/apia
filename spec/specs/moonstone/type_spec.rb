@@ -10,13 +10,13 @@ describe Moonstone::Type do
   context '.name' do
     it 'should return the name of the type' do
       type = Moonstone::Type.create('User')
-      expect(type.definition.name).to eq 'User'
+      expect(type.definition.id).to eq 'User'
     end
 
     it 'should work with named classes too' do
       class MyDemoType < Moonstone::Type
       end
-      expect(MyDemoType.definition.name).to eq 'MyDemoType'
+      expect(MyDemoType.definition.id).to eq 'MyDemoType'
     end
   end
 

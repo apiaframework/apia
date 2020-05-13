@@ -12,7 +12,7 @@ module Moonstone
 
       HTTP_METHODS = %i[get head post patch put delete options].freeze
 
-      attr_accessor :name
+      attr_accessor :id
       attr_accessor :label
       attr_accessor :description
       attr_accessor :authenticator
@@ -22,8 +22,8 @@ module Moonstone
       attr_reader :argument_set
       attr_reader :potential_errors
 
-      def initialize(name)
-        @name = name
+      def initialize(id)
+        @id = id
         @potential_errors = []
         @fields = {}
         @http_method = :get

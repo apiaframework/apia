@@ -6,12 +6,12 @@ require 'moonstone/internal_api/controller'
 module Moonstone
   module Definitions
     class API
-      attr_accessor :name
+      attr_accessor :id
       attr_accessor :authenticator
       attr_reader :controllers
 
-      def initialize(name)
-        @name = name
+      def initialize(id)
+        @id = id
         @controllers = { internal: InternalAPI::Controller }
       end
 

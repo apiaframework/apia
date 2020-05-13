@@ -28,7 +28,7 @@ module Moonstone
     #
     # @return [Moonstone::Definitions::Error]
     def self.definition
-      @definition ||= Definitions::Error.new(name&.split('::')&.last)
+      @definition ||= Definitions::Error.new(Moonstone::Defineable.class_name_to_aid(name))
     end
 
     # Collate all objects that this error references and add them to the

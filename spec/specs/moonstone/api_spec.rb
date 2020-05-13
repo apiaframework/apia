@@ -21,7 +21,7 @@ describe Moonstone::API do
           type :bearer
         end
       end
-      expect(api.definition.authenticator.definition.name).to eq 'CoreAPIAuthenticator'
+      expect(api.definition.authenticator.definition.id).to eq 'CoreAPIAuthenticator'
       expect(api.definition.authenticator.definition.type).to eq :bearer
     end
 
@@ -31,7 +31,7 @@ describe Moonstone::API do
           type :bearer
         end
       end
-      expect(api.definition.authenticator.definition.name).to eq 'MainAuthenticator'
+      expect(api.definition.authenticator.definition.id).to eq 'MainAuthenticator'
     end
   end
 

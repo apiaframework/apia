@@ -10,7 +10,7 @@ module Moonstone
     extend Defineable
 
     def self.definition
-      @definition ||= Definitions::API.new(name&.split('::')&.last)
+      @definition ||= Definitions::API.new(Moonstone::Defineable.class_name_to_aid(name))
     end
 
     def self.objects

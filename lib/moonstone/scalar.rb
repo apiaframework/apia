@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'moonstone/defineable'
+
 module Moonstone
   class Scalar
     attr_reader :value
@@ -16,6 +18,10 @@ module Moonstone
 
     def self.parse(value)
       new(value)
+    end
+
+    def self.id
+      Defineable.class_name_to_aid(name)
     end
   end
 end

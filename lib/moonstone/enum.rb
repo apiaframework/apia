@@ -9,7 +9,7 @@ module Moonstone
     extend Defineable
 
     def self.definition
-      @definition ||= Definitions::Enum.new(name&.split('::')&.last)
+      @definition ||= Definitions::Enum.new(Moonstone::Defineable.class_name_to_aid(name))
     end
 
     def initialize(value)

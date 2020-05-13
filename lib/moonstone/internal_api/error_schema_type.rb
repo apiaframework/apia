@@ -5,7 +5,7 @@ require 'moonstone/type'
 module Moonstone
   module InternalAPI
     class ErrorSchemaType < Moonstone::Type
-      field :name, type: :string
+      field :id, type: :string
     end
   end
 end

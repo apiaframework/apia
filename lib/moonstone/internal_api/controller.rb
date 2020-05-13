@@ -10,9 +10,13 @@ module Moonstone
       endpoint :schema do
         label 'View full API schema'
         description 'Returns a payload outlining the full schema of the API'
+        field :host, type: :string
+        field :namespace, type: :string
         field :schema, type: APISchemaType
         action do |request, response|
           response.add_field :schema, request.api.definition
+          response.add_field :namespace, request.namespace
+          response.add_field :host, request.host
         end
       end
     end

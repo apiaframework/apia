@@ -15,7 +15,7 @@ module Moonstone
     def errors
       @errors.errors.each_with_object([]) do |(object, errors), array|
         errors.each do |error|
-          array << "#{object.name}: #{error[:code]} (#{error[:message]})"
+          array << "#{object.id}: #{error[:code]} (#{error[:message]})"
         end
       end.join(', ')
     end
@@ -23,7 +23,7 @@ module Moonstone
     def detail
       @errors.errors.map do |object, errors|
         {
-          object: object.name,
+          object: object.id,
           errors: errors.map do |error|
             {
               code: error[:code],

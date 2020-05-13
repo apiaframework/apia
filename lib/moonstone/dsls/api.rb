@@ -9,7 +9,7 @@ module Moonstone
 
       def authenticator(klass_or_name = nil, &block)
         @definition.authenticator = if block_given?
-                                      Moonstone::Authenticator.create(klass_or_name || "#{@definition.name}Authenticator", &block)
+                                      Moonstone::Authenticator.create(klass_or_name || "#{@definition.id}Authenticator", &block)
                                     else
                                       klass_or_name
                                     end

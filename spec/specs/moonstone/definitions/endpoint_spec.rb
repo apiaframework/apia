@@ -9,7 +9,7 @@ describe Moonstone::Definitions::Endpoint do
     it 'should provide a default argument set for the endpoint' do
       as = Moonstone::Definitions::Endpoint.new('ExampleEndpoint')
       expect(as.argument_set.ancestors).to include Moonstone::ArgumentSet
-      expect(as.argument_set.definition.name).to eq 'BaseEndpointArgumentSet'
+      expect(as.argument_set.definition.id).to eq 'BaseEndpointArgumentSet'
     end
   end
 

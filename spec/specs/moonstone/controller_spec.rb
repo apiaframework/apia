@@ -35,8 +35,8 @@ describe Moonstone::Controller do
           description 'Example description'
         end
       end
-      expect(controller.definition.name).to eq 'UserController'
-      expect(controller.definition.endpoints[:create].definition.name).to eq 'UserController.create'
+      expect(controller.definition.id).to eq 'UserController'
+      expect(controller.definition.endpoints[:create].definition.id).to eq 'UserController.create'
       expect(controller.definition.endpoints[:create].definition.description).to eq 'Example description'
     end
   end

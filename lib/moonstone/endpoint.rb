@@ -9,7 +9,7 @@ module Moonstone
     extend Defineable
 
     def self.definition
-      @definition ||= Definitions::Endpoint.new(name&.split('::')&.last)
+      @definition ||= Definitions::Endpoint.new(Moonstone::Defineable.class_name_to_aid(name))
     end
 
     def self.collate_objects(set)

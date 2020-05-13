@@ -14,7 +14,7 @@ module Moonstone
     #
     # @return [Moonstone::Definitions::Controller]
     def self.definition
-      @definition ||= Definitions::Controller.new(name&.split('::')&.last)
+      @definition ||= Definitions::Controller.new(Moonstone::Defineable.class_name_to_aid(name))
     end
 
     # Collate all objects that this controller references and add them to the

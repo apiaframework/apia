@@ -7,13 +7,13 @@ module Moonstone
     class Authenticator
       TYPES = [:bearer].freeze
 
-      attr_accessor :name
+      attr_accessor :id
       attr_accessor :type
       attr_accessor :action
       attr_reader :potential_errors
 
-      def initialize(name)
-        @name = name
+      def initialize(id)
+        @id = id
         @potential_errors = []
       end
 

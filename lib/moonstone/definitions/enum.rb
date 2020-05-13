@@ -5,13 +5,13 @@ require 'moonstone/dsls/enum'
 module Moonstone
   module Definitions
     class Enum
-      attr_accessor :name
+      attr_accessor :id
       attr_accessor :description
       attr_accessor :cast
       attr_reader :values
 
-      def initialize(name)
-        @name = name
+      def initialize(id)
+        @id = id
         @values = {}
       end
 
