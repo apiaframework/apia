@@ -14,9 +14,7 @@ module Moonstone
         backend { |e| e.authenticator&.definition }
       end
       field :fields, type: [FieldSchemaType] do
-        backend do |e|
-          e.fields.values
-        end
+        backend { |e| e.fields.values }
       end
       field :argument_set, type: ArgumentSetSchemaType do
         backend { |e| e.argument_set.definition }
