@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'moonstone/dsls/api'
+require 'moonstone/internal_api/controller'
 
 module Moonstone
   module Definitions
@@ -11,7 +12,7 @@ module Moonstone
 
       def initialize(name)
         @name = name
-        @controllers = {}
+        @controllers = { internal: InternalAPI::Controller }
       end
 
       def dsl

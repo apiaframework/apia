@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'moonstone/argument_set'
 require 'moonstone/dsls/endpoint'
 require 'moonstone/definitions/concerns/has_fields'
 require 'rack/utils'

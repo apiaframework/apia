@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'moonstone/endpoint'
+
 module Moonstone
   module DSLs
     class Controller

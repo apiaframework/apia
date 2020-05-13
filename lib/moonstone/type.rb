@@ -26,6 +26,18 @@ module Moonstone
       end
     end
 
+    def self.name_for(object)
+      if object.respond_to?(:ancestors)
+        if object.ancestors.include?(Moonstone::Scalar) && key = Moonstone::Scalars::ALL.key(object)
+          return key.to_s
+        elsif object.ancestors.include?(Moonstone::Type)
+          return object.definition.name
+        end
+      end
+
+      object.name
+    end
+
     # Initialize an instance of this type with the value provided
     #
     # @param value [Object, Hash]

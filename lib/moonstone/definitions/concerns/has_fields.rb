@@ -16,14 +16,6 @@ module Moonstone
           fields[field.name] = field
         end
 
-        # Return an array of unique types that are referenced by the
-        # fields
-        #
-        # @return [Set]
-        def types(_set = nil)
-          Set.new(@fields.values.map(&:types).flatten.uniq)
-        end
-
         # Generate a hash for the fields that are defined on this object.
         # It should receive the source object as well as a request
         #
@@ -36,22 +28,34 @@ module Moonstone
 
             type_instance = field.value(source)
 
-            if type_instance.nil?
-              # If the value is nil, the value is nil
-              value = nil
-
-            elsif type_instance.is_a?(Moonstone::Type)
-              next unless type_instance.include?(request)
-
-              # For type values, we want to render a hash
-              value = type_instance.hash(request: request)
+            if type_instance.is_a?(Array)
+              value = type_instance.each_with_object([]) do |ti, array|
+                v = cast_type_instance(ti, request: request)
+                array << v unless v == :skip
+              end
             else
-
-              # For scaler & enum values, we just want to cast them
-              value = type_instance.cast
+              value = cast_type_instance(type_instance, request: request)
+              next if value == :skip
             end
 
             hash[field.name.to_s] = value
+          end
+        end
+
+        def cast_type_instance(type_instance, request: nil)
+          if type_instance.nil?
+            # If the value is nil, the value is nil
+            value = nil
+
+          elsif type_instance.is_a?(Moonstone::Type)
+            return :skip unless type_instance.include?(request)
+
+            # For type values, we want to render a hash
+            value = type_instance.hash(request: request)
+          else
+
+            # For scaler & enum values, we just want to cast them
+            value = type_instance.cast
           end
         end
       end
