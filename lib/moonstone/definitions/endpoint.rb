@@ -18,7 +18,6 @@ module Moonstone
       attr_accessor :action
       attr_accessor :http_status
       attr_accessor :http_method
-      attr_reader :argument_set
       attr_reader :potential_errors
       attr_reader :fields
 
@@ -28,7 +27,10 @@ module Moonstone
         @fields = FieldSet.new
         @http_method = :get
         @http_status = 200
-        @argument_set = Moonstone::ArgumentSet.create('BaseEndpointArgumentSet')
+      end
+
+      def argument_set
+        @argument_set ||= Moonstone::ArgumentSet.create("#{@id}/BaseArgumentSet")
       end
 
       def dsl

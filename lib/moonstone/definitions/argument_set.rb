@@ -22,7 +22,9 @@ module Moonstone
 
       def validate(errors)
         @arguments.each do |name, argument|
-          unless argument.is_a?(Moonstone::Definitions::Argument)
+          if argument.is_a?(Moonstone::Definitions::Argument)
+            argument.validate(errors)
+          else
             errors.add self, 'InvalidArgument', "The argument '#{name}' is not an instance of Moonstone::Definitions::Argument"
           end
         end

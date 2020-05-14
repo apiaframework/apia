@@ -7,6 +7,7 @@ module Moonstone
   module Definitions
     class Argument
 
+      attr_accessor :id
       attr_reader :name
       attr_reader :options
       attr_reader :validations
@@ -15,8 +16,9 @@ module Moonstone
       attr_accessor :array
       attr_accessor :type
 
-      def initialize(name)
+      def initialize(name, id: nil)
         @name = name
+        @id = id
         @validations = []
       end
 

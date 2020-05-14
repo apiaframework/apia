@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'moonstone/definitions/field'
+require 'moonstone/helpers'
 
 module Moonstone
   module DSLs
@@ -8,7 +9,7 @@ module Moonstone
       module HasFields
 
         def field(name, type: nil, **options, &block)
-          field = Definitions::Field.new(name)
+          field = Definitions::Field.new(name, id: "#{@definition.id}/#{Helpers.camelize(name)}Field")
 
           if type.is_a?(Array)
             field.type = type[0]

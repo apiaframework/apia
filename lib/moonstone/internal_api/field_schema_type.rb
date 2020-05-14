@@ -6,6 +6,7 @@ module Moonstone
   module InternalAPI
     class FieldSchemaType < Moonstone::Type
 
+      field :id, type: :string
       field :name, type: :string
       field :description, type: :string, nil: true
       field :type, type: :string do

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'moonstone/definitions/argument'
+require 'moonstone/helpers'
 
 module Moonstone
   module DSLs
@@ -19,7 +20,7 @@ module Moonstone
       end
 
       def argument(name, type: nil, **options, &block)
-        argument = Definitions::Argument.new(name)
+        argument = Definitions::Argument.new(name, id: "#{@definition.id}/#{Helpers.camelize(name.to_s)}")
 
         if type.is_a?(Array)
           argument.type = type[0]

@@ -9,6 +9,7 @@ module Moonstone
   module Definitions
     class Field
 
+      attr_reader :id
       attr_reader :name
       attr_accessor :description
       attr_accessor :backend
@@ -17,8 +18,9 @@ module Moonstone
       attr_accessor :condition
       attr_accessor :type
 
-      def initialize(name)
+      def initialize(name, id: nil)
         @name = name
+        @id = id
       end
 
       # Return the type of object (either a Type or a Scalar) which
