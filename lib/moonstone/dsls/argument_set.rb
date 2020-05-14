@@ -5,8 +5,13 @@ require 'moonstone/definitions/argument'
 module Moonstone
   module DSLs
     class ArgumentSet
+
       def initialize(definition)
         @definition = definition
+      end
+
+      def name(name)
+        @definition.name = name
       end
 
       def description(value)
@@ -27,6 +32,7 @@ module Moonstone
 
         @definition.arguments[name.to_sym] = argument
       end
+
     end
   end
 end

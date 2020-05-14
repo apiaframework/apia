@@ -3,7 +3,8 @@
 require 'moonstone/errors/runtime_error'
 
 module Moonstone
-  class InvalidEnumOptionError < RuntimeError
+  class InvalidEnumOptionError < Moonstone::RuntimeError
+
     attr_reader :enum
     attr_reader :given_value
     def initialize(enum, given_value)
@@ -14,5 +15,6 @@ module Moonstone
     def to_s
       "Invalid option for `#{enum.class.definition.name || 'AnonymousEnum'}` (got: #{@given_value.inspect} (#{@given_value.class}))"
     end
+
   end
 end

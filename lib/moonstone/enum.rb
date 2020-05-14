@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
+require 'moonstone/helpers'
 require 'moonstone/defineable'
 require 'moonstone/definitions/enum'
 require 'moonstone/errors/invalid_enum_option_error'
 
 module Moonstone
   class Enum
+
     extend Defineable
 
     def self.definition
-      @definition ||= Definitions::Enum.new(Moonstone::Defineable.class_name_to_aid(name))
+      @definition ||= Definitions::Enum.new(Helpers.class_name_to_id(name))
     end
 
     def initialize(value)
@@ -28,5 +30,6 @@ module Moonstone
 
       casted
     end
+
   end
 end

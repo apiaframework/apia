@@ -5,26 +5,37 @@ require 'moonstone/dsls/concerns/has_fields'
 module Moonstone
   module DSLs
     class Endpoint
+
       include DSLs::Concerns::HasFields
 
       def initialize(definition)
         @definition = definition
       end
 
-      def label(value)
-        @definition.label = value
+      def name(name)
+        @definition.name = name
       end
 
       def description(value)
         @definition.description = value
       end
 
-      def authenticator(klass)
+      def authenticator(klass = nil, &block)
+        if block_given?
+          id = "#{@definition.id}/#{Helpers.camelize(klass) || 'Authenticator'}"
+          klass = Moonstone::Authenticator.create(id, &block)
+        end
+
         @definition.authenticator = klass
       end
 
-      def potential_error(error)
-        @definition.potential_errors << error
+      def potential_error(klass, &block)
+        if block_given? && klass.is_a?(String)
+          id = "#{@definition.id}/#{Helpers.camelize(klass)}"
+          klass = Moonstone::Error.create(id, &block)
+        end
+
+        @definition.potential_errors << klass
       end
 
       def argument(*args, &block)
@@ -42,6 +53,7 @@ module Moonstone
       def http_status(status)
         @definition.http_status = status
       end
+
     end
   end
 end

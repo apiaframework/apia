@@ -9,7 +9,9 @@ describe Moonstone::Definitions::Error do
       error = described_class.new('MyError')
       error.code = :invalid_username
       error.http_status = 403
-      error.add_field(Moonstone::Definitions::Field.new(:given_username, type: :string))
+      field = Moonstone::Definitions::Field.new(:given_username)
+      field.type = :string
+      error.fields.add(field)
 
       errors = Moonstone::ManifestErrors.new
       error.validate(errors)
@@ -53,7 +55,9 @@ describe Moonstone::Definitions::Error do
 
     it 'should raise an error if any field has an invalid type' do
       error = described_class.new('MyError')
-      error.add_field Moonstone::Definitions::Field.new(:given_username, type: Class.new)
+      field = Moonstone::Definitions::Field.new(:given_username)
+      field.type = Class.new
+      error.fields.add field
 
       errors = Moonstone::ManifestErrors.new
       error.validate(errors)

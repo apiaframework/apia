@@ -6,20 +6,26 @@ module Moonstone
   module DSLs
     module Concerns
       module HasFields
+
         def field(name, type: nil, **options, &block)
+          field = Definitions::Field.new(name)
+
           if type.is_a?(Array)
-            options[:type] = type[0]
-            options[:array] = true
+            field.type = type[0]
+            field.array = true
           else
-            options[:type] = type
-            options[:array] = false
+            field.type = type
+            field.array = false
           end
 
-          field = Definitions::Field.new(name, **options)
+          field.can_be_nil = options[:nil] if options.key?(:nil)
+          field.array = options[:array] if options.key?(:array)
+
           field.dsl.instance_eval(&block) if block_given?
 
-          @definition.add_field(field)
+          @definition.fields.add(field)
         end
+
       end
     end
   end

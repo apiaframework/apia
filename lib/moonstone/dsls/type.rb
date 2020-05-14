@@ -6,10 +6,15 @@ require 'moonstone/dsls/concerns/has_fields'
 module Moonstone
   module DSLs
     class Type
+
       include DSLs::Concerns::HasFields
 
       def initialize(definition)
         @definition = definition
+      end
+
+      def name(name)
+        @definition.name = name
       end
 
       def description(value)
@@ -19,6 +24,7 @@ module Moonstone
       def condition(&block)
         @definition.conditions << block
       end
+
     end
   end
 end

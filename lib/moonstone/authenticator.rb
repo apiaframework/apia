@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
+require 'moonstone/helpers'
 require 'moonstone/defineable'
 require 'moonstone/definitions/authenticator'
 
 module Moonstone
   class Authenticator
+
     extend Defineable
 
     def self.definition
-      @definition ||= Definitions::Authenticator.new(Moonstone::Defineable.class_name_to_aid(name))
+      @definition ||= Definitions::Authenticator.new(Helpers.class_name_to_id(name))
     end
 
     def self.collate_objects(set)
@@ -22,5 +24,6 @@ module Moonstone
 
       environment.call(response, &definition.action)
     end
+
   end
 end

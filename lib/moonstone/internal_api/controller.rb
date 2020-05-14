@@ -6,9 +6,9 @@ require 'moonstone/internal_api/api_schema_type'
 module Moonstone
   module InternalAPI
     class Controller < Moonstone::Controller
+
       description 'Provides endpoint to interrogate the API schema'
       endpoint :schema do
-        label 'View full API schema'
         description 'Returns a payload outlining the full schema of the API'
         field :host, type: :string
         field :namespace, type: :string
@@ -19,6 +19,7 @@ module Moonstone
           response.add_field :host, request.host
         end
       end
+
     end
   end
 end

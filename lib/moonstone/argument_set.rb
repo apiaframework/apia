@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'moonstone/helpers'
 require 'moonstone/defineable'
 require 'moonstone/definitions/argument_set'
 require 'moonstone/errors/missing_argument_error'
@@ -7,14 +8,15 @@ require 'moonstone/errors/invalid_argument_error'
 
 module Moonstone
   class ArgumentSet
+
     extend Defineable
 
     def self.definition
-      @definition ||= Definitions::ArgumentSet.new(Moonstone::Defineable.class_name_to_aid(name))
+      @definition ||= Definitions::ArgumentSet.new(Helpers.class_name_to_id(name))
     end
 
     def self.collate_objects(set)
-      definition.arguments.values.each do |argument|
+      definition.arguments.each_value do |argument|
         set.add_object(argument.type)
       end
     end
@@ -103,12 +105,13 @@ module Moonstone
     end
 
     def check_for_missing_required_arguments
-      self.class.definition.arguments.values.each do |arg|
+      self.class.definition.arguments.each_value do |arg|
         next unless arg.required?
         next if self[arg.name]
 
         raise MissingArgumentError.new(arg, path: @path + [arg])
       end
     end
+
   end
 end

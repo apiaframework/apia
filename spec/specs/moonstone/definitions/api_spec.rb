@@ -4,6 +4,7 @@ require 'spec_helper'
 require 'moonstone/definitions/api'
 require 'moonstone/manifest_errors'
 require 'moonstone/authenticator'
+require 'moonstone/enum'
 
 describe Moonstone::Definitions::API do
   context '#validate' do

@@ -4,6 +4,7 @@ module Moonstone
   # Runtime errors occurr during API requests because they could not
   # be detected before an action is processed.
   class RuntimeError < StandardError
+
     # Return the default HTTP status code that should be returned when this
     # error is encoutered over HTTP
     #
@@ -24,5 +25,6 @@ module Moonstone
         }
       }
     end
+
   end
 end

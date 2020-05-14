@@ -3,7 +3,8 @@
 require 'moonstone/errors/runtime_error'
 
 module Moonstone
-  class InvalidTypeError < RuntimeError
+  class InvalidTypeError < Moonstone::RuntimeError
+
     attr_reader :field
     attr_reader :given_value
     def initialize(field, given_value)
@@ -31,5 +32,6 @@ module Moonstone
         }
       }
     end
+
   end
 end

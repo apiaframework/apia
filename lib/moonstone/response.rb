@@ -5,6 +5,7 @@ require 'moonstone/rack'
 
 module Moonstone
   class Response
+
     attr_accessor :status
     attr_accessor :body
     attr_reader :fields
@@ -42,7 +43,7 @@ module Moonstone
     #
     # @return [Hash]
     def hash
-      @hash ||= @endpoint.definition.generate_hash_for_fields(@fields, request: @request)
+      @hash ||= @endpoint.definition.fields.generate_hash(@fields, request: @request)
     end
 
     # Return the body that should be returned for this response
@@ -58,5 +59,6 @@ module Moonstone
     def rack_triplet
       Rack.json_triplet(body, headers: @headers, status: @status)
     end
+
   end
 end

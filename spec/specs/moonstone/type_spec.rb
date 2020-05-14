@@ -3,35 +3,9 @@
 require 'spec_helper'
 require 'moonstone/type'
 require 'moonstone/request'
+require 'moonstone/enum'
 
 describe Moonstone::Type do
-  include_examples 'has fields'
-
-  context '.name' do
-    it 'should return the name of the type' do
-      type = Moonstone::Type.create('User')
-      expect(type.definition.id).to eq 'User'
-    end
-
-    it 'should work with named classes too' do
-      class MyDemoType < Moonstone::Type
-      end
-      expect(MyDemoType.definition.id).to eq 'MyDemoType'
-    end
-  end
-
-  context '.condition' do
-    it 'should be able to define a block to execute' do
-      type = Moonstone::Type.create('ExampleType') do
-        condition { 'abc' }
-        condition { 'xyz' }
-      end
-      expect(type.definition.conditions.size).to eq 2
-      expect(type.definition.conditions[0].call).to eq 'abc'
-      expect(type.definition.conditions[1].call).to eq 'xyz'
-    end
-  end
-
   context '.collate_objects' do
     it 'should add the types from all fields' do
       cat_type = Moonstone::Type.create('CatType')

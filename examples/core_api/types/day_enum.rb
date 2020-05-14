@@ -3,6 +3,7 @@
 module CoreAPI
   module Types
     class DayEnum < Moonstone::Enum
+
       value 'Sunday'
       value 'Monday'
       value 'Tuesday'
@@ -10,6 +11,7 @@ module CoreAPI
       value 'Thursday'
       value 'Friday'
       value 'Saturday'
+
     end
   end
 end

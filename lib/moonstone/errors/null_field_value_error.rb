@@ -3,8 +3,10 @@
 require 'moonstone/errors/runtime_error'
 
 module Moonstone
-  class NullFieldValueError < RuntimeError
+  class NullFieldValueError < Moonstone::RuntimeError
+
     attr_reader :field
+
     def initialize(field)
       @field = field
     end
@@ -28,5 +30,6 @@ module Moonstone
         }
       }
     end
+
   end
 end

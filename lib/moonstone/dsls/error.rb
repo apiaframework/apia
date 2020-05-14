@@ -5,10 +5,15 @@ require 'moonstone/dsls/concerns/has_fields'
 module Moonstone
   module DSLs
     class Error
+
       include DSLs::Concerns::HasFields
 
       def initialize(definition)
         @definition = definition
+      end
+
+      def name(name)
+        @definition.name = name
       end
 
       def code(code)
@@ -22,6 +27,7 @@ module Moonstone
       def description(description)
         @definition.description = description
       end
+
     end
   end
 end

@@ -5,6 +5,7 @@ require 'moonstone/scalar'
 module Moonstone
   module Scalars
     class Boolean < Moonstone::Scalar
+
       def valid?
         @value == true || @value == false
       end
@@ -12,6 +13,7 @@ module Moonstone
       def cast
         @value ? true : false
       end
+
     end
   end
 end

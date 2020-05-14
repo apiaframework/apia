@@ -6,7 +6,10 @@ require 'moonstone/internal_api/controller'
 module Moonstone
   module Definitions
     class API
+
       attr_accessor :id
+      attr_accessor :name
+      attr_accessor :description
       attr_accessor :authenticator
       attr_reader :controllers
 
@@ -40,6 +43,7 @@ module Moonstone
           end
         end
       end
+
     end
   end
 end

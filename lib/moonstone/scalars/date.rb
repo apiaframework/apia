@@ -7,6 +7,7 @@ require 'moonstone/errors/parse_error'
 module Moonstone
   module Scalars
     class Date < Moonstone::Scalar
+
       def valid?
         @value.is_a?(::Date)
       end
@@ -32,6 +33,7 @@ module Moonstone
 
         raise
       end
+
     end
   end
 end

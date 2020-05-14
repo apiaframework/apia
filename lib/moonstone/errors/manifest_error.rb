@@ -4,6 +4,7 @@ require 'moonstone/rack'
 
 module Moonstone
   class ManifestError < StandardError
+
     def initialize(errors)
       @errors = errors
     end
@@ -37,5 +38,6 @@ module Moonstone
     def triplet
       Rack.error_triplet('manifest_error', description: 'An issue exists with the API manifest that needs resolving by the developer.', detail: detail)
     end
+
   end
 end

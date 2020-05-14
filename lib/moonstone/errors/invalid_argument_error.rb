@@ -9,6 +9,7 @@ module Moonstone
   #
   # This is not raised for MISSING argument errors.
   class InvalidArgumentError < Moonstone::RuntimeError
+
     attr_reader :argument
     attr_reader :type_instance
     attr_reader :index
@@ -49,5 +50,6 @@ module Moonstone
         }
       }
     end
+
   end
 end

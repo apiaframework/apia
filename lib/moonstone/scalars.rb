@@ -7,11 +7,13 @@ require 'moonstone/scalars/date'
 
 module Moonstone
   module Scalars
+
     ALL = {
       string: Scalars::String,
       integer: Scalars::Integer,
       boolean: Scalars::Boolean,
       date: Scalars::Date
     }.freeze
+
   end
 end

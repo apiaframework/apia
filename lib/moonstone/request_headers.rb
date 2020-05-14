@@ -2,6 +2,7 @@
 
 module Moonstone
   class RequestHeaders
+
     def initialize(headers)
       @headers = headers
     end
@@ -15,6 +16,7 @@ module Moonstone
     end
 
     class << self
+
       def make_key(key)
         key.gsub('-', '_').upcase
       end
@@ -29,6 +31,8 @@ module Moonstone
         end
         new(hash)
       end
+
     end
+
   end
 end

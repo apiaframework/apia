@@ -3,8 +3,13 @@
 module Moonstone
   module DSLs
     class Enum
+
       def initialize(definition)
         @definition = definition
+      end
+
+      def name(name)
+        @definition.name = name
       end
 
       def description(value)
@@ -18,6 +23,7 @@ module Moonstone
       def cast(&block)
         @definition.cast = block
       end
+
     end
   end
 end

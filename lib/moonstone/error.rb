@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'moonstone/helpers'
 require 'moonstone/defineable'
 require 'moonstone/definitions/error'
 require 'moonstone/type'
@@ -22,13 +23,14 @@ module Moonstone
   # any type and an object implementing those methods should be provided
   # when the error is raised.
   class Error
+
     extend Defineable
 
     # Return the definition object for errors
     #
     # @return [Moonstone::Definitions::Error]
     def self.definition
-      @definition ||= Definitions::Error.new(Moonstone::Defineable.class_name_to_aid(name))
+      @definition ||= Definitions::Error.new(Helpers.class_name_to_id(name))
     end
 
     # Collate all objects that this error references and add them to the
@@ -37,7 +39,7 @@ module Moonstone
     # @param set [Moonstone::ObjectSet]
     # @return [void]
     def self.collate_objects(set)
-      definition.fields.values.each do |field|
+      definition.fields.each_value do |field|
         set.add_object(field.type)
       end
     end
@@ -45,5 +47,6 @@ module Moonstone
     def self.exception(fields = {})
       ErrorExceptionError.new(self, fields)
     end
+
   end
 end

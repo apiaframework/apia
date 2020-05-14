@@ -5,9 +5,12 @@ require 'moonstone/dsls/authenticator'
 module Moonstone
   module Definitions
     class Authenticator
+
       TYPES = [:bearer].freeze
 
       attr_accessor :id
+      attr_accessor :name
+      attr_accessor :description
       attr_accessor :type
       attr_accessor :action
       attr_reader :potential_errors
@@ -40,6 +43,7 @@ module Moonstone
           end
         end
       end
+
     end
   end
 end

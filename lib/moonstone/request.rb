@@ -6,6 +6,7 @@ require 'moonstone/errors/invalid_json_error'
 
 module Moonstone
   class Request < Rack::Request
+
     attr_accessor :api
     attr_accessor :controller
     attr_accessor :endpoint
@@ -23,7 +24,7 @@ module Moonstone
     end
 
     def json_body
-      return unless content_type =~ %r{\Aapplication/json}
+      return unless content_type =~ /\Aapplication\/json/
 
       @json_body ||= begin
         JSON.parse(body.read)
@@ -31,5 +32,6 @@ module Moonstone
                        raise InvalidJSONError, e.message
       end
     end
+
   end
 end

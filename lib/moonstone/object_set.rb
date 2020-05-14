@@ -2,6 +2,7 @@
 
 module Moonstone
   class ObjectSet < Set
+
     def add_object(object)
       return self if include?(object)
 
@@ -13,5 +14,6 @@ module Moonstone
       end
       self
     end
+
   end
 end

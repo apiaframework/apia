@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
+require 'moonstone/helpers'
 require 'moonstone/defineable'
 require 'moonstone/definitions/endpoint'
 require 'moonstone/environment'
 
 module Moonstone
   class Endpoint
+
     extend Defineable
 
     def self.definition
-      @definition ||= Definitions::Endpoint.new(Moonstone::Defineable.class_name_to_aid(name))
+      @definition ||= Definitions::Endpoint.new(Helpers.class_name_to_id(name))
     end
 
     def self.collate_objects(set)
@@ -19,7 +21,7 @@ module Moonstone
         set.add_object(error)
       end
 
-      definition.fields.values.each do |field|
+      definition.fields.each_value do |field|
         set.add_object(field.type)
       end
     end
@@ -43,6 +45,10 @@ module Moonstone
         request.arguments = definition.argument_set.create_from_request(request)
 
         environment.call(response, &definition.action)
+
+        # We're going to call this here because we want to cache the actual values of
+        # the output within the catch_errors block.
+        response.hash
       end
 
       response
@@ -62,5 +68,6 @@ module Moonstone
         response.headers['x-api-schema'] = 'json-error'
       end
     end
+
   end
 end

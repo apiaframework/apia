@@ -2,18 +2,17 @@
 
 require 'moonstone/argument_set'
 require 'moonstone/dsls/endpoint'
-require 'moonstone/definitions/concerns/has_fields'
+require 'moonstone/field_set'
 require 'rack/utils'
 
 module Moonstone
   module Definitions
     class Endpoint
-      include Definitions::Concerns::HasFields
 
-      HTTP_METHODS = %i[get head post patch put delete options].freeze
+      HTTP_METHODS = [:get, :head, :post, :patch, :put, :delete, :options].freeze
 
       attr_accessor :id
-      attr_accessor :label
+      attr_accessor :name
       attr_accessor :description
       attr_accessor :authenticator
       attr_accessor :action
@@ -21,11 +20,12 @@ module Moonstone
       attr_accessor :http_method
       attr_reader :argument_set
       attr_reader :potential_errors
+      attr_reader :fields
 
       def initialize(id)
         @id = id
         @potential_errors = []
-        @fields = {}
+        @fields = FieldSet.new
         @http_method = :get
         @http_status = 200
         @argument_set = Moonstone::ArgumentSet.create('BaseEndpointArgumentSet')
@@ -73,7 +73,10 @@ module Moonstone
             errors.add self, 'InvalidAuthenticator', 'The authenticator must be a class that inherits from Moonstone::Authenticator'
           end
         end
+
+        @fields.validate(errors, self)
       end
+
     end
   end
 end

@@ -3,7 +3,8 @@
 require 'moonstone/errors/runtime_error'
 
 module Moonstone
-  class InvalidJSONError < RuntimeError
+  class InvalidJSONError < Moonstone::RuntimeError
+
     def http_status
       400
     end
@@ -17,5 +18,6 @@ module Moonstone
         }
       }
     end
+
   end
 end

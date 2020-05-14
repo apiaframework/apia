@@ -5,35 +5,6 @@ require 'moonstone/argument_set'
 require 'rack/mock'
 
 describe Moonstone::ArgumentSet do
-  context '.argument' do
-    it 'should define an argument' do
-      as = Moonstone::ArgumentSet.create('ExampleSet') do
-        argument :user, type: :string
-      end
-      expect(as.definition.arguments[:user]).to be_a Moonstone::Definitions::Argument
-      expect(as.definition.arguments[:user].name).to eq :user
-      expect(as.definition.arguments[:user].type).to eq Moonstone::Scalars::String
-    end
-
-    it 'should invoke the block' do
-      as = Moonstone::ArgumentSet.create('ExampleSet') do
-        argument :user, type: :string do
-          required true
-        end
-      end
-      expect(as.definition.arguments[:user].required?).to be true
-    end
-
-    it 'should allow additional options to be provided' do
-      as = Moonstone::ArgumentSet.create('ExampleSet') do
-        argument :user, type: :string
-        argument :book, type: :string, required: true
-      end
-      expect(as.definition.arguments[:user].required?).to be false
-      expect(as.definition.arguments[:book].required?).to be true
-    end
-  end
-
   context '.collate_objects' do
     it 'should add types from arguments to the set' do
       author_as = Moonstone::ArgumentSet.create('AuthorSet')

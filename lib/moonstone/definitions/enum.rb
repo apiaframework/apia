@@ -5,7 +5,9 @@ require 'moonstone/dsls/enum'
 module Moonstone
   module Definitions
     class Enum
+
       attr_accessor :id
+      attr_accessor :name
       attr_accessor :description
       attr_accessor :cast
       attr_reader :values
@@ -24,6 +26,7 @@ module Moonstone
           errors.add self, 'CastMustBeProc', 'The value provided for casting an enum must be an instance of Proc'
         end
       end
+
     end
   end
 end

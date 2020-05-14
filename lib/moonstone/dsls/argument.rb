@@ -3,8 +3,13 @@
 module Moonstone
   module DSLs
     class Argument
+
       def initialize(definition)
         @definition = definition
+      end
+
+      def description(description)
+        @definition.description = description
       end
 
       def validation(name, &block)
@@ -19,9 +24,6 @@ module Moonstone
         @definition.options[:condition] = block
       end
 
-      def description(description)
-        @definition.options[:description] = description
-      end
     end
   end
 end

@@ -1,20 +1,22 @@
 # frozen_string_literal: true
 
 require 'moonstone/dsls/error'
-require 'moonstone/definitions/concerns/has_fields'
+require 'moonstone/field_set'
 
 module Moonstone
   module Definitions
     class Error
-      include Definitions::Concerns::HasFields
 
       attr_accessor :id
+      attr_accessor :name
+      attr_accessor :description
       attr_accessor :code
       attr_accessor :http_status
-      attr_accessor :description
+      attr_reader :fields
 
       def initialize(id)
         @id = id
+        @fields = FieldSet.new
       end
 
       def dsl
@@ -39,12 +41,9 @@ module Moonstone
           errors.add self, :http_status_is_too_high, 'HTTP status must be greater than or equal to 500'
         end
 
-        fields.values.each do |field|
-          unless field.type.ancestors.include?(Moonstone::Scalar) || field.type.ancestors.include?(Moonstone::Type)
-            errors.add self, :invalid_field_type, "Type for field #{field.name} must be a scalar or Moonstone::Type"
-          end
-        end
+        @fields.validate(errors, self)
       end
+
     end
   end
 end

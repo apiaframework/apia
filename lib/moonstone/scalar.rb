@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
-require 'moonstone/defineable'
+require 'moonstone/helpers'
 
 module Moonstone
   class Scalar
+
     attr_reader :value
 
     def initialize(value)
       @value = value
     end
 
-    def cast; end
+    def cast
+    end
 
     def valid?
       false
@@ -21,7 +23,8 @@ module Moonstone
     end
 
     def self.id
-      Defineable.class_name_to_aid(name)
+      Helpers.class_name_to_id(name)
     end
+
   end
 end

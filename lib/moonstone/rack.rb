@@ -7,12 +7,13 @@ require 'moonstone/response'
 
 module Moonstone
   class Rack
-    PATH_COMPONENT_REGEX = %r{(?:\/(?:(?<controller>[\w-]+)\/?(?:(?<endpoint>[\w-]+)\/?)?)?)?$}.freeze
+
+    PATH_COMPONENT_REGEX = /(?:\/(?:(?<controller>[\w-]+)\/?(?:(?<endpoint>[\w-]+)\/?)?)?)?$/.freeze
 
     def initialize(app, api, namespace, **options)
       @app = app
       @api = api
-      @namespace = '/' + namespace.sub(%r{\A/+}, '').sub(%r{/+\z}, '')
+      @namespace = '/' + namespace.sub(/\A\/+/, '').sub(/\/+\z/, '')
       @options = options
     end
 
@@ -122,6 +123,7 @@ module Moonstone
     end
 
     class << self
+
       # Return a JSON-ready triplet for the given body.
       #
       # @param body [Hash, Array]
@@ -154,6 +156,8 @@ module Moonstone
                        }
                      }, status: status, headers: headers.merge('x-api-schema' => 'json-error'))
       end
+
     end
+
   end
 end

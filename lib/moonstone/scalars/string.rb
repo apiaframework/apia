@@ -5,6 +5,7 @@ require 'moonstone/scalar'
 module Moonstone
   module Scalars
     class String < Moonstone::Scalar
+
       def valid?
         @value.is_a?(::String) || @value.is_a?(::Symbol)
       end
@@ -12,6 +13,7 @@ module Moonstone
       def cast
         @value.to_s
       end
+
     end
   end
 end

@@ -4,6 +4,7 @@ require 'moonstone/errors/manifest_error'
 
 module Moonstone
   class ManifestErrors
+
     attr_reader :errors
 
     def initialize
@@ -30,6 +31,7 @@ module Moonstone
     end
 
     class Errors
+
       def initialize
         @errors = []
       end
@@ -53,6 +55,8 @@ module Moonstone
       def map(&block)
         @errors.map(&block)
       end
+
     end
+
   end
 end

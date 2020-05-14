@@ -5,8 +5,10 @@ require 'core_api/controllers/time_controller'
 
 module CoreAPI
   class Base < Moonstone::API
+
     authenticator MainAuthenticator
 
     controller :time, Controllers::TimeController
+
   end
 end

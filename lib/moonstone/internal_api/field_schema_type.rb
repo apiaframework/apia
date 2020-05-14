@@ -5,7 +5,9 @@ require 'moonstone/type'
 module Moonstone
   module InternalAPI
     class FieldSchemaType < Moonstone::Type
+
       field :name, type: :string
+      field :description, type: :string, nil: true
       field :type, type: :string do
         backend { |f| Moonstone::Type.name_for(f.type) }
       end
@@ -15,6 +17,7 @@ module Moonstone
       field :array, type: :boolean do
         backend(&:array?)
       end
+
     end
   end
 end

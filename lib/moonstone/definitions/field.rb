@@ -8,12 +8,17 @@ require 'moonstone/scalars'
 module Moonstone
   module Definitions
     class Field
-      attr_reader :name
-      attr_reader :options
 
-      def initialize(name, **options)
+      attr_reader :name
+      attr_accessor :description
+      attr_accessor :backend
+      attr_accessor :array
+      attr_accessor :can_be_nil
+      attr_accessor :condition
+      attr_accessor :type
+
+      def initialize(name)
         @name = name
-        @options = options
       end
 
       # Return the type of object (either a Type or a Scalar) which
@@ -21,12 +26,10 @@ module Moonstone
       #
       # @return [Class]
       def type
-        @type ||= begin
-          if @options[:type].is_a?(Symbol) || @options[:type].is_a?(String)
-            Scalars::ALL[@options[:type].to_sym]
-          else
-            @options[:type]
-          end
+        if @type.is_a?(Symbol) || @type.is_a?(String)
+          Scalars::ALL[@type.to_sym]
+        else
+          @type
         end
       end
 
@@ -34,14 +37,14 @@ module Moonstone
       #
       # @return [Boolean]
       def can_be_nil?
-        @options[:nil] == true
+        @can_be_nil == true
       end
 
       # Is the result from this field expected to be an array?
       #
       # @return [Boolean]
       def array?
-        @options[:array] == true
+        @array == true
       end
 
       # Should this field be inclued for the given value and request
@@ -50,9 +53,9 @@ module Moonstone
       # @param request [Moonstone::Request]
       # @return [Boolean]
       def include?(value, request)
-        return true if @options[:condition].nil?
+        return true if @condition.nil?
 
-        @options[:condition].call(value, request) == true
+        @condition.call(value, request) == true
       end
 
       # Return a DSL instance for this field
@@ -68,8 +71,8 @@ module Moonstone
       # @param object [Object]
       # @return [Object]
       def raw_value_from_object(object)
-        if @options[:backend]
-          @options[:backend].call(object)
+        if @backend
+          @backend.call(object)
         elsif object.is_a?(Hash)
           object[@name.to_sym] || object[@name.to_s]
         else
@@ -104,6 +107,7 @@ module Moonstone
 
         type_instance
       end
+
     end
   end
 end

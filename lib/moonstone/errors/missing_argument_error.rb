@@ -6,6 +6,7 @@ module Moonstone
   # This is raised when an argument set cannot be created because an argument
   # that was required is not present on the source object.
   class MissingArgumentError < Moonstone::RuntimeError
+
     attr_reader :argument
     def initialize(argument, path: [])
       @argument = argument
@@ -33,5 +34,6 @@ module Moonstone
         }
       }
     end
+
   end
 end

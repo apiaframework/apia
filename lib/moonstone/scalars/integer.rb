@@ -5,6 +5,7 @@ require 'moonstone/scalar'
 module Moonstone
   module Scalars
     class Integer < Moonstone::Scalar
+
       def valid?
         @value.is_a?(::Integer)
       end
@@ -12,6 +13,7 @@ module Moonstone
       def cast
         @value.to_i
       end
+
     end
   end
 end

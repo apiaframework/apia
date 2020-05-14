@@ -7,7 +7,10 @@ require 'moonstone/internal_api/api_controller_schema_type'
 module Moonstone
   module InternalAPI
     class APISchemaType < Moonstone::Type
+
       field :id, type: :string
+      field :name, type: :string, nil: true
+      field :description, type: :string, nil: true
 
       field :authenticator, type: AuthenticatorSchemaType, nil: true do
         backend { |api| api.authenticator&.definition }
@@ -23,6 +26,7 @@ module Moonstone
           end
         end
       end
+
     end
   end
 end

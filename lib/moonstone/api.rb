@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'moonstone/helpers'
 require 'moonstone/defineable'
 require 'moonstone/definitions/api'
 require 'moonstone/object_set'
@@ -7,16 +8,17 @@ require 'moonstone/manifest_errors'
 
 module Moonstone
   class API
+
     extend Defineable
 
     def self.definition
-      @definition ||= Definitions::API.new(Moonstone::Defineable.class_name_to_aid(name))
+      @definition ||= Definitions::API.new(Helpers.class_name_to_id(name))
     end
 
     def self.objects
       set = ObjectSet.new([self])
       set.add_object(definition.authenticator) if definition.authenticator
-      definition.controllers.values.each { |con| set.add_object(con) }
+      definition.controllers.each_value { |con| set.add_object(con) }
       set
     end
 
@@ -32,5 +34,6 @@ module Moonstone
       end
       errors
     end
+
   end
 end

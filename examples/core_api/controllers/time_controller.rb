@@ -5,10 +5,10 @@ require 'core_api/types/time_type'
 module CoreAPI
   module Controllers
     class TimeController < Moonstone::Controller
+
       description 'Returns the current time in varying ways'
 
       endpoint :now do
-        label 'Current time'
         description 'Returns the current time'
         http_method :post
         field :time, type: Types::TimeType
@@ -46,6 +46,7 @@ module CoreAPI
           response.add_field :params, request.params.inspect
         end
       end
+
     end
   end
 end

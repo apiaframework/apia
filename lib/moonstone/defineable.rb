@@ -2,9 +2,6 @@
 
 module Moonstone
   module Defineable
-    def self.class_name_to_aid(name)
-      name.to_s.gsub('::', '/')
-    end
 
     def inspect
       type = ancestors.find { |c| c.name =~ /\AMoonstone::/ }
@@ -30,5 +27,6 @@ module Moonstone
         super
       end
     end
+
   end
 end

@@ -6,9 +6,11 @@ require 'moonstone/scalars'
 module Moonstone
   module Definitions
     class Argument
+
       attr_reader :name
       attr_reader :options
       attr_reader :validations
+      attr_accessor :description
 
       def initialize(name, **options)
         @name = name
@@ -32,13 +34,6 @@ module Moonstone
         elsif !(type.respond_to?(:ancestors) && (type.ancestors.include?(Moonstone::Type) || type.ancestors.include?(Moonstone::Scalar)))
           errors.add self, 'InvalidType', 'Type must be a class that inherits from Moonstone::Type or Moonstone::Scalar'
         end
-      end
-
-      # Return the description for this argument
-      #
-      # @return [String, nil]
-      def description
-        @options[:description]
       end
 
       # Return the type of object (either a ArgumentSet or a Scalar) which
@@ -79,6 +74,7 @@ module Moonstone
           errors << validation[:name] unless validation[:block].call(value)
         end
       end
+
     end
   end
 end

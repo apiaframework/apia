@@ -5,7 +5,9 @@ require 'moonstone/dsls/controller'
 module Moonstone
   module Definitions
     class Controller
+
       attr_accessor :id
+      attr_accessor :name
       attr_accessor :description
       attr_accessor :authenticator
       attr_reader :endpoints
@@ -36,6 +38,7 @@ module Moonstone
           end
         end
       end
+
     end
   end
 end

@@ -4,6 +4,7 @@ module Moonstone
   # This is the environment/scope that all actions are executed within. It is purely here
   # to provide access to some helper methods.
   class Environment
+
     def initialize(request)
       @request = request
     end
@@ -27,8 +28,9 @@ module Moonstone
     private
 
     def find_error_by_name(error_name)
-      @request.authenticator&.definition&.potential_errors&.find { |e| e.definition.name == error_name } ||
-        @request.endpoint&.definition&.potential_errors&.find { |e| e.definition.name == error_name }
+      @request.authenticator&.definition&.potential_errors&.find { |e| e.definition.id == error_name } ||
+        @request.endpoint&.definition&.potential_errors&.find { |e| e.definition.id == error_name }
     end
+
   end
 end
