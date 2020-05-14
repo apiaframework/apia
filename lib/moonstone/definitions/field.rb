@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'moonstone/dsls/field'
-require 'moonstone/errors/invalid_type_error'
+require 'moonstone/errors/invalid_scalar_value_error'
 require 'moonstone/errors/null_field_value_error'
 require 'moonstone/scalars'
 
@@ -31,6 +31,13 @@ module Moonstone
         else
           @type
         end
+      end
+
+      # Does this field return a scalar?
+      #
+      # @return [Boolean]
+      def scalar?
+        type.ancestors.include?(Moonstone::Scalar)
       end
 
       # Can the result for thsi field be nil?
@@ -100,12 +107,13 @@ module Moonstone
       private
 
       def create_type_instance_from_raw_value(value)
-        type_instance = type.new(value)
-        if type_instance.is_a?(Scalar) && !type_instance.valid?
-          raise Moonstone::InvalidTypeError.new(self, value)
+        if scalar?
+          return type.cast(value) if type.valid?(value)
+
+          raise InvalidScalarValueError.new(self, value)
         end
 
-        type_instance
+        type.new(value)
       end
 
     end

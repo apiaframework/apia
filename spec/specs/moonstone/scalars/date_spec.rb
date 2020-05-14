@@ -4,22 +4,22 @@ require 'spec_helper'
 require 'moonstone/scalars/date'
 
 describe Moonstone::Scalars::Date do
-  context '#valid?' do
-    it 'should be valid if the value is a date' do
-      bool = Moonstone::Scalars::Date.new(Date.new(2020, 1, 1))
-      expect(bool.valid?).to be true
-    end
-
-    it 'should be valid if the value is not a date' do
-      bool = Moonstone::Scalars::Date.new('2019-02-02')
-      expect(bool.valid?).to be false
+  context '.cast' do
+    it 'should return a string' do
+      expect(Moonstone::Scalars::Date.cast(Date.new(2020, 3, 22))).to eq '2020-03-22'
     end
   end
 
-  context '#cast' do
-    it 'should return a string' do
-      bool = Moonstone::Scalars::Date.new(Date.new(2020, 3, 22))
-      expect(bool.cast).to eq '2020-03-22'
+  context '.valid?' do
+    {
+      Date.new(2019, 2, 1) => true,
+      '2029-11-11' => false,
+      123 => false,
+      Class.new => false
+    }.each do |input, expectation|
+      it "should return #{expectation} for #{input.inspect}" do
+        expect(described_class.valid?(input)).to be expectation
+      end
     end
   end
 
@@ -27,17 +27,15 @@ describe Moonstone::Scalars::Date do
     it 'should return the original date if one is provided' do
       original_date = Date.new(2020, 4, 1)
       date = Moonstone::Scalars::Date.parse(original_date)
-      expect(date.value).to eq original_date
-      expect(date.cast).to eq '2020-04-01'
+      expect(date).to eq original_date
     end
 
     it 'should create a date if given a valid string' do
       date = Moonstone::Scalars::Date.parse('2021-03-31')
-      expect(date.cast).to eq '2021-03-31'
-      expect(date.value).to be_a Date
-      expect(date.value.year).to eq 2021
-      expect(date.value.month).to eq 3
-      expect(date.value.day).to eq 31
+      expect(date).to be_a Date
+      expect(date.year).to eq 2021
+      expect(date.month).to eq 3
+      expect(date.day).to eq 31
     end
 
     it 'should raise a parse error if the given date is not a valid date string' do

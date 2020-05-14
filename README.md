@@ -49,6 +49,20 @@ module CoreAPI
       condition { |user, request| request.identity.admin? }
     end
 
+    # If a field could return multiple items, you can define a
+    # polymorphic type and use that. If this is used, the result
+    # will always be a hash containing the type along with the
+    # actual data.
+    field :owner, type: OwnerType
+
+  end
+
+  class OwnerType < Moonstone::PolymorphicType
+    name 'Represents an owner that'
+
+    type Moonstone::Definition::Type, 'type'
+    type Moonstone::Definition::Enum, 'enum'
+    type Moonstone::Definition::Scalar, 'scalar'
   end
 end
 ```

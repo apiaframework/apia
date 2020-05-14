@@ -7,12 +7,10 @@ require 'moonstone/enum'
 module Moonstone
   class FieldSet < Hash
 
-    VALID_OBJECTS_FOR_TYPE = [Scalar, Type, Enum].freeze
-
     def self.can_use_as_type?(object)
       return false unless object.respond_to?(:ancestors)
 
-      object.ancestors.any? { |a| VALID_OBJECTS_FOR_TYPE.include?(a) }
+      object.ancestors.any? { |a| [Moonstone::Scalar, Moonstone::Type, Moonstone::Enum].include?(a) }
     end
 
     def add(field)
@@ -57,18 +55,15 @@ module Moonstone
 
     def cast_type_instance(type_instance, request: nil)
       if type_instance.nil?
-        # If the value is nil, the value is nil
-        value = nil
-
+        nil
       elsif type_instance.is_a?(Moonstone::Type)
         return :skip unless type_instance.include?(request)
 
-        # For type values, we want to render a hash
-        value = type_instance.hash(request: request)
+        type_instance.hash(request: request)
+      elsif type_instance.is_a?(Moonstone::Enum)
+        type_instance.cast
       else
-
-        # For scaler & enum values, we just want to cast them
-        value = type_instance.cast
+        type_instance
       end
     end
 

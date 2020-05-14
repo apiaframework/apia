@@ -73,7 +73,6 @@ module Moonstone
         end
 
       elsif argument.type.ancestors.include?(Moonstone::Scalar)
-
         begin
           type = argument.type.parse(value)
         rescue Moonstone::ParseError => e
@@ -87,7 +86,7 @@ module Moonstone
           )
         end
 
-        unless type.valid?
+        unless argument.type.valid?(type)
           raise InvalidArgumentError.new(
             argument,
             type,
@@ -97,7 +96,7 @@ module Moonstone
           )
         end
 
-        type.cast
+        type
 
       elsif argument.type.ancestors.include?(Moonstone::ArgumentSet)
         argument.type.new(value, path: @path + [argument])

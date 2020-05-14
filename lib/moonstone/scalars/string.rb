@@ -6,12 +6,14 @@ module Moonstone
   module Scalars
     class String < Moonstone::Scalar
 
-      def valid?
-        @value.is_a?(::String) || @value.is_a?(::Symbol)
+      description 'A value containing alpha-numeric characters (including symbols)'
+
+      cast do |value|
+        value.to_s
       end
 
-      def cast
-        @value.to_s
+      validator do |value|
+        value.is_a?(::String) || value.is_a?(::Symbol)
       end
 
     end

@@ -3,6 +3,10 @@
 require 'spec_helper'
 require 'moonstone/controller'
 require 'moonstone/endpoint'
+require 'moonstone/request'
+require 'moonstone/api'
+require 'moonstone/authenticator'
+require 'rack/mock'
 
 describe Moonstone::Endpoint do
   context '.execute' do

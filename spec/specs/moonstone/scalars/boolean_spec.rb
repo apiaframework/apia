@@ -4,30 +4,24 @@ require 'spec_helper'
 require 'moonstone/scalars/boolean'
 
 describe Moonstone::Scalars::Boolean do
-  context '#valid?' do
-    it 'should be valid if the value is true' do
-      bool = Moonstone::Scalars::Boolean.new(true)
-      expect(bool.valid?).to be true
-    end
-
-    it 'should be valid if the value is true' do
-      bool = Moonstone::Scalars::Boolean.new(false)
-      expect(bool.valid?).to be true
-    end
-
-    it 'should not be valid if the value is not true or false' do
-      bool = Moonstone::Scalars::Boolean.new('hello')
-      expect(bool.valid?).to be false
+  context '.cast' do
+    it 'should return an integer' do
+      expect(Moonstone::Scalars::Boolean.cast(true)).to eq true
+      expect(Moonstone::Scalars::Boolean.cast(false)).to eq false
     end
   end
 
-  context '#cast' do
-    it 'should return an integer' do
-      bool = Moonstone::Scalars::Boolean.new(true)
-      expect(bool.cast).to eq true
-
-      bool = Moonstone::Scalars::Boolean.new(false)
-      expect(bool.cast).to eq false
+  context '.valid?' do
+    {
+      true => true,
+      false => true,
+      'true' => false,
+      1 => false,
+      Class.new => false
+    }.each do |input, expectation|
+      it "should return #{expectation} for #{input.inspect}" do
+        expect(described_class.valid?(input)).to be expectation
+      end
     end
   end
 end

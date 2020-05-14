@@ -95,7 +95,7 @@ describe Moonstone::Definitions::Field do
       field.type = :integer
       expect do
         field.value(id: '444')
-      end.to raise_error(Moonstone::InvalidTypeError)
+      end.to raise_error(Moonstone::InvalidScalarValueError)
     end
 
     it 'should return an array if defined as an array' do
@@ -104,11 +104,8 @@ describe Moonstone::Definitions::Field do
       field.array = true
       value = field.value(names: %w[Adam Michael])
       expect(value).to be_a Array
-      expect(value[0]).to be_a Moonstone::Scalars::String
-      expect(value[0].cast).to eq 'Adam'
-
-      expect(value[1]).to be_a Moonstone::Scalars::String
-      expect(value[1].cast).to eq 'Michael'
+      expect(value[0]).to eq 'Adam'
+      expect(value[1]).to eq 'Michael'
     end
 
     it 'should return an array if defined as an array with nested types' do

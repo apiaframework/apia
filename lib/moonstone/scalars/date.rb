@@ -8,30 +8,31 @@ module Moonstone
   module Scalars
     class Date < Moonstone::Scalar
 
-      def valid?
-        @value.is_a?(::Date)
+      cast do |value|
+        value.strftime('%Y-%m-%d')
       end
 
-      def cast
-        @value.strftime('%Y-%m-%d')
+      validator do |value|
+        value.is_a?(::Date)
       end
 
-      def self.parse(string)
-        return new(string) if string.is_a?(::Date)
+      parse do |string|
+        next string if string.is_a?(::Date)
 
-        string = string.to_s
-        unless string =~ /\A\d{4}\-\d{2}\-\d{2}\z/
-          raise Moonstone::ParseError, 'Date must be in the format of yyyy-mm-dd'
+        begin
+          string = string.to_s
+          unless string =~ /\A\d{4}\-\d{2}\-\d{2}\z/
+            raise Moonstone::ParseError, 'Date must be in the format of yyyy-mm-dd'
+          end
+
+          ::Date.parse(string)
+        rescue ::ArgumentError => e
+          if e.message =~ /invalid date/
+            raise Moonstone::ParseError, 'Invalid date was entered (make sure the day exists)'
+          end
+
+          raise
         end
-
-        date = ::Date.parse(string)
-        new(date)
-      rescue ::ArgumentError => e
-        if e.message =~ /invalid date/
-          raise Moonstone::ParseError, 'Invalid date was entered (make sure the day exists)'
-        end
-
-        raise
       end
 
     end

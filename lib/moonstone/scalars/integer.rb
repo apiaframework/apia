@@ -6,12 +6,12 @@ module Moonstone
   module Scalars
     class Integer < Moonstone::Scalar
 
-      def valid?
-        @value.is_a?(::Integer)
+      cast do |value|
+        value.to_i
       end
 
-      def cast
-        @value.to_i
+      validator do |value|
+        value.is_a?(::Integer)
       end
 
     end

@@ -2,7 +2,6 @@
 
 require 'moonstone/helpers'
 require 'moonstone/definitions/type'
-require 'moonstone/dsls/type'
 require 'moonstone/defineable'
 
 module Moonstone
@@ -31,7 +30,7 @@ module Moonstone
     def self.name_for(object)
       if object.respond_to?(:ancestors)
         if object.ancestors.include?(Moonstone::Scalar)
-          return object.id
+          return object.definition.id
         elsif object.ancestors.include?(Moonstone::Type)
           return object.definition.id
         end

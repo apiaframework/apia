@@ -6,12 +6,12 @@ module Moonstone
   module Scalars
     class Boolean < Moonstone::Scalar
 
-      def valid?
-        @value == true || @value == false
+      cast do |value|
+        value ? true : false
       end
 
-      def cast
-        @value ? true : false
+      validator do |value|
+        value.is_a?(TrueClass) || value.is_a?(FalseClass)
       end
 
     end

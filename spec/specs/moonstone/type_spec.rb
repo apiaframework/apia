@@ -104,7 +104,7 @@ describe Moonstone::Type do
       type_instance = type.new(id: 1234)
       expect do
         type_instance.hash
-      end.to raise_error(Moonstone::InvalidTypeError) do |e|
+      end.to raise_error(Moonstone::InvalidScalarValueError) do |e|
         expect(e.field.name).to eq :id
       end
     end

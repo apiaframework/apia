@@ -3,7 +3,7 @@
 require 'moonstone/errors/runtime_error'
 
 module Moonstone
-  class InvalidTypeError < Moonstone::RuntimeError
+  class InvalidScalarValueError < Moonstone::RuntimeError
 
     attr_reader :field
     attr_reader :given_value
@@ -13,7 +13,7 @@ module Moonstone
     end
 
     def to_s
-      "Invalid type for `#{field.name}` (got: #{@given_value.inspect} (#{@given_value.class}))"
+      "Invalid value for `#{field.name}` (got: #{@given_value.inspect} (#{@given_value.class}))"
     end
 
     def http_status
@@ -22,7 +22,7 @@ module Moonstone
 
     def hash
       {
-        code: 'invalid_value_for_field',
+        code: 'invalid_scalar_value',
         description: to_s,
         detail: {
           field: {
