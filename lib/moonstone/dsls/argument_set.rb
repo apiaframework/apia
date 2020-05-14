@@ -20,7 +20,7 @@ module Moonstone
       end
 
       def argument(name, type: nil, **options, &block)
-        argument = Definitions::Argument.new(name, id: "#{@definition.id}/#{Helpers.camelize(name.to_s)}")
+        argument = Definitions::Argument.new(name, id: "#{@definition.id}/#{Helpers.camelize(name.to_s)}Argument")
 
         if type.is_a?(Array)
           argument.type = type[0]

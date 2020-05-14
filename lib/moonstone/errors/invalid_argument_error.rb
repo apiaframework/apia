@@ -50,6 +50,7 @@ module Moonstone
           issue_description: ISSUE_DESCRIPTIONS[@issue.to_sym],
           errors: @errors,
           argument: {
+            id: argument.id,
             name: argument.name,
             description: argument.description
           }
