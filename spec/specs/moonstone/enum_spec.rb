@@ -9,8 +9,7 @@ describe Moonstone::Enum do
       enum = Moonstone::Enum.create('ExampleEnum') do
         value 'active'
       end
-      instance = enum.new('active')
-      expect(instance.cast).to eq 'active'
+      expect(enum.cast('active')).to eq 'active'
     end
 
     it 'should use the cast block if one exists' do
@@ -18,8 +17,7 @@ describe Moonstone::Enum do
         value 'ACTIVE'
         cast(&:upcase)
       end
-      instance = enum.new('active')
-      expect(instance.cast).to eq 'ACTIVE'
+      expect(enum.cast('active')).to eq 'ACTIVE'
     end
 
     it 'should raise an error if the resulting casted value is not valid' do
@@ -27,8 +25,7 @@ describe Moonstone::Enum do
         value 'active'
         value 'inactive'
       end
-      instance = enum.new('suspended')
-      expect { instance.cast }.to raise_error(Moonstone::InvalidEnumOptionError)
+      expect { enum.cast('suspended') }.to raise_error(Moonstone::InvalidEnumOptionError)
     end
   end
 end

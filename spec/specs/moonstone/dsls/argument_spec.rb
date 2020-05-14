@@ -35,12 +35,4 @@ describe Moonstone::DSLs::Argument do
       expect(argument.required?).to be false
     end
   end
-
-  context '#condition' do
-    it 'should set the condition' do
-      proc = proc { 1234 }
-      dsl.condition(&proc)
-      expect(argument.options[:condition]).to eq proc
-    end
-  end
 end

@@ -5,32 +5,16 @@ require 'moonstone/errors/runtime_error'
 module Moonstone
   class InvalidScalarValueError < Moonstone::RuntimeError
 
-    attr_reader :field
+    attr_reader :scalar
     attr_reader :given_value
-    def initialize(field, given_value)
-      @field = field
+
+    def initialize(scalar, given_value)
+      @scalar = scalar
       @given_value = given_value
     end
 
     def to_s
-      "Invalid value for `#{field.name}` (got: #{@given_value.inspect} (#{@given_value.class}))"
-    end
-
-    def http_status
-      500
-    end
-
-    def hash
-      {
-        code: 'invalid_scalar_value',
-        description: to_s,
-        detail: {
-          field: {
-            name: @field.name,
-            given_value: @given_value
-          }
-        }
-      }
+      "Invalid value for `#{scalar.name}` (got: #{@given_value.inspect} (#{@given_value.class}))"
     end
 
   end

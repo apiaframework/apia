@@ -10,16 +10,21 @@ module Moonstone
   # This is not raised for MISSING argument errors.
   class InvalidArgumentError < Moonstone::RuntimeError
 
+    ISSUE_DESCRIPTIONS = {
+      invalid_scalar: 'The value provided was not of an appropriate type for the scalar that was requested. For example, you may have passed a string where an integer was required etc...',
+      parse_error: 'The value provided could not be parsed into an appropriate value by the server. For example, if a date was expected and the value could not be interpretted as such.',
+      validation_error: 'A validation rule that has been specified for this argument was not satisfied. See the further details in the response and in the documentation.',
+      invalid_enum_value: 'The value provided was not one of the options suitable for the enum.'
+    }.freeze
+
     attr_reader :argument
-    attr_reader :type_instance
     attr_reader :index
     attr_reader :path
     attr_reader :errors
     attr_reader :issue
 
-    def initialize(argument, type_instance, issue: nil, index: nil, path: [], errors: [])
+    def initialize(argument, issue: nil, index: nil, path: [], errors: [])
       @argument = argument
-      @type_instance = type_instance
       @index = index
       @path = path
       @issue = issue
@@ -42,6 +47,7 @@ module Moonstone
           path: @path.map(&:name),
           index: @index,
           issue: @issue&.to_s,
+          issue_description: ISSUE_DESCRIPTIONS[@issue.to_sym],
           errors: @errors,
           argument: {
             name: argument.name,

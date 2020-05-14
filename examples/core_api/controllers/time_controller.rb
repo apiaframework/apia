@@ -27,17 +27,23 @@ module CoreAPI
         end
       end
 
+      class SomeEnum < Moonstone::Enum
+
+        value 'active'
+        value 'inactive'
+
+      end
+
       endpoint :tomorrow do
         field :method, type: :string
         field :arguments, type: :string
         field :json, type: :string
         field :params, type: :string
 
-        argument :test, type: :string, required: true do
-          validation :must_be_adam do |value|
-            value == 'Adam'
-          end
-        end
+        http_method :post
+
+        argument :test, type: :string, required: true
+        argument :enum, type: SomeEnum
 
         action do |request, response|
           response.add_field :method, request.request_method

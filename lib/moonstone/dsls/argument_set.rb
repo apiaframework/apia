@@ -19,15 +19,18 @@ module Moonstone
       end
 
       def argument(name, type: nil, **options, &block)
+        argument = Definitions::Argument.new(name)
+
         if type.is_a?(Array)
-          options[:type] = type[0]
-          options[:array] = true
+          argument.type = type[0]
+          argument.array = true
         else
-          options[:type] = type
-          options[:array] = false
+          argument.type = type
+          argument.array = false
         end
 
-        argument = Definitions::Argument.new(name, **options)
+        argument.required = options[:required] if options.key?(:required)
+
         argument.dsl.instance_eval(&block) if block_given?
 
         @definition.arguments[name.to_sym] = argument

@@ -11,10 +11,12 @@ module Moonstone
       attr_reader :options
       attr_reader :validations
       attr_accessor :description
+      attr_accessor :required
+      attr_accessor :array
+      attr_accessor :type
 
-      def initialize(name, **options)
+      def initialize(name)
         @name = name
-        @options = options
         @validations = []
       end
 
@@ -31,8 +33,8 @@ module Moonstone
 
         if type.nil?
           errors.add self, 'MissingType', 'Arguments must have a type'
-        elsif !(type.respond_to?(:ancestors) && (type.ancestors.include?(Moonstone::Type) || type.ancestors.include?(Moonstone::Scalar)))
-          errors.add self, 'InvalidType', 'Type must be a class that inherits from Moonstone::Type or Moonstone::Scalar'
+        elsif !(type.respond_to?(:ancestors) && (type.ancestors.include?(Moonstone::ArgumentSet) || type.ancestors.include?(Moonstone::Enum) || type.ancestors.include?(Moonstone::Scalar)))
+          errors.add self, 'InvalidType', 'Type must be a class that inherits from Moonstone::ArgumentSet, Moonstone::Enum or Moonstone::Scalar'
         end
       end
 
@@ -41,12 +43,10 @@ module Moonstone
       #
       # @return [Class]
       def type
-        @type ||= begin
-          if @options[:type].is_a?(Symbol) || @options[:type].is_a?(String)
-            Scalars::ALL[@options[:type].to_sym]
-          else
-            @options[:type]
-          end
+        if @type.is_a?(Symbol) || @type.is_a?(String)
+          Scalars::ALL[@type.to_sym]
+        else
+          @type
         end
       end
 
@@ -54,14 +54,14 @@ module Moonstone
       #
       # @return [Boolean]
       def required?
-        @options[:required] == true
+        @required == true
       end
 
       # Is this an array?
       #
       # @return [Boolean]
       def array?
-        @options[:array] == true
+        @array == true
       end
 
       # Validate a given value through all validations and

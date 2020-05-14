@@ -14,21 +14,18 @@ module Moonstone
       @definition ||= Definitions::Enum.new(Helpers.class_name_to_id(name))
     end
 
-    def initialize(value)
-      @value = value
-    end
-
-    def cast
-      casted = @value
-      if self.class.definition.cast
-        casted = self.class.definition.cast.call(casted)
+    def self.cast(value = nil, &block)
+      if block_given? && value.nil?
+        return definition.dsl.cast(&block)
       end
 
-      if self.class.definition.values[casted].nil?
-        raise InvalidEnumOptionError.new(self, casted)
+      value = definition.cast.call(value) if definition.cast
+
+      if definition.values[value].nil?
+        raise InvalidEnumOptionError.new(self, value)
       end
 
-      casted
+      value
     end
 
   end

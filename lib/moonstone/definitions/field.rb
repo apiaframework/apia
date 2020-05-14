@@ -40,6 +40,13 @@ module Moonstone
         type.ancestors.include?(Moonstone::Scalar)
       end
 
+      # Does this field return an enum?
+      #
+      # @return [Boolean]
+      def enum?
+        type.ancestors.include?(Moonstone::Enum)
+      end
+
       # Can the result for thsi field be nil?
       #
       # @return [Boolean]
@@ -107,10 +114,8 @@ module Moonstone
       private
 
       def create_type_instance_from_raw_value(value)
-        if scalar?
-          return type.cast(value) if type.valid?(value)
-
-          raise InvalidScalarValueError.new(self, value)
+        if scalar? || enum?
+          return type.cast(value)
         end
 
         type.new(value)

@@ -17,11 +17,11 @@ module Moonstone
       end
 
       def required(value)
-        @definition.options[:required] = value
+        @definition.required = value
       end
 
-      def condition(&block)
-        @definition.options[:condition] = block
+      def array(value)
+        @definition.array = value
       end
 
     end

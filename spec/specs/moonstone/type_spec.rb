@@ -105,7 +105,7 @@ describe Moonstone::Type do
       expect do
         type_instance.hash
       end.to raise_error(Moonstone::InvalidScalarValueError) do |e|
-        expect(e.field.name).to eq :id
+        expect(e.scalar.definition.id).to eq 'Moonstone/Scalars/String'
       end
     end
 

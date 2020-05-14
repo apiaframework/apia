@@ -7,7 +7,8 @@ describe Moonstone::Definitions::ArgumentSet do
   context '#validate' do
     it 'should not raise an error with valid arguments' do
       as = described_class.new('MyArgumentSet')
-      as.arguments[:name] = Moonstone::Definitions::Argument.new(:name, type: :string)
+      as.arguments[:name] = Moonstone::Definitions::Argument.new(:name)
+      as.arguments[:name].type = :string
       errors = Moonstone::ManifestErrors.new
       as.validate(errors)
       expect(errors.for(as)).to be_empty

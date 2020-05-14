@@ -83,13 +83,26 @@ describe Moonstone::ArgumentSet do
       end.to raise_error Moonstone::MissingArgumentError
     end
 
-    it 'should raise an error if an object is not parsable' do
+    it 'should raise an error if an object is not valid for the underlying scalar' do
       as = Moonstone::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string
       end
       expect do
         as.new(name: 1234)
-      end.to raise_error Moonstone::InvalidArgumentError
+      end.to raise_error Moonstone::InvalidArgumentError do |e|
+        expect(e.issue).to eq :invalid_scalar
+      end
+    end
+
+    it 'should raise an error if an object is not parseable' do
+      as = Moonstone::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :date
+      end
+      expect do
+        as.new(name: '2029-22-34')
+      end.to raise_error Moonstone::InvalidArgumentError do |e|
+        expect(e.issue).to eq :parse_error
+      end
     end
 
     it 'should raise an error if a validation fails for an argument' do
@@ -127,7 +140,7 @@ describe Moonstone::ArgumentSet do
         as.new(names: ['Adam', 1323])
       end.to raise_error Moonstone::InvalidArgumentError do |e|
         expect(e.argument.name).to eq :names
-        expect(e.issue).to eq :invalid_scalar_type
+        expect(e.issue).to eq :invalid_scalar
         expect(e.index).to eq 1
       end
     end
@@ -175,7 +188,7 @@ describe Moonstone::ArgumentSet do
       end.to raise_error Moonstone::InvalidArgumentError do |e|
         expect(e.index).to be nil
         expect(e.argument.name).to eq :name
-        expect(e.issue).to eq :invalid_scalar_type
+        expect(e.issue).to eq :invalid_scalar
         expect(e.path.size).to eq 3
         expect(e.path[0].name).to eq :book
         expect(e.path[1].name).to eq :user
@@ -190,6 +203,31 @@ describe Moonstone::ArgumentSet do
       expect { as.new(nil) }.to raise_error Moonstone::RuntimeError
       expect { as.new(1234) }.to raise_error Moonstone::RuntimeError
       expect { as.new('SomeString') }.to raise_error Moonstone::RuntimeError
+    end
+
+    it 'should be able to receive enums' do
+      enum = Moonstone::Enum.create('ExampleEnum') do
+        value 'active'
+        value 'inactive'
+      end
+      as = Moonstone::ArgumentSet.create('ExampleSet') do
+        argument :status, type: enum
+      end
+      instance = as.new({ status: 'active' })
+      expect(instance[:status]).to eq 'active'
+    end
+
+    it 'should raise an error if an enum is not provided' do
+      enum = Moonstone::Enum.create('ExampleEnum') do
+        value 'active'
+        value 'inactive'
+      end
+      as = Moonstone::ArgumentSet.create('ExampleSet') do
+        argument :status, type: enum
+      end
+      expect { as.new({ status: 'blah' }) }.to raise_error(Moonstone::InvalidArgumentError) do |e|
+        expect(e.issue).to eq :invalid_enum_value
+      end
     end
   end
 end

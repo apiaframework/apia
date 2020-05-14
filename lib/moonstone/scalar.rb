@@ -21,9 +21,14 @@ module Moonstone
         return definition.dsl.cast(&block)
       end
 
-      return value if definition.cast.nil?
+      unless valid?(value)
+        # Before casting, we'll also validate...
+        raise InvalidScalarValueError.new(self, value)
+      end
 
-      definition.cast.call(value)
+      value = definition.cast.call(value) if definition.cast
+
+      value
     end
 
     def self.valid?(value)
