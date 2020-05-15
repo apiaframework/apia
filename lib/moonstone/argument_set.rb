@@ -11,24 +11,42 @@ module Moonstone
 
     extend Defineable
 
-    def self.definition
-      @definition ||= Definitions::ArgumentSet.new(Helpers.class_name_to_id(name))
-    end
+    class << self
 
-    def self.collate_objects(set)
-      definition.arguments.each_value do |argument|
-        set.add_object(argument.type)
+      # Return the definition for this argument set
+      #
+      # @return [Moonstone::Definitions::ArgumentSet]
+      def definition
+        @definition ||= Definitions::ArgumentSet.new(Helpers.class_name_to_id(name))
       end
+
+      # Finds all objects referenced by this argument set and add them
+      # to the provided set.
+      #
+      # @param set [Moonstone::ObjectSet]
+      # @return [void]
+      def collate_objects(set)
+        definition.arguments.each_value do |argument|
+          set.add_object(argument.type)
+        end
+      end
+
+      # Create a new argument set from a request object
+      #
+      # @param request [Moonstone::Request]
+      # @return [Moonstone::ArgumentSet]
+      def create_from_request(request)
+        new(request.json_body || request.params || {})
+      end
+
     end
 
-    def self.create_from_request(request)
-      new(request.json_body || request.params || {})
-    end
-
-    def inspect
-      "<#{self.class.definition.name} #{@source.inspect}>"
-    end
-
+    # Create a new argument set by providing a hash containing the raw
+    # arguments
+    #
+    # @param hash [Hash]
+    # @param path [Array]
+    # @return [Moonstone::ArgumentSet]
     def initialize(hash, path: [])
       unless hash.is_a?(Hash)
         raise Moonstone::RuntimeError, 'Hash was expected for argument'
@@ -50,10 +68,18 @@ module Moonstone
       check_for_missing_required_arguments
     end
 
+    # Return an item from the argument set
+    #
+    # @param value [String, Symbol]
+    # @return [Object, nil]
     def [](value)
       @source[value.to_sym]
     end
 
+    # Return an item from this argument set
+    #
+    # @param values [Array<String, Symbol>]
+    # @return [Object, nil]
     def dig(*values)
       @source.dig(*values)
     end
