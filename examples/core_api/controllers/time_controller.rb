@@ -4,7 +4,7 @@ require 'core_api/objects/time'
 
 module CoreAPI
   module Controllers
-    class TimeController < Moonstone::Controller
+    class TimeController < Rapid::Controller
 
       description 'Returns the current time in varying ways'
 
@@ -27,7 +27,7 @@ module CoreAPI
         end
       end
 
-      class SomeEnum < Moonstone::Enum
+      class SomeEnum < Rapid::Enum
 
         value 'active'
         value 'inactive'

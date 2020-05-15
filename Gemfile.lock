@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    moonstone (1.0.0)
+    rapid-api (1.0.0)
       rack
 
 GEM
@@ -63,7 +63,7 @@ PLATFORMS
 DEPENDENCIES
   guard
   guard-rspec
-  moonstone!
+  rapid-api!
   rspec
   rspec-core
   rspec-expectations

@@ -2,14 +2,14 @@
 
 ```ruby
 # Define an enum
-class UserStatusEnum < Moonstone::Enum
+class UserStatusEnum < Rapid::Enum
   option 'active'
   option 'inactive'
   option 'suspended'
 end
 
 # You can define a type of object at any time
-class UserType < Moonstone::Object
+class UserType < Rapid::Object
   description 'Represents any user in the system'
 
   field :name, type: :string
@@ -27,11 +27,11 @@ user.hash['status'] #=> 'active'
 
 ```ruby
 # Create your argument setc
-class UserArgumentSet < Moonstone::ArgumentSet
+class UserArgumentSet < Rapid::ArgumentSet
   argument :name, type: :string, required: true
 end
 
-class UserCreationArgumentSet < Moonstone::ArgumentSet
+class UserCreationArgumentSet < Rapid::ArgumentSet
   argument :name, type: :string
   argument :age, type: :integer
   argument :user, type: UserArgumentSet

@@ -1,12 +1,16 @@
-# Moonstone
+# Rapid
 
-Moonstone is a Ruby REST API framework for building a complete flexible HTTP API in any Ruby application (including Rails).
+Rapid is an API framework for building a self-documenting HTTP API in any Ruby application (including Rails).
+
+## Getting started
+
+To begin, you just need to install the
 
 ## Objects
 
 ```ruby
 module CoreAPI
-  class UserType < Moonstone::Object
+  class UserType < Rapid::Object
 
     description 'Any user on the system'
 
@@ -57,12 +61,12 @@ module CoreAPI
 
   end
 
-  class OwnerType < Moonstone::PolymorphicType
+  class OwnerType < Rapid::PolymorphicType
     name 'Represents an owner that'
 
-    type Moonstone::Definition::Object, 'type'
-    type Moonstone::Definition::Enum, 'enum'
-    type Moonstone::Definition::Scalar, 'scalar'
+    type Rapid::Definition::Object, 'type'
+    type Rapid::Definition::Enum, 'enum'
+    type Rapid::Definition::Scalar, 'scalar'
   end
 end
 ```
@@ -71,7 +75,7 @@ end
 
 ```ruby
 module CoreAPI
-  class UserStateEnumType < Moonstone::Enum
+  class UserStateEnumType < Rapid::Enum
 
     # Define all the values for the enum.
     value 'active'
@@ -86,7 +90,7 @@ module CoreAPI
     end
   end
 
-  class UserType < Moonstone::Object
+  class UserType < Rapid::Object
 
     # You can use enums the same as any other type when definining
     # fields on a type.
@@ -100,7 +104,7 @@ end
 
 ```ruby
 module CoreAPI
-  class UserArgumentSet < Moonstone::ArgumentSet
+  class UserArgumentSet < Rapid::ArgumentSet
 
     # Most simply, define an argument with a type.
     argument :name, type: :string
@@ -130,7 +134,7 @@ end
 ```ruby
 module CoreAPI
 
-  class ValidationError < Moonstone::Error
+  class ValidationError < Rapid::Error
 
     code :validation_error
     http_code 400
@@ -142,7 +146,7 @@ module CoreAPI
 
   end
 
-  class UsersController < Moonstone::Controller
+  class UsersController < Rapid::Controller
 
     # Set the description for thiscontroller
     description 'Handles user stuff'
@@ -216,13 +220,13 @@ end
 
 ```ruby
 module CoreAPI
-  class InvalidAPITokenError < Moonstone::Error
+  class InvalidAPITokenError < Rapid::Error
     code :invalid_api_token
     http_code 403
     description 'The API token provided is invalid'
   end
 
-  class Authenticator < Moonstone::Authenticator
+  class Authenticator < Rapid::Authenticator
 
     # Define the type of authentication you wish to use. The only
     # option available here is :bearer now.
@@ -276,7 +280,7 @@ end
 
 ```ruby
 module CoreAPI
-  class Base < Moonstone::API
+  class Base < Rapid::API
 
     # List any authenticators that you wish to be invoked for
     # all requests to this API.
@@ -295,8 +299,8 @@ end
 
 ```ruby
 # In a config.ru
-use Moonstone::Rack.new(CoreAPI::Base, "/api/core/v1")
+use Rapid::Rack.new(CoreAPI::Base, "/api/core/v1")
 
 # In Rails middleware
-app.middleware.use Moonstone::Rack, CoreAPI::Base, "/api/core/v1"
+app.middleware.use Rapid::Rack, CoreAPI::Base, "/api/core/v1"
 ```

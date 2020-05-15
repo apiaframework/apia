@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module CoreAPI
-  class MainAuthenticator < Moonstone::Authenticator
+  class MainAuthenticator < Rapid::Authenticator
 
     type :bearer
 

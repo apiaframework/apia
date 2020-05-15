@@ -4,7 +4,7 @@ require 'core_api/objects/day'
 
 module CoreAPI
   module Objects
-    class Time < Moonstone::Object
+    class Time < Rapid::Object
 
       description 'Represents a time'
 
