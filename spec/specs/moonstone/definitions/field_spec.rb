@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 require 'moonstone/definitions/field'
-require 'moonstone/type'
+require 'moonstone/object'
 
 describe Moonstone::Definitions::Field do
   context '#array?' do
@@ -109,7 +109,7 @@ describe Moonstone::Definitions::Field do
     end
 
     it 'should return an array if defined as an array with nested types' do
-      type = Class.new(Moonstone::Type) do
+      type = Class.new(Moonstone::Object) do
         field :name, type: :string
         field :age, type: :integer
       end

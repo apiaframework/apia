@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'core_api/types/time_type'
+require 'core_api/objects/time'
 
 module CoreAPI
   module Controllers
@@ -11,7 +11,7 @@ module CoreAPI
       endpoint :now do
         description 'Returns the current time'
         http_method :post
-        field :time, type: Types::TimeType
+        field :time, type: Objects::Time
         action do |_request, response|
           time = Time.now
           response.add_field :time, time

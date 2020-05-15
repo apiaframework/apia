@@ -2,11 +2,11 @@
 
 Moonstone is a Ruby REST API framework for building a complete flexible HTTP API in any Ruby application (including Rails).
 
-## Types
+## Objects
 
 ```ruby
 module CoreAPI
-  class UserType < Moonstone::Type
+  class UserType < Moonstone::Object
 
     description 'Any user on the system'
 
@@ -60,7 +60,7 @@ module CoreAPI
   class OwnerType < Moonstone::PolymorphicType
     name 'Represents an owner that'
 
-    type Moonstone::Definition::Type, 'type'
+    type Moonstone::Definition::Object, 'type'
     type Moonstone::Definition::Enum, 'enum'
     type Moonstone::Definition::Scalar, 'scalar'
   end
@@ -86,7 +86,7 @@ module CoreAPI
     end
   end
 
-  class UserType < Moonstone::Type
+  class UserType < Moonstone::Object
 
     # You can use enums the same as any other type when definining
     # fields on a type.

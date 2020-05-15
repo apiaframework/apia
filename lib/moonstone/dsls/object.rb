@@ -5,7 +5,7 @@ require 'moonstone/dsls/concerns/has_fields'
 
 module Moonstone
   module DSLs
-    class Type
+    class Object
 
       include DSLs::Concerns::HasFields
 

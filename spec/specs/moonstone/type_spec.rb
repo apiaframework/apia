@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'moonstone/type'
+require 'moonstone/object'
 require 'moonstone/request'
 require 'moonstone/enum'
 
-describe Moonstone::Type do
+describe Moonstone::Object do
   context '.collate_objects' do
     it 'should add the types from all fields' do
-      cat_type = Moonstone::Type.create('CatType')
-      type = Moonstone::Type.create('ExampleType')
+      cat_type = Moonstone::Object.create('CatType')
+      type = Moonstone::Object.create('ExampleType')
       type.field :name, type: :string
       type.field :cat, type: cat_type
 
@@ -21,9 +21,9 @@ describe Moonstone::Type do
     end
 
     it 'should work with nested fields' do
-      human_type = Moonstone::Type.create('HumanType')
-      cat_type = Moonstone::Type.create('CatType')
-      dog_type = Moonstone::Type.create('DogType')
+      human_type = Moonstone::Object.create('HumanType')
+      cat_type = Moonstone::Object.create('CatType')
+      dog_type = Moonstone::Object.create('DogType')
       cat_type.field :owner, type: human_type
       cat_type.field :enemies, type: [dog_type]
       dog_type.field :owner, type: human_type
@@ -41,7 +41,7 @@ describe Moonstone::Type do
 
   context '#include?' do
     it 'should return true if there are no conditions' do
-      type = Moonstone::Type.create('ExampleType').new({})
+      type = Moonstone::Object.create('ExampleType').new({})
       request = Moonstone::Request.empty
       expect(type.include?(request)).to be true
     end
@@ -52,7 +52,7 @@ describe Moonstone::Type do
 
       obj_from_condition = nil
       req_from_condition = nil
-      type = Moonstone::Type.create('ExampleType') do
+      type = Moonstone::Object.create('ExampleType') do
         condition do |obj, req|
           obj_from_condition = obj
           req_from_condition = req
@@ -70,7 +70,7 @@ describe Moonstone::Type do
     end
 
     it 'should return false if any of the conditions are not positive' do
-      type = Moonstone::Type.create('ExampleType') do
+      type = Moonstone::Object.create('ExampleType') do
         condition do |_obj, _req|
           true
         end
@@ -86,7 +86,7 @@ describe Moonstone::Type do
 
   context '#hash' do
     it 'should return the value for the API' do
-      type = Moonstone::Type.create('ExampleType') do
+      type = Moonstone::Object.create('ExampleType') do
         field :id, type: :string
         field :number, type: :integer
       end
@@ -98,7 +98,7 @@ describe Moonstone::Type do
     end
 
     it 'should raise a parse error if a field is invalid' do
-      type = Moonstone::Type.create('ExampleType') do
+      type = Moonstone::Object.create('ExampleType') do
         field :id, type: :string
       end
       type_instance = type.new(id: 1234)
@@ -110,7 +110,7 @@ describe Moonstone::Type do
     end
 
     it 'should not include items that have been excluded' do
-      type = Moonstone::Type.create('ExampleType') do
+      type = Moonstone::Object.create('ExampleType') do
         field :id, type: :integer
         field :name, type: :string do
           condition { false }
@@ -123,12 +123,12 @@ describe Moonstone::Type do
     end
 
     it 'should not include types that are not permitted to be viewed' do
-      user = Moonstone::Type.create('ExampleType') do
+      user = Moonstone::Object.create('ExampleType') do
         condition { false }
         field :id, type: :integer
       end
 
-      book = Moonstone::Type.create('ExampleType') do
+      book = Moonstone::Object.create('ExampleType') do
         field :title, type: :string
         field :author, type: user
       end
@@ -141,7 +141,7 @@ describe Moonstone::Type do
     end
 
     it 'should raise an error if a field is missing but is required' do
-      type = Moonstone::Type.create('ExampleType') do
+      type = Moonstone::Object.create('ExampleType') do
         field :id, type: :integer
         field :name, type: :string
         field :age, type: :integer, nil: true
@@ -167,7 +167,7 @@ describe Moonstone::Type do
         value 'active'
         value 'inactive'
       end
-      type = Moonstone::Type.create('ExampleType') do
+      type = Moonstone::Object.create('ExampleType') do
         field :status, type: enum
       end
       instance = type.new(status: 'active')

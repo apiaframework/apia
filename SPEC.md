@@ -1,4 +1,4 @@
-# Types & Enums
+# Objects & Enums
 
 ```ruby
 # Define an enum
@@ -9,7 +9,7 @@ class UserStatusEnum < Moonstone::Enum
 end
 
 # You can define a type of object at any time
-class UserType < Moonstone::Type
+class UserType < Moonstone::Object
   description 'Represents any user in the system'
 
   field :name, type: :string

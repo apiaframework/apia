@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'moonstone/type'
+require 'moonstone/object'
 require 'moonstone/internal_api/controller_schema_type'
 
 module Moonstone
   module InternalAPI
-    class APIControllerSchemaType < Moonstone::Type
+    class APIControllerSchemaType < Moonstone::Object
 
       field :name, type: :string
       field :controller, type: ControllerSchemaType

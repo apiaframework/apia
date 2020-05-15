@@ -5,7 +5,7 @@ require 'moonstone/definitions/argument'
 require 'moonstone/manifest_errors'
 require 'moonstone/argument_set'
 require 'moonstone/enum'
-require 'moonstone/type'
+require 'moonstone/object'
 
 describe Moonstone::Definitions::Argument do
   context '#type' do
@@ -133,9 +133,9 @@ describe Moonstone::Definitions::Argument do
       expect(errors.for(arg)).to include 'MissingType'
     end
 
-    it 'should add an error if the type is a Moonstone::Type' do
+    it 'should add an error if the type is a Moonstone::Object' do
       arg = Moonstone::Definitions::Argument.new(:name)
-      arg.type = Moonstone::Type.create('MyType')
+      arg.type = Moonstone::Object.create('MyType')
       errors = Moonstone::ManifestErrors.new
       arg.validate(errors)
       expect(errors.for(arg)).to include 'InvalidType'

@@ -33,7 +33,7 @@ describe Moonstone::FieldSet do
     end
 
     it 'should not include fields with a type that does not allow its inclusion' do
-      type = Moonstone::Type.create('Example') do
+      type = Moonstone::Object.create('Example') do
         condition { false }
         field :name, type: :string
       end
@@ -52,7 +52,7 @@ describe Moonstone::FieldSet do
     end
 
     it 'should set a field to the hash of an underlying type' do
-      type = Moonstone::Type.create('Example') do
+      type = Moonstone::Object.create('Example') do
         field :name, type: :string
       end
 
@@ -88,7 +88,7 @@ describe Moonstone::FieldSet do
     end
 
     it 'should set a field to an array of type hashes' do
-      type = Moonstone::Type.create('User') do
+      type = Moonstone::Object.create('User') do
         field :name, type: :string
       end
 

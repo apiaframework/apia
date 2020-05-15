@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'moonstone/dsls/type'
+require 'moonstone/dsls/object'
 require 'moonstone/field_set'
 
 module Moonstone
   module Definitions
-    class Type
+    class Object
 
       attr_accessor :id
       attr_accessor :name
@@ -20,7 +20,7 @@ module Moonstone
       end
 
       def dsl
-        @dsl ||= DSLs::Type.new(self)
+        @dsl ||= DSLs::Object.new(self)
       end
 
       def validate(errors)

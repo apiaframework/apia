@@ -23,8 +23,7 @@ module Moonstone
         @id = id
       end
 
-      # Return the type of object (either a Type or a Scalar) which
-      # this field represents.
+      # Return the type of object
       #
       # @return [Class]
       def type

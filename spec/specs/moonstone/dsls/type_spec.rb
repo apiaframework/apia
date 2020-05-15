@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'moonstone/dsls/type'
-require 'moonstone/definitions/type'
+require 'moonstone/dsls/object'
+require 'moonstone/definitions/object'
 
-describe Moonstone::DSLs::Type do
-  subject(:type) { Moonstone::Definitions::Type.new('TestType') }
-  subject(:dsl) { Moonstone::DSLs::Type.new(type) }
+describe Moonstone::DSLs::Object do
+  subject(:type) { Moonstone::Definitions::Object.new('TestType') }
+  subject(:dsl) { Moonstone::DSLs::Object.new(type) }
 
   include_examples 'has fields dsl' do
     subject(:definition) { type }

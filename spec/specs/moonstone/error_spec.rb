@@ -8,11 +8,11 @@ require 'moonstone/object_set'
 describe Moonstone::Error do
   context '.collate_objects' do
     it 'should return the types of any fields on the object' do
-      nested_type = Moonstone::Type.create('ExampleNestedType') do
+      nested_type = Moonstone::Object.create('ExampleNestedType') do
         field :age, type: :integer
       end
 
-      other_type = Moonstone::Type.create('ExampleType') do
+      other_type = Moonstone::Object.create('ExampleType') do
         field :name, type: :string
         field :other, type: nested_type
       end

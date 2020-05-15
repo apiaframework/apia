@@ -3,7 +3,7 @@
 require 'moonstone/helpers'
 require 'moonstone/defineable'
 require 'moonstone/definitions/error'
-require 'moonstone/type'
+require 'moonstone/object'
 require 'moonstone/scalar'
 require 'moonstone/errors/error_exception_error'
 

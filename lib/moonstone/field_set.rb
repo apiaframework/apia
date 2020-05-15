@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'moonstone/scalar'
-require 'moonstone/type'
+require 'moonstone/object'
 require 'moonstone/enum'
 
 module Moonstone
@@ -10,7 +10,7 @@ module Moonstone
     def self.can_use_as_type?(object)
       return false unless object.respond_to?(:ancestors)
 
-      object.ancestors.any? { |a| [Moonstone::Scalar, Moonstone::Type, Moonstone::Enum].include?(a) }
+      object.ancestors.any? { |a| [Moonstone::Scalar, Moonstone::Object, Moonstone::Enum].include?(a) }
     end
 
     def add(field)
@@ -20,7 +20,7 @@ module Moonstone
     def validate(errors, object)
       each_value do |field|
         unless self.class.can_use_as_type?(field.type)
-          errors.add object, :invalid_field_type, "Type for field #{field.name} must be a scalar or Moonstone::Type"
+          errors.add object, :invalid_field_type, "Type for field #{field.name} must be a scalar, enum or object"
         end
       end
     end
@@ -56,7 +56,7 @@ module Moonstone
     def cast_type_instance(type_instance, request: nil)
       if type_instance.nil?
         nil
-      elsif type_instance.is_a?(Moonstone::Type)
+      elsif type_instance.is_a?(Moonstone::Object)
         return :skip unless type_instance.include?(request)
 
         type_instance.hash(request: request)

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module CoreAPI
-  module Types
-    class DayEnum < Moonstone::Enum
+  module Objects
+    class Day < Moonstone::Enum
 
       value 'Sunday'
       value 'Monday'

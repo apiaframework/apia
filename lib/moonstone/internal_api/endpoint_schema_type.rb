@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'moonstone/type'
+require 'moonstone/object'
 require 'moonstone/internal_api/authenticator_schema_type'
 require 'moonstone/internal_api/field_schema_type'
 require 'moonstone/internal_api/argument_set_schema_type'
 
 module Moonstone
   module InternalAPI
-    class EndpointSchemaType < Moonstone::Type
+    class EndpointSchemaType < Moonstone::Object
 
       field :id, type: :string
       field :name, type: :string, nil: true

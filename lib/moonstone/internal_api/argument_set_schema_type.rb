@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'moonstone/type'
+require 'moonstone/object'
 require 'moonstone/internal_api/argument_schema_type'
 
 module Moonstone
   module InternalAPI
-    class ArgumentSetSchemaType < Moonstone::Type
+    class ArgumentSetSchemaType < Moonstone::Object
 
       field :id, type: :string
       field :name, type: :string, nil: true

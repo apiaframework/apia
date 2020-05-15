@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'core_api/types/day_enum'
+require 'core_api/objects/day'
 
 module CoreAPI
-  module Types
-    class TimeType < Moonstone::Type
+  module Objects
+    class Time < Moonstone::Object
 
       description 'Represents a time'
 
@@ -12,7 +12,7 @@ module CoreAPI
         backend(&:to_i)
       end
 
-      field :day_of_week, type: DayEnum do
+      field :day_of_week, type: Objects::Day do
         backend { |t| t.strftime('%A') }
       end
 

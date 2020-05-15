@@ -11,7 +11,7 @@ module Moonstone
 
     # Return the definition for this type
     #
-    # @return [Moonstone::Definitions::Type]
+    # @return [Moonstone::Definitions::Object]
     def self.definition
       @definition ||= Definitions::Scalar.new(Helpers.class_name_to_id(name))
     end

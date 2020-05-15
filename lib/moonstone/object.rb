@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 require 'moonstone/helpers'
-require 'moonstone/definitions/type'
+require 'moonstone/definitions/object'
 require 'moonstone/defineable'
 
 module Moonstone
-  class Type
+  class Object
 
     extend Defineable
 
     # Return the definition for this type
     #
-    # @return [Moonstone::Definitions::Type]
+    # @return [Moonstone::Definitions::Object]
     def self.definition
-      @definition ||= Definitions::Type.new(Helpers.class_name_to_id(name))
+      @definition ||= Definitions::Object.new(Helpers.class_name_to_id(name))
     end
 
     # Collate all objects that this type references and add them to the
@@ -31,7 +31,7 @@ module Moonstone
       if object.respond_to?(:ancestors)
         if object.ancestors.include?(Moonstone::Scalar)
           return object.definition.id
-        elsif object.ancestors.include?(Moonstone::Type)
+        elsif object.ancestors.include?(Moonstone::Object)
           return object.definition.id
         end
       end
@@ -42,7 +42,7 @@ module Moonstone
     # Initialize an instance of this type with the value provided
     #
     # @param value [Object, Hash]
-    # @return [Moonstone::Type]
+    # @return [Moonstone::Object]
     def initialize(value)
       @value = value
     end
