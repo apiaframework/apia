@@ -8,6 +8,7 @@ module Rapid
   class Authenticator
 
     extend Defineable
+
     class << self
 
       # Return the definition for this authenticator

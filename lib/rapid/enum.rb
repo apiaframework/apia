@@ -10,22 +10,33 @@ module Rapid
 
     extend Defineable
 
-    def self.definition
-      @definition ||= Definitions::Enum.new(Helpers.class_name_to_id(name))
-    end
+    class << self
 
-    def self.cast(value = nil, &block)
-      if block_given? && value.nil?
-        return definition.dsl.cast(&block)
+      # Return the definition object for the enum
+      #
+      # @return [Rapid::Definitions::Enum]
+      def definition
+        @definition ||= Definitions::Enum.new(Helpers.class_name_to_id(name))
       end
 
-      value = definition.cast.call(value) if definition.cast
+      # Cast a value or define a new block for casting (for DSL purposes)
+      #
+      # @param value [Object?]
+      # @return [Object?]
+      def cast(value = nil, &block)
+        if block_given? && value.nil?
+          return definition.dsl.cast(&block)
+        end
 
-      if definition.values[value].nil?
-        raise InvalidEnumOptionError.new(self, value)
+        value = definition.cast.call(value) if definition.cast
+
+        if definition.values[value].nil?
+          raise InvalidEnumOptionError.new(self, value)
+        end
+
+        value
       end
 
-      value
     end
 
   end

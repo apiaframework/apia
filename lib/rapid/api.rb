@@ -26,14 +26,13 @@ module Rapid
       #
       # @param include_rapid_controller [Boolean] whether the schema/internal API should be included
       # @return [Rapid::ObjectSet]
-      def objects(include_rapid_controller: false)
+      def objects
         set = ObjectSet.new([self])
-        set.add_object(definition.authenticator) if definition.authenticator
-        definition.controllers.each_value do |con|
-          if con == InternalAPI::Controller && include_rapid_controller == false
-            next
-          end
+        if definition.authenticator
+          set.add_object(definition.authenticator)
+        end
 
+        definition.controllers.each_value do |con|
           set.add_object(con)
         end
         set

@@ -23,6 +23,17 @@ module Rapid
         @dsl ||= DSLs::Error.new(self)
       end
 
+      # Return the actual HTTP status code
+      #
+      # @return [Integer]
+      def http_status_code
+        if @http_status.is_a?(Symbol)
+          ::Rack::Utils::SYMBOL_TO_STATUS_CODE[@http_status]
+        else
+          @http_status
+        end
+      end
+
       # Validate that this error class is valid and thus can be used in the
       # API.
       #
@@ -30,15 +41,15 @@ module Rapid
       # @reeturn [void]
       def validate(errors)
         unless code.is_a?(Symbol)
-          errors.add self, :invalid_code, 'Code must be a symbol'
+          errors.add self, 'InvalidCode', 'Code must be a symbol'
         end
 
-        if !http_status.is_a?(Integer)
-          errors.add self, :invalid_http_status, 'HTTP status must be an integer'
-        elsif http_status < 100
-          errors.add self, :http_status_is_too_low, 'HTTP status must be greater than or equal to 100'
-        elsif http_status > 599
-          errors.add self, :http_status_is_too_high, 'HTTP status must be greater than or equal to 500'
+        if http_status_code.is_a?(Integer) && ::Rack::Utils::HTTP_STATUS_CODES[http_status_code]
+          # OK
+        elsif http_status_code.is_a?(Integer)
+          errors.add self, 'InvalidHTTPStatus', "The HTTP status is not valid (must be one of #{::Rack::Utils::HTTP_STATUS_CODES.keys.join(', ')})"
+        else
+          errors.add self, 'InvalidHTTPStatus', 'The HTTP status is not valid (must be an integer)'
         end
 
         @fields.validate(errors, self)

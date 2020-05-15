@@ -26,26 +26,35 @@ module Rapid
 
     extend Defineable
 
-    # Return the definition object for errors
-    #
-    # @return [Rapid::Definitions::Error]
-    def self.definition
-      @definition ||= Definitions::Error.new(Helpers.class_name_to_id(name))
-    end
+    class << self
 
-    # Collate all objects that this error references and add them to the
-    # given object set
-    #
-    # @param set [Rapid::ObjectSet]
-    # @return [void]
-    def self.collate_objects(set)
-      definition.fields.each_value do |field|
-        set.add_object(field.type.klass) if field.type.usable_for_field?
+      # Return the definition object for errors
+      #
+      # @return [Rapid::Definitions::Error]
+      def definition
+        @definition ||= Definitions::Error.new(Helpers.class_name_to_id(name))
       end
-    end
 
-    def self.exception(fields = {})
-      ErrorExceptionError.new(self, fields)
+      # Collate all objects that this error references and add them to the
+      # given object set
+      #
+      # @param set [Rapid::ObjectSet]
+      # @return [void]
+      def collate_objects(set)
+        definition.fields.each_value do |field|
+          set.add_object(field.type.klass) if field.type.usable_for_field?
+        end
+      end
+
+      # Return an exception that should be raised to represent this error
+      # when it is actually invoked
+      #
+      # @param fields [Hash]
+      # @return [ErrorExceptionError]
+      def exception(fields = {})
+        ErrorExceptionError.new(self, fields)
+      end
+
     end
 
   end

@@ -26,7 +26,7 @@ describe Rapid::Definitions::Error do
       errors = Rapid::ManifestErrors.new
       error.validate(errors)
 
-      expect(errors.for(error)).to include :invalid_code
+      expect(errors.for(error)).to include 'InvalidCode'
     end
 
     it 'should raise an error if the HTTP status code is not an integer' do
@@ -35,22 +35,18 @@ describe Rapid::Definitions::Error do
 
       errors = Rapid::ManifestErrors.new
       error.validate(errors)
-      expect(errors.for(error)).to include :invalid_http_status
+      expect(errors.for(error)).to include 'InvalidHTTPStatus'
     end
 
-    it 'should raise an error if the HTTP status code is less than 100 or greater than 599' do
-      error = described_class.new('MyError')
-      error.http_status = 50
+    [499, 2, -3, 10_000].each do |int|
+      it "should raise an error if the HTTP status code is not a valid integer (#{int})" do
+        error = described_class.new('MyError')
+        error.http_status = int
 
-      errors = Rapid::ManifestErrors.new
-      error.validate(errors)
-      expect(errors.for(error)).to include :http_status_is_too_low
-
-      error = described_class.new('MyError')
-      error.http_status = 600
-      errors = Rapid::ManifestErrors.new
-      error.validate(errors)
-      expect(errors.for(error)).to include :http_status_is_too_high
+        errors = Rapid::ManifestErrors.new
+        error.validate(errors)
+        expect(errors.for(error)).to include 'InvalidHTTPStatus'
+      end
     end
 
     it 'should raise an error if any field has an invalid type' do
@@ -61,7 +57,23 @@ describe Rapid::Definitions::Error do
 
       errors = Rapid::ManifestErrors.new
       error.validate(errors)
-      expect(errors.for(error)).to include :invalid_field_type
+      expect(errors.for(error)).to include 'InvalidFieldType'
+    end
+  end
+
+  context '#http_status_code' do
+    it 'should return the integer for the HTTP status' do
+      error = described_class.new('Error')
+      error.http_status = 301
+      expect(error.http_status_code).to eq 301
+    end
+
+    { ok: 200, not_found: 404, internal_server_error: 500, length_required: 411 }.each do |value, expected_code|
+      it "should return the code for the given symbol (#{value} -> #{expected_code})" do
+        error = described_class.new('Error')
+        error.http_status = value
+        expect(error.http_status_code).to eq expected_code
+      end
     end
   end
 end

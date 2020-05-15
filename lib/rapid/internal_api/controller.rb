@@ -7,6 +7,7 @@ module Rapid
   module InternalAPI
     class Controller < Rapid::Controller
 
+      name 'API Schema'
       description 'Provides endpoint to interrogate the API schema'
       endpoint :schema do
         description 'Returns a payload outlining the full schema of the API'

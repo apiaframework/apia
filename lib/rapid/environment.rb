@@ -15,6 +15,9 @@ module Rapid
       instance_exec(@request, response, &block)
     end
 
+    # Raise an error
+    #
+    # @param error [String, Class] an error class or the name of a defined error
     def raise_error(error, fields = {})
       if error.respond_to?(:ancestors) && error.ancestors.include?(Rapid::Error)
         raise error.exception(fields)
