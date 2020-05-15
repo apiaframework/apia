@@ -14,7 +14,7 @@ module Rapid
         field :namespace, type: :string
         field :schema, type: APISchemaType
         action do |request, response|
-          response.add_field :schema, request.api.definition
+          response.add_field :schema, request.api
           response.add_field :namespace, request.namespace
           response.add_field :host, request.host
         end

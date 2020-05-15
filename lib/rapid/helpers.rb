@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rapid/scalars'
+
 module Rapid
   module Helpers
 

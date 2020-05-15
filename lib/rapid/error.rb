@@ -40,7 +40,7 @@ module Rapid
     # @return [void]
     def self.collate_objects(set)
       definition.fields.each_value do |field|
-        set.add_object(field.type)
+        set.add_object(field.type.klass) if field.type.usable_for_field?
       end
     end
 

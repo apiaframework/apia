@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rapid/dsls/argument'
-require 'rapid/scalars'
+require 'rapid/helpers'
 
 module Rapid
   module Definitions
@@ -33,10 +33,10 @@ module Rapid
           errors.add self, 'InvalidName', 'Argument name must only include letters, numbers, hyphens and underscores'
         end
 
-        if type.nil?
+        if @type.nil?
           errors.add self, 'MissingType', 'Arguments must have a type'
-        elsif !(type.respond_to?(:ancestors) && (type.ancestors.include?(Rapid::ArgumentSet) || type.ancestors.include?(Rapid::Enum) || type.ancestors.include?(Rapid::Scalar)))
-          errors.add self, 'InvalidType', 'Type must be a class that inherits from Rapid::ArgumentSet, Rapid::Enum or Rapid::Scalar'
+        elsif !type.usable_for_argument?
+          errors.add self, 'InvalidType', 'Type must be an argument set, scalar or enum'
         end
       end
 
@@ -45,11 +45,7 @@ module Rapid
       #
       # @return [Class]
       def type
-        if @type.is_a?(Symbol) || @type.is_a?(String)
-          Scalars::ALL[@type.to_sym]
-        else
-          @type
-        end
+        Type.new(@type)
       end
 
       # Is this argument required?

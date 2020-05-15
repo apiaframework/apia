@@ -122,16 +122,14 @@ describe Rapid::Definitions::Field do
                             { name: 'Michael', age: 25 }
                           ])
       expect(value).to be_a Array
-      expect(value[0]).to be_a type
+      expect(value[0]).to be_a Hash
 
-      adam_hash = value[0].hash
-      expect(adam_hash['name']).to eq 'Adam'
-      expect(adam_hash['age']).to eq 20
+      expect(value[0]['name']).to eq 'Adam'
+      expect(value[0]['age']).to eq 20
 
-      expect(value[1]).to be_a type
-      michael_hash = value[1].hash
-      expect(michael_hash['name']).to eq 'Michael'
-      expect(michael_hash['age']).to eq 25
+      expect(value[1]).to be_a Hash
+      expect(value[1]['name']).to eq 'Michael'
+      expect(value[1]['age']).to eq 25
     end
   end
 end

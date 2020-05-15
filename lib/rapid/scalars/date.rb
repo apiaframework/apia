@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 require 'date'
+require 'rapid/scalars'
 require 'rapid/scalar'
 require 'rapid/errors/parse_error'
 
 module Rapid
   module Scalars
     class Date < Rapid::Scalar
+
+      Scalars.register :date, self
 
       cast do |value|
         value.strftime('%Y-%m-%d')

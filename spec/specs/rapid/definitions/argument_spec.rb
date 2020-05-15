@@ -12,13 +12,15 @@ describe Rapid::Definitions::Argument do
     it 'should return the type' do
       arg = Rapid::Definitions::Argument.new(:name)
       arg.type = Rapid::Scalars::String
-      expect(arg.type).to eq Rapid::Scalars::String
+      expect(arg.type).to be_a Rapid::Definitions::Type
+      expect(arg.type.klass).to eq Rapid::Scalars::String
     end
 
     it 'should return a scalar object if a symbol is provided' do
       arg = Rapid::Definitions::Argument.new(:name)
       arg.type = :integer
-      expect(arg.type).to eq Rapid::Scalars::Integer
+      expect(arg.type).to be_a Rapid::Definitions::Type
+      expect(arg.type.klass).to eq Rapid::Scalars::Integer
     end
   end
 
@@ -130,7 +132,7 @@ describe Rapid::Definitions::Argument do
       arg.type = 'asd'
       errors = Rapid::ManifestErrors.new
       arg.validate(errors)
-      expect(errors.for(arg)).to include 'MissingType'
+      expect(errors.for(arg)).to include 'InvalidType'
     end
 
     it 'should add an error if the type is a Rapid::Object' do

@@ -1,19 +1,25 @@
 # frozen_string_literal: true
 
-require 'rapid/scalars/string'
-require 'rapid/scalars/integer'
-require 'rapid/scalars/boolean'
-require 'rapid/scalars/date'
-
 module Rapid
   module Scalars
 
-    ALL = {
-      string: Scalars::String,
-      integer: Scalars::Integer,
-      boolean: Scalars::Boolean,
-      date: Scalars::Date
-    }.freeze
+    class << self
+
+      def fetch(item, default = nil)
+        all[item.to_sym]
+      end
+
+      def register(name, klass)
+        all[name.to_sym] = klass
+      end
+
+      private
+
+      def all
+        @scalars ||= {}
+      end
+
+    end
 
   end
 end

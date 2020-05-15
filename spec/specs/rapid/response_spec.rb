@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
 require 'rapid/request'
 require 'rapid/response'
 require 'rapid/endpoint'

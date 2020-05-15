@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
+require 'rapid/scalars'
 require 'rapid/scalar'
 
 module Rapid
   module Scalars
     class String < Rapid::Scalar
+
+      Scalars.register :string, self
 
       description 'A value containing alpha-numeric characters (including symbols)'
 

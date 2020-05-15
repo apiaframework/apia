@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
+require 'rapid/helpers'
 require 'rapid/dsls/field'
+require 'rapid/definitions/type'
 require 'rapid/errors/invalid_scalar_value_error'
 require 'rapid/errors/null_field_value_error'
-require 'rapid/scalars'
 
 module Rapid
   module Definitions
@@ -27,25 +28,7 @@ module Rapid
       #
       # @return [Class]
       def type
-        if @type.is_a?(Symbol) || @type.is_a?(String)
-          Scalars::ALL[@type.to_sym]
-        else
-          @type
-        end
-      end
-
-      # Does this field return a scalar?
-      #
-      # @return [Boolean]
-      def scalar?
-        type.ancestors.include?(Rapid::Scalar)
-      end
-
-      # Does this field return an enum?
-      #
-      # @return [Boolean]
-      def enum?
-        type.ancestors.include?(Rapid::Enum)
+        Type.new(@type)
       end
 
       # Can the result for thsi field be nil?
@@ -99,27 +82,17 @@ module Rapid
       #
       # @param object [Object]
       # @return [Object]
-      def value(object)
+      def value(object, request: nil)
         raw_value = raw_value_from_object(object)
 
         return nil if raw_value.nil? && can_be_nil?
-        raise Rapid::NullFieldValueError, self if raw_value.nil?
+        raise Rapid::NullFieldValueError.new(self, object) if raw_value.nil?
 
         if array? && raw_value.is_a?(Array)
-          raw_value.map { |v| create_type_instance_from_raw_value(v) }
+          raw_value.map { |v| type.cast(v, request: request) }
         else
-          create_type_instance_from_raw_value(raw_value)
+          type.cast(raw_value, request: request)
         end
-      end
-
-      private
-
-      def create_type_instance_from_raw_value(value)
-        if scalar? || enum?
-          return type.cast(value)
-        end
-
-        type.new(value)
       end
 
     end

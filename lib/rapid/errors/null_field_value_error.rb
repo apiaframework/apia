@@ -7,8 +7,9 @@ module Rapid
 
     attr_reader :field
 
-    def initialize(field)
+    def initialize(field, source)
       @field = field
+      @source = source
     end
 
     def to_s
@@ -25,6 +26,7 @@ module Rapid
         description: to_s,
         detail: {
           field: {
+            id: @field.id,
             name: @field.name
           }
         }

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'rapid/helpers'
 require 'rapid/defineable'
 require 'rapid/definitions/argument_set'
-require 'rapid/errors/missing_argument_error'
 require 'rapid/errors/invalid_argument_error'
+require 'rapid/errors/missing_argument_error'
+require 'rapid/helpers'
 
 module Rapid
   class ArgumentSet
@@ -27,7 +27,7 @@ module Rapid
       # @return [void]
       def collate_objects(set)
         definition.arguments.each_value do |argument|
-          set.add_object(argument.type)
+          set.add_object(argument.type.klass) if argument.type.usable_for_argument?
         end
       end
 
@@ -92,15 +92,15 @@ module Rapid
           parse_value(argument, v, index: index)
         end
 
-      elsif argument.type.ancestors.include?(Rapid::Scalar)
+      elsif argument.type.scalar?
         begin
-          type = argument.type.parse(value)
+          type = argument.type.klass.parse(value)
         rescue Rapid::ParseError => e
           # If we cannot parse the given input, this is cause for a parse error to be raised.
           raise InvalidArgumentError.new(argument, issue: :parse_error, errors: [e.message], index: index, path: @path + [argument])
         end
 
-        unless argument.type.valid?(type)
+        unless argument.type.klass.valid?(type)
           # If value we have parsed is not actually valid, we 'll raise an argument error.
           # In most cases, it is likely that an integer has been provided to string etc...
           raise InvalidArgumentError.new(argument, issue: :invalid_scalar, index: index, path: @path + [argument])
@@ -108,11 +108,11 @@ module Rapid
 
         type
 
-      elsif argument.type.ancestors.include?(Rapid::ArgumentSet)
-        argument.type.new(value, path: @path + [argument])
+      elsif argument.type.argument_set?
+        argument.type.klass.new(value, path: @path + [argument])
 
-      elsif argument.type.ancestors.include?(Rapid::Enum)
-        unless argument.type.definition.values[value]
+      elsif argument.type.enum?
+        unless argument.type.klass.definition.values[value]
           raise InvalidArgumentError.new(argument, issue: :invalid_enum_value, index: index, path: @path + [argument])
         end
 

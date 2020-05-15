@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
 require 'rapid/definitions/field'
 require 'rapid/field_set'
 
@@ -103,6 +104,43 @@ describe Rapid::FieldSet do
       expect(hash['users'][0]['name']).to include 'Matthew'
       expect(hash['users'][1]['name']).to include 'Mark'
       expect(hash['users'][2]['name']).to include 'Michael'
+    end
+
+    it 'should return polymorphs' do
+      polymorph = Rapid::Polymorph.create('MyPolymorph') do
+        option :string, type: :string, matcher: proc { |s| s.is_a?(::String) }
+        option :integer, type: :integer, matcher: proc { |s| s.is_a?(::Integer) }
+      end
+
+      field = Rapid::Definitions::Field.new(:string_or_int)
+      field.type = polymorph
+      field_set.add field
+
+      hash = field_set.generate_hash(string_or_int: 'Adam')
+      expect(hash['string_or_int']).to be_a Hash
+      expect(hash['string_or_int']['type']).to eq 'string'
+      expect(hash['string_or_int']['value']).to eq 'Adam'
+
+      hash = field_set.generate_hash(string_or_int: 1234)
+      expect(hash['string_or_int']).to be_a Hash
+      expect(hash['string_or_int']['type']).to eq 'integer'
+      expect(hash['string_or_int']['value']).to eq 1234
+    end
+
+    it 'should raise an error if a value cannot match any option' do
+      polymorph = Rapid::Polymorph.create('MyPolymorph') do
+        option :string, type: :string, matcher: proc { |s| s.is_a?(::String) }
+      end
+
+      field = Rapid::Definitions::Field.new(:value)
+      field.type = polymorph
+      field_set.add field
+
+      expect do
+        field_set.generate_hash(value: 1234)
+      end.to raise_error Rapid::InvalidPolymorphValueError do |e|
+        expect(e.polymorph.definition.id).to eq 'MyPolymorph'
+      end
     end
   end
 end

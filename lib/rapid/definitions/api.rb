@@ -15,7 +15,7 @@ module Rapid
 
       def initialize(id)
         @id = id
-        @controllers = { internal: InternalAPI::Controller }
+        @controllers = { rapid: InternalAPI::Controller }
       end
 
       def dsl

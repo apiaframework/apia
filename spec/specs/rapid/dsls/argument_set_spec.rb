@@ -27,7 +27,7 @@ describe Rapid::DSLs::ArgumentSet do
       dsl.argument :user, type: :string
       expect(argument_set.arguments[:user]).to be_a Rapid::Definitions::Argument
       expect(argument_set.arguments[:user].name).to eq :user
-      expect(argument_set.arguments[:user].type).to eq Rapid::Scalars::String
+      expect(argument_set.arguments[:user].type.klass).to eq Rapid::Scalars::String
       expect(argument_set.arguments[:user].array?).to be false
     end
 
@@ -48,7 +48,7 @@ describe Rapid::DSLs::ArgumentSet do
     it 'should be an array argument if the type is provided witin an array' do
       dsl.argument :users, type: [:string]
       expect(argument_set.arguments[:users].array?).to be true
-      expect(argument_set.arguments[:users].type).to eq Rapid::Scalars::String
+      expect(argument_set.arguments[:users].type.klass).to eq Rapid::Scalars::String
     end
   end
 end

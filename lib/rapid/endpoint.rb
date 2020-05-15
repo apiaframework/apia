@@ -22,7 +22,7 @@ module Rapid
       end
 
       definition.fields.each_value do |field|
-        set.add_object(field.type)
+        set.add_object(field.type.klass) if field.type.usable_for_field?
       end
     end
 

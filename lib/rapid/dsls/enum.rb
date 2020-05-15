@@ -16,8 +16,8 @@ module Rapid
         @definition.description = value
       end
 
-      def value(key, description = nil)
-        @definition.values[key.to_s] = { description: description }
+      def value(name, description = nil)
+        @definition.values[name.to_s] = { name: name.to_s, description: description }
       end
 
       def cast(&block)
