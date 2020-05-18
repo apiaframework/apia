@@ -10,28 +10,40 @@ module Rapid
 
     extend Defineable
 
-    def self.definition
-      @definition ||= Definitions::Polymorph.new(Helpers.class_name_to_id(name))
-    end
+    class << self
 
-    def self.collate_objects(set)
-      definition.options.each_value do |opt|
-        set.add_object(opt.type.klass) if opt.type.usable_for_field?
-      end
-    end
-
-    # Return the type which should be returned for the given value by running
-    # through each of the matchers to find the appropriate type.
-    def self.option_for_value(value)
-      option = definition.options.values.find do |opt|
-        opt.matches?(value)
+      # Return the definition for this polymorph
+      #
+      # @return [Rapid::Definitions::Polymorph]
+      def definition
+        @definition ||= Definitions::Polymorph.new(Helpers.class_name_to_id(name))
       end
 
-      if option.nil?
-        raise InvalidPolymorphValueError.new(self, value)
+      # Collate all objects that this polymorph references and add them to the
+      # given object set
+      #
+      # @param set [Rapid::ObjectSet]
+      # @return [void]
+      def collate_objects(set)
+        definition.options.each_value do |opt|
+          set.add_object(opt.type.klass) if opt.type.usable_for_field?
+        end
       end
 
-      option
+      # Return the type which should be returned for the given value by running
+      # through each of the matchers to find the appropriate type.
+      def option_for_value(value)
+        option = definition.options.values.find do |opt|
+          opt.matches?(value)
+        end
+
+        if option.nil?
+          raise InvalidPolymorphValueError.new(self, value)
+        end
+
+        option
+      end
+
     end
 
   end

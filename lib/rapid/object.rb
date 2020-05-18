@@ -9,22 +9,26 @@ module Rapid
 
     extend Defineable
 
-    # Return the definition for this type
-    #
-    # @return [Rapid::Definitions::Object]
-    def self.definition
-      @definition ||= Definitions::Object.new(Helpers.class_name_to_id(name))
-    end
+    class << self
 
-    # Collate all objects that this type references and add them to the
-    # given object set
-    #
-    # @param set [Rapid::ObjectSet]
-    # @return [void]
-    def self.collate_objects(set)
-      definition.fields.each_value do |field|
-        set.add_object(field.type.klass) if field.type.usable_for_field?
+      # Return the definition for this type
+      #
+      # @return [Rapid::Definitions::Object]
+      def definition
+        @definition ||= Definitions::Object.new(Helpers.class_name_to_id(name))
       end
+
+      # Collate all objects that this type references and add them to the
+      # given object set
+      #
+      # @param set [Rapid::ObjectSet]
+      # @return [void]
+      def collate_objects(set)
+        definition.fields.each_value do |field|
+          set.add_object(field.type.klass) if field.type.usable_for_field?
+        end
+      end
+
     end
 
     # Initialize an instance of this type with the value provided

@@ -29,8 +29,8 @@ module Rapid
         end
 
         @endpoints.each do |name, endpoint|
-          unless name.to_s =~ /\A[a-z0-9\-]+\z/
-            errors.add self, 'InvalidEndpointName', "The endpoint name #{name} is invalid. It can only contain letters, numbers and hyphens"
+          unless name.to_s =~ /\A[\w-]+\z/i
+            errors.add self, 'InvalidEndpointName', "The endpoint name #{name} is invalid. It can only contain letters, numbers, underscores, and hyphens"
           end
 
           unless endpoint.respond_to?(:ancestors) && endpoint.ancestors.include?(Rapid::Endpoint)

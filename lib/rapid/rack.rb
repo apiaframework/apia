@@ -41,6 +41,19 @@ module Rapid
       end
     end
 
+    # Return the API object
+    #
+    # @return [Rapid::API]
+    def api
+      if @api.is_a?(String) && development?
+        return Object.const_get(@api)
+      elsif @api.is_a?(String)
+        return @cached_api ||= Object.const_get(@api)
+      end
+
+      @api
+    end
+
     # Actually make the request
     #
     # @param env [Hash]
@@ -55,7 +68,7 @@ module Rapid
 
       request = Rapid::Request.new(env)
       request.namespace = @namespace
-      request.api = @api
+      request.api = api
       request.controller = controller
       request.endpoint = endpoint
 
@@ -84,7 +97,7 @@ module Rapid
         raise RackError.new(404, 'endpoint_missing', 'No endpoint could be determined from the URL path')
       end
 
-      controller = @api.definition.controllers[path_components[:controller].to_sym]
+      controller = api.definition.controllers[path_components[:controller].to_sym]
       if controller.nil?
         raise RackError.new(404, 'controller_invalid', "#{path_components[:controller]} is not a valid controller name")
       end
@@ -98,7 +111,7 @@ module Rapid
     end
 
     def validate_api
-      @api.validate_all.raise_if_needed
+      api.validate_all.raise_if_needed
     end
 
     def validate_http_method(request)

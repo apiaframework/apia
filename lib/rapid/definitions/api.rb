@@ -34,8 +34,8 @@ module Rapid
         end
 
         @controllers.each do |name, controller|
-          unless name.to_s =~ /\A[a-z0-9\-]+\z/
-            errors.add self, 'InvalidControllerName', "The controller name #{name} is invalid. It can only contain letters, numbers and hyphens"
+          unless name.to_s =~ /\A[\w\-]+\z/i
+            errors.add self, 'InvalidControllerName', "The controller name #{name} is invalid. It can only contain letters, numbers, underscores, and hyphens"
           end
 
           unless controller.respond_to?(:ancestors) && controller.ancestors.include?(Rapid::Controller)
