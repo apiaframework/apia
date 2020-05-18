@@ -48,8 +48,8 @@ module Rapid
     #
     # @param request [Rapid::Request] the associated request
     # @return [Hash]
-    def hash(request: nil)
-      self.class.definition.fields.generate_hash(@value, request: request)
+    def hash(request: nil, path: [])
+      self.class.definition.fields.generate_hash(@value, request: request, path: path)
     end
 
     # Should this type be included in any output?

@@ -34,12 +34,16 @@ module Rapid
     #
     # @param source [Object, Hash]
     # @param request [Rapid::Request]
+    # @param only [Array]
     # @return [Hash]
-    def generate_hash(source, request: nil)
+    def generate_hash(source, request: nil, path: [])
       each_with_object({}) do |(_, field), hash|
         next unless field.include?(source, request)
 
-        value = field.value(source, request: request)
+        field_path = path + [field]
+        next if request&.field_spec && !request.field_spec.include_field?(field_path)
+
+        value = field.value(source, request: request, path: field_path)
         next if value == :skip
 
         hash[field.name.to_s] = value

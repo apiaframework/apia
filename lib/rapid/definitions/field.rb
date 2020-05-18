@@ -82,16 +82,16 @@ module Rapid
       #
       # @param object [Object]
       # @return [Object]
-      def value(object, request: nil)
+      def value(object, request: nil, path: [])
         raw_value = raw_value_from_object(object)
 
         return nil if raw_value.nil? && can_be_nil?
         raise Rapid::NullFieldValueError.new(self, object) if raw_value.nil?
 
         if array? && raw_value.is_a?(Array)
-          raw_value.map { |v| type.cast(v, request: request) }
+          raw_value.each_with_index.map { |v, i| type.cast(v, request: request, path: path) }
         else
-          type.cast(raw_value, request: request)
+          type.cast(raw_value, request: request, path: path)
         end
       end
 

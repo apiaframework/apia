@@ -3,6 +3,7 @@
 require 'spec_helper'
 require 'rapid/definitions/field'
 require 'rapid/field_set'
+require 'rack/mock'
 
 describe Rapid::FieldSet do
   subject(:field_set) { Rapid::FieldSet.new }
@@ -140,6 +141,68 @@ describe Rapid::FieldSet do
         field_set.generate_hash(value: 1234)
       end.to raise_error Rapid::InvalidPolymorphValueError do |e|
         expect(e.polymorph.definition.id).to eq 'MyPolymorph'
+      end
+    end
+
+    it 'should only include fields in a requests field spec if one is provided' do
+      [:name, :description].each do |name|
+        field = Rapid::Definitions::Field.new(name)
+        field.type = :string
+        field_set.add field
+      end
+
+      request = Rapid::Request.new(Rack::MockRequest.env_for('/', params: { 'fields' => 'name' }))
+
+      hash = field_set.generate_hash({ name: 'Adam', description: 'Human' }, request: request)
+      expect(hash['name']).to eq 'Adam'
+      expect(hash.keys).to_not include 'description'
+    end
+
+    context 'nested' do
+      before(:each) do
+        pet = Rapid::Object.create('Pet') do
+          field :name, type: :string
+          field :type, type: :string
+        end
+
+        user = Rapid::Object.create('User') do
+          field :name, type: :string
+          field :pets, type: [pet]
+        end
+
+        field = Rapid::Definitions::Field.new(:user)
+        field.type = user
+        field_set.add field
+
+        field = Rapid::Definitions::Field.new(:age)
+        field.type = :integer
+        field_set.add field
+
+        @source = {
+          user: { name: 'Adam', pets: [{ name: 'Fido', type: 'Dog' }, { name: 'Fifi', type: 'Cat' }] },
+          age: 10
+        }
+      end
+
+      it 'should not return items that are not included in the root of the hash' do
+        request = Rapid::Request.new(Rack::MockRequest.env_for('/', params: { 'fields' => 'user' }))
+        hash = field_set.generate_hash(@source, request: request)
+        expect(hash['user']).to be_a Hash
+        expect(hash['user']['pets']).to be_a Array
+        expect(hash['user']['pets'][0]['name']).to eq 'Fido'
+        expect(hash['user']['pets'][0]['type']).to eq 'Dog'
+        expect(hash['age']).to be_nil
+      end
+
+      it 'should limit items on nested items' do
+        request = Rapid::Request.new(Rack::MockRequest.env_for('/', params: { 'fields' => 'user[pets[name]],age' }))
+        hash = field_set.generate_hash(@source, request: request)
+        expect(hash['user']).to be_a Hash
+        expect(hash['user'].keys).to_not include 'name'
+        expect(hash['user']['pets']).to be_a Array
+        expect(hash['user']['pets'][0]['name']).to eq 'Fido'
+        expect(hash['user']['pets'].map(&:keys).flatten).to_not include 'type'
+        expect(hash['age']).to eq 10
       end
     end
   end

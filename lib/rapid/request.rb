@@ -3,6 +3,7 @@
 require 'rack/request'
 require 'rapid/request_headers'
 require 'rapid/errors/invalid_json_error'
+require 'rapid/field_spec'
 
 module Rapid
   class Request < Rack::Request
@@ -25,11 +26,31 @@ module Rapid
 
     def json_body
       return unless content_type =~ /\Aapplication\/json/
+      return unless has_body?
 
       @json_body ||= begin
         JSON.parse(body.read)
                      rescue JSON::ParserError => e
                        raise InvalidJSONError, e.message
+      end
+    end
+
+    def has_body?
+      has_header?('rack.input')
+    end
+
+    def field_spec
+      return @field_spec if instance_variable_defined?('@field_spec')
+
+      @field_spec = begin
+        if json_body
+          string = json_body['fields']
+          FieldSpec.parse(string)
+        elsif has_body? && string = params['fields']
+          FieldSpec.parse(string)
+        elsif string = headers['x-field-spec']
+          FieldSpec.parse(string)
+        end
       end
     end
 

@@ -27,10 +27,10 @@ module Rapid
         @matcher.call(value) == true
       end
 
-      def cast(value)
+      def cast(value, request: nil, path: [])
         {
           'type' => @name.to_s,
-          'value' => type.cast(value)
+          'value' => type.cast(value, request: request, path: path)
         }
       end
 

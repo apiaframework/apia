@@ -40,7 +40,7 @@ module Rapid
       # @param value [Object, nil]
       # @param request [Rapid::Request, nil]
       # @return [Object, nil]
-      def cast(value, request: nil)
+      def cast(value, request: nil, path: [])
         return nil if value.nil?
 
         if scalar? || enum?
@@ -59,12 +59,12 @@ module Rapid
           return :skip unless object.include?(request)
 
           # Otherwise, we'll return the hash
-          object.hash(request: request)
+          object.hash(request: request, path: path)
 
         elsif polymorph?
           # If the type is a polymorph and this value
           option = klass.option_for_value(value)
-          option.cast(value)
+          option.cast(value, request: request, path: path)
 
         end
       end
