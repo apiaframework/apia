@@ -50,5 +50,24 @@ module Rapid
       end
     end
 
+    # Generate a default field spec for this field set based on the values
+    # provided for the include option.
+    #
+    # @return [FieldSpec]
+    def spec
+      @field_spec ||= begin
+        spec = each_with_object([]) do |(key, field), array|
+          next if field.include == false
+
+          if field.include.is_a?(::String)
+            array << "#{key}[#{field.include}]"
+          else
+            array << key
+          end
+        end.join(',')
+        FieldSpec.parse(spec)
+      end
+    end
+
   end
 end

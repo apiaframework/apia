@@ -16,6 +16,14 @@ module CoreAPI
         backend { |t| t.strftime('%A') }
       end
 
+      field :month, type: :string do
+        backend { |t| t.strftime('%b') }
+      end
+
+      field :full, type: :string do
+        backend { |t| t.to_s }
+      end
+
     end
   end
 end

@@ -6,9 +6,11 @@ module Rapid
   class FieldSpec
 
     attr_reader :spec
+    attr_reader :parsed_string
 
-    def initialize(spec)
+    def initialize(spec, parsed_string: nil)
       @spec = spec
+      @parsed_string = parsed_string
     end
 
     def include?(*path)
@@ -99,7 +101,7 @@ module Rapid
           hash[last_word] = {}
         end
 
-        new(hash)
+        new(hash, parsed_string: string)
       end
 
     end

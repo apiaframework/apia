@@ -65,6 +65,19 @@ describe Rapid::Request do
       expect(request.field_spec.include?(:something_else)).to be false
     end
 
+    it 'should return the endpoint default spec' do
+      endpoint = Rapid::Endpoint.create('MyEndpoint') do
+        field :name, type: :string
+        field :age, type: :string, include: false
+        field :hair_color, type: :string, include: true
+      end
+      request = Rapid::Request.new(Rack::MockRequest.env_for('/'))
+      request.endpoint = endpoint
+      expect(request.field_spec).to include :name
+      expect(request.field_spec).to include :hair_color
+      expect(request.field_spec).to_not include :age
+    end
+
     it 'should return nil if there is no spec' do
       request = Rapid::Request.new(Rack::MockRequest.env_for('/'))
       expect(request.field_spec).to be_nil

@@ -50,6 +50,8 @@ module Rapid
           FieldSpec.parse(string)
         elsif string = headers['x-field-spec']
           FieldSpec.parse(string)
+        elsif @endpoint
+          @endpoint.definition.fields.spec
         end
       end
     end

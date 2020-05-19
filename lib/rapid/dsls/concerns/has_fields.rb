@@ -21,6 +21,7 @@ module Rapid
 
           field.can_be_nil = options[:nil] if options.key?(:nil)
           field.array = options[:array] if options.key?(:array)
+          field.include = options[:include] if options.key?(:include)
 
           field.dsl.instance_eval(&block) if block_given?
 

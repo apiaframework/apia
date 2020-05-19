@@ -31,5 +31,13 @@ shared_examples 'has fields dsl' do
       expect(definition.fields[:name].can_be_nil?).to eq true
       expect(definition.fields[:name].condition.call).to eq 1234
     end
+
+    it 'should be able to specify the root level field spec' do
+      dsl.field :name, type: :string
+      dsl.field :date_of_birth, type: :string, include: true
+      dsl.field :age, type: :string, include: false
+      dsl.field :user, type: :string, include: 'name,pets[name]'
+      expect(definition.fields.spec.parsed_string).to eq 'name,date_of_birth,user[name,pets[name]]'
+    end
   end
 end

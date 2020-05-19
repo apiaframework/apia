@@ -17,6 +17,7 @@ module Rapid
       attr_accessor :can_be_nil
       attr_accessor :condition
       attr_accessor :type
+      attr_accessor :include
 
       def initialize(name, id: nil)
         @name = name
