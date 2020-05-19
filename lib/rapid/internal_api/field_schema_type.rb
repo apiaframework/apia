@@ -6,6 +6,8 @@ module Rapid
   module InternalAPI
     class FieldSchemaType < Rapid::Object
 
+      no_schema
+
       field :id, type: :string
       field :name, type: :string
       field :description, type: :string, nil: true

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'rapid/definition'
 require 'rapid/helpers'
 require 'rapid/dsls/field'
 require 'rapid/definitions/type'
@@ -8,10 +9,8 @@ require 'rapid/errors/null_field_value_error'
 
 module Rapid
   module Definitions
-    class Field
+    class Field < Definition
 
-      attr_reader :id
-      attr_reader :name
       attr_accessor :description
       attr_accessor :backend
       attr_accessor :array

@@ -1,19 +1,16 @@
 # frozen_string_literal: true
 
+require 'rapid/definition'
 require 'rapid/dsls/polymorph'
 require 'rapid/helpers'
 
 module Rapid
   module Definitions
-    class Polymorph
+    class Polymorph < Definition
 
-      attr_accessor :id
-      attr_accessor :name
-      attr_accessor :description
       attr_reader :options
 
-      def initialize(id)
-        @id = id
+      def setup
         @options = {}
       end
 

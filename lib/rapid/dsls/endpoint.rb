@@ -1,24 +1,13 @@
 # frozen_string_literal: true
 
+require 'rapid/dsl'
 require 'rapid/dsls/concerns/has_fields'
 
 module Rapid
   module DSLs
-    class Endpoint
+    class Endpoint < DSL
 
       include DSLs::Concerns::HasFields
-
-      def initialize(definition)
-        @definition = definition
-      end
-
-      def name(name)
-        @definition.name = name
-      end
-
-      def description(value)
-        @definition.description = value
-      end
 
       def authenticator(klass = nil, &block)
         if block_given?

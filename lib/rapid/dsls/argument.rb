@@ -1,16 +1,10 @@
 # frozen_string_literal: true
 
+require 'rapid/dsl'
+
 module Rapid
   module DSLs
-    class Argument
-
-      def initialize(definition)
-        @definition = definition
-      end
-
-      def description(description)
-        @definition.description = description
-      end
+    class Argument < DSL
 
       def validation(name, &block)
         @definition.validations << { name: name, block: block }

@@ -6,6 +6,8 @@ module Rapid
   module InternalAPI
     class ArgumentSchemaType < Rapid::Object
 
+      no_schema
+
       field :name, type: :string
       field :description, type: :string, nil: true
       field :type, type: :string do

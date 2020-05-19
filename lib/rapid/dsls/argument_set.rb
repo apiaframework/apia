@@ -1,23 +1,12 @@
 # frozen_string_literal: true
 
+require 'rapid/dsl'
 require 'rapid/definitions/argument'
 require 'rapid/helpers'
 
 module Rapid
   module DSLs
-    class ArgumentSet
-
-      def initialize(definition)
-        @definition = definition
-      end
-
-      def name(name)
-        @definition.name = name
-      end
-
-      def description(value)
-        @definition.description = value
-      end
+    class ArgumentSet < DSL
 
       def argument(name, type: nil, **options, &block)
         argument = Definitions::Argument.new(name, id: "#{@definition.id}/#{Helpers.camelize(name.to_s)}Argument")

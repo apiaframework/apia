@@ -1,16 +1,10 @@
 # frozen_string_literal: true
 
+require 'rapid/dsl'
+
 module Rapid
   module DSLs
-    class Field
-
-      def initialize(definition)
-        @definition = definition
-      end
-
-      def description(value)
-        @definition.description = value
-      end
+    class Field < DSL
 
       def backend(&block)
         @definition.backend = block

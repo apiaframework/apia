@@ -9,6 +9,10 @@ module Rapid
   module InternalAPI
     class APISchemaType < Rapid::Object
 
+      no_schema
+
+      condition { |api| api.definition.schema? }
+
       field :id, type: :string do
         backend { |api| api.definition.id }
       end
@@ -22,13 +26,16 @@ module Rapid
       end
 
       field :authenticator, type: AuthenticatorSchemaType, nil: true do
+        condition { |api| api.definition&.schema? }
         backend { |api| api.definition&.authenticator&.definition }
       end
 
       field :controllers, type: [APIControllerSchemaType] do
         backend do |api|
-          api.definition&.controllers.map do |key, c|
-            {
+          api.definition&.controllers.each_with_object([]) do |(key, c), array|
+            next unless c.definition.schema?
+
+            array << {
               name: key.to_s,
               controller: c.definition
             }
@@ -39,7 +46,8 @@ module Rapid
       field :types, type: [TypeSchemaPolymorph] do
         backend do |api|
           api.objects.select do |o|
-            [Rapid::Object, Rapid::Scalar, Rapid::Enum, Rapid::Polymorph].any? { |t| o.ancestors.include?(t) }
+            [Rapid::Object, Rapid::Scalar, Rapid::Enum, Rapid::Polymorph].any? { |t| o.ancestors.include?(t) } &&
+              o.definition.schema?
           end.map(&:definition)
         end
       end

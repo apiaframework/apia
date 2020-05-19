@@ -1,22 +1,11 @@
 # frozen_string_literal: true
 
+require 'rapid/dsl'
 require 'rapid/endpoint'
 
 module Rapid
   module DSLs
-    class Controller
-
-      def initialize(definition)
-        @definition = definition
-      end
-
-      def name(name)
-        @definition.name = name
-      end
-
-      def description(description)
-        @definition.description = description
-      end
+    class Controller < DSL
 
       def authenticator(klass = nil, &block)
         if block_given?

@@ -8,6 +8,8 @@ module Rapid
   module InternalAPI
     class ControllerSchemaType < Rapid::Object
 
+      no_schema
+
       field :id, type: :string
       field :name, type: :string, nil: true
       field :description, type: :string, nil: true

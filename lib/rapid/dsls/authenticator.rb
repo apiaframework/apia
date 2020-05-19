@@ -1,22 +1,11 @@
 # frozen_string_literal: true
 
+require 'rapid/dsl'
 require 'rapid/helpers'
 
 module Rapid
   module DSLs
-    class Authenticator
-
-      def initialize(definition)
-        @definition = definition
-      end
-
-      def name(name)
-        @definition.name = name
-      end
-
-      def description(description)
-        @definition.description = description
-      end
+    class Authenticator < DSL
 
       def type(type)
         @definition.type = type

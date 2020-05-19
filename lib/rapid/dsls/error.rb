@@ -1,20 +1,13 @@
 # frozen_string_literal: true
 
+require 'rapid/dsl'
 require 'rapid/dsls/concerns/has_fields'
 
 module Rapid
   module DSLs
-    class Error
+    class Error < DSL
 
       include DSLs::Concerns::HasFields
-
-      def initialize(definition)
-        @definition = definition
-      end
-
-      def name(name)
-        @definition.name = name
-      end
 
       def code(code)
         @definition.code = code
@@ -22,10 +15,6 @@ module Rapid
 
       def http_status(http_status)
         @definition.http_status = http_status
-      end
-
-      def description(description)
-        @definition.description = description
       end
 
     end

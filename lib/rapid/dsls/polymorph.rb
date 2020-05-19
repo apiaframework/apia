@@ -1,27 +1,12 @@
 # frozen_string_literal: true
 
+require 'rapid/dsl'
 require 'rapid/definitions/polymorph_option'
 require 'rapid/helpers'
 
 module Rapid
   module DSLs
-    class Polymorph
-
-      def initialize(definition)
-        @definition = definition
-      end
-
-      def name(name)
-        @definition.name = name
-      end
-
-      def description(value)
-        @definition.description = value
-      end
-
-      def initialize(definition)
-        @definition = definition
-      end
+    class Polymorph < DSL
 
       def option(name, type: nil, matcher: nil)
         id = "#{@definition.id}/#{Helpers.camelize(name)}Option"

@@ -10,6 +10,8 @@ module Rapid
   module InternalAPI
     class TypeSchemaPolymorph < Rapid::Polymorph
 
+      no_schema
+
       option :object, type: ObjectSchemaType, matcher: proc { |o| o.is_a?(Rapid::Definitions::Object) }
       option :scalar, type: ScalarSchemaType, matcher: proc { |o| o.is_a?(Rapid::Definitions::Scalar) }
       option :enum, type: EnumSchemaType, matcher: proc { |o| o.is_a?(Rapid::Definitions::Enum) }

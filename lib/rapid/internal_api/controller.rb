@@ -1,11 +1,18 @@
 # frozen_string_literal: true
 
 require 'rapid/controller'
+require 'rapid/authenticator'
 require 'rapid/internal_api/api_schema_type'
 
 module Rapid
   module InternalAPI
     class Controller < Rapid::Controller
+
+      no_schema
+
+      authenticator do
+        type :anonymous
+      end
 
       name 'API Schema'
       description 'Provides endpoint to interrogate the API schema'

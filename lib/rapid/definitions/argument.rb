@@ -1,24 +1,22 @@
 # frozen_string_literal: true
 
+require 'rapid/definition'
 require 'rapid/dsls/argument'
 require 'rapid/helpers'
 
 module Rapid
   module Definitions
-    class Argument
+    class Argument < Definition
 
-      attr_accessor :id
-      attr_reader :name
       attr_reader :options
       attr_reader :validations
-      attr_accessor :description
       attr_accessor :required
       attr_accessor :array
       attr_accessor :type
 
       def initialize(name, id: nil)
-        @name = name
         @id = id
+        @name = name
         @validations = []
       end
 

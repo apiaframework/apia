@@ -1,20 +1,17 @@
 # frozen_string_literal: true
 
+require 'rapid/definition'
 require 'rapid/dsls/api'
 require 'rapid/internal_api/controller'
 
 module Rapid
   module Definitions
-    class API
+    class API < Definition
 
-      attr_accessor :id
-      attr_accessor :name
-      attr_accessor :description
       attr_accessor :authenticator
       attr_reader :controllers
 
-      def initialize(id)
-        @id = id
+      def setup
         @controllers = { rapid: InternalAPI::Controller }
       end
 

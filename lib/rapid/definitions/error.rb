@@ -1,21 +1,18 @@
 # frozen_string_literal: true
 
+require 'rapid/definition'
 require 'rapid/dsls/error'
 require 'rapid/field_set'
 
 module Rapid
   module Definitions
-    class Error
+    class Error < Definition
 
-      attr_accessor :id
-      attr_accessor :name
-      attr_accessor :description
       attr_accessor :code
       attr_accessor :http_status
       attr_reader :fields
 
-      def initialize(id)
-        @id = id
+      def setup
         @fields = FieldSet.new
       end
 

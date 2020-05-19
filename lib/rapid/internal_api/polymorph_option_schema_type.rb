@@ -4,7 +4,7 @@ module Rapid
   module InternalAPI
     class PolymorphOptionSchemaType < Rapid::Object
 
-      description 'An option that might be returned within a polymorph'
+      no_schema
 
       field :name, type: :string
       field :type, type: :string do

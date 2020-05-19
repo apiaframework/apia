@@ -1,20 +1,17 @@
 # frozen_string_literal: true
 
+require 'rapid/definition'
 require 'rapid/dsls/object'
 require 'rapid/field_set'
 
 module Rapid
   module Definitions
-    class Object
+    class Object < Definition
 
-      attr_accessor :id
-      attr_accessor :name
-      attr_accessor :description
       attr_reader :conditions
       attr_reader :fields
 
-      def initialize(id)
-        @id = id
+      def setup
         @conditions = []
         @fields = FieldSet.new
       end

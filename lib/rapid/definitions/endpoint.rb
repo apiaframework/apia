@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'rapid/definition'
 require 'rapid/argument_set'
 require 'rapid/dsls/endpoint'
 require 'rapid/field_set'
@@ -7,13 +8,10 @@ require 'rack/utils'
 
 module Rapid
   module Definitions
-    class Endpoint
+    class Endpoint < Definition
 
       HTTP_METHODS = [:get, :head, :post, :patch, :put, :delete, :options].freeze
 
-      attr_accessor :id
-      attr_accessor :name
-      attr_accessor :description
       attr_accessor :authenticator
       attr_accessor :action
       attr_accessor :http_status
@@ -21,8 +19,7 @@ module Rapid
       attr_reader :potential_errors
       attr_reader :fields
 
-      def initialize(id)
-        @id = id
+      def setup
         @potential_errors = []
         @fields = FieldSet.new
         @http_method = :get

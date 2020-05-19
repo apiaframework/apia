@@ -1,21 +1,19 @@
 # frozen_string_literal: true
 
+require 'rapid/definition'
 require 'rapid/dsls/authenticator'
 
 module Rapid
   module Definitions
-    class Authenticator
+    class Authenticator < Definition
 
       TYPES = [:bearer].freeze
 
-      attr_accessor :id
-      attr_accessor :name
-      attr_accessor :description
       attr_accessor :type
       attr_accessor :action
       attr_reader :potential_errors
 
-      def initialize(id)
+      def setup
         @id = id
         @potential_errors = []
       end
