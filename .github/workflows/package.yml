@@ -1,0 +1,40 @@
+name: Build Package
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build:
+    name: Build + Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Set up Ruby 2.6
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6.x
+
+      - name: Build Gem
+        run: gem build *.gemspec
+
+      - name: Setup credentials
+        run: |
+          mkdir -p $HOME/.gem
+          touch $HOME/.gem/credentials
+          chmod 0600 $HOME/.gem/credentials
+          printf -- "---\n:rubygems_api_key: ${RUBYGEMS_API_KEY}\n" > $HOME/.gem/credentials
+          printf -- ":github: Bearer ${GITHUB_API_KEY}\n" >> $HOME/.gem/credentials
+        env:
+          RUBYGEMS_API_KEY: ${{secrets.KRYSTAL_RUBYGEMS_API_KEY}}
+          GITHUB_API_KEY: ${{secrets.GITHUB_TOKEN}}
+
+      # - name: Publish to RubyGems
+      #   run: |
+      #     gem push *.gem
+
+      - name: Publish to GPR
+        run: |
+          gem push --key github --host https://rubygems.pkg.github.com/krystal *.gem
