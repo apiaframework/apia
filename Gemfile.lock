@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rapid (0.0.1)
+    rapid (0.0.2)
       json
       rack
 
