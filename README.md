@@ -9,7 +9,9 @@ Rapid is an API framework for building a self-documenting HTTP API in any Ruby a
 To begin, you just need to install the gem into the application.
 
 ```ruby
-gem 'rapid-api', github: 'krystal/rapid'
+source 'https://github.pkg.github.com/krystal' do
+  gem 'rapid', '~> 1.0'
+end
 ```
 
 Once installed, you need to decide where to store your API (or APIs). If you are working with a Rails application, it is recommended to put your API into an `app/apis` directory. Within this, you can create a directory for each API you wish to create (or you can put each API in different locations). For this example, we'll create an API called `CoreAPI` which will live in `app/apis/core_api`.

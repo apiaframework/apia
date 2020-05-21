@@ -8,6 +8,4 @@ group :development do
   gem 'rspec-core'
   gem 'rspec-expectations'
   gem 'rspec-mocks'
-  gem 'guard'
-  gem 'guard-rspec'
 end
