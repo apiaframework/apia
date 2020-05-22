@@ -9,8 +9,8 @@ module Rapid
       no_schema
 
       field :id, type: :string
-      field :name, type: :string, nil: true
-      field :description, type: :string, nil: true
+      field :name, type: :string, null: true
+      field :description, type: :string, null: true
       field :values, type: [EnumValueSchemaType] do
         backend { |e| e.values.values }
       end

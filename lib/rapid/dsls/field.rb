@@ -10,8 +10,8 @@ module Rapid
         @definition.backend = block
       end
 
-      def can_be_nil(value)
-        @definition.can_be_nil = value
+      def null(value)
+        @definition.null = value
       end
 
       def array(value)

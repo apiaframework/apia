@@ -12,9 +12,9 @@ module Rapid
       no_schema
 
       field :id, type: :string
-      field :name, type: :string, nil: true
-      field :description, type: :string, nil: true
-      field :authenticator, type: AuthenticatorSchemaType, nil: true do
+      field :name, type: :string, null: true
+      field :description, type: :string, null: true
+      field :authenticator, type: AuthenticatorSchemaType, null: true do
         backend { |e| e.authenticator&.definition }
       end
       field :argument_set, type: ArgumentSetSchemaType do

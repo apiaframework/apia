@@ -8,7 +8,7 @@ shared_examples 'has fields dsl' do
       expect(definition.fields[:name]).to be_a Rapid::Definitions::Field
       expect(definition.fields[:name].type.klass).to eq Rapid::Scalars::String
       expect(definition.fields[:name].array?).to be false
-      expect(definition.fields[:name].can_be_nil?).to eq false
+      expect(definition.fields[:name].null?).to eq false
     end
 
     it 'should be able to add a field with an array' do
@@ -18,17 +18,17 @@ shared_examples 'has fields dsl' do
     end
 
     it 'should allow nil to be provided as an option' do
-      dsl.field :name, type: :string, nil: true
-      expect(definition.fields[:name].can_be_nil?).to eq true
+      dsl.field :name, type: :string, null: true
+      expect(definition.fields[:name].null?).to eq true
     end
 
     it 'should execute the block' do
       dsl.field :name, type: :string do
         condition { 1234 }
-        can_be_nil true
+        null true
       end
       expect(definition.fields[:name].type.klass).to eq Rapid::Scalars::String
-      expect(definition.fields[:name].can_be_nil?).to eq true
+      expect(definition.fields[:name].null?).to eq true
       expect(definition.fields[:name].condition.call).to eq 1234
     end
 

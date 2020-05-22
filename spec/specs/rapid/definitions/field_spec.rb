@@ -27,22 +27,22 @@ describe Rapid::Definitions::Field do
     end
   end
 
-  context '#can_be_nil?' do
+  context '#null?' do
     it 'should be true if the field can be nil' do
       field = Rapid::Definitions::Field.new(:id)
-      field.can_be_nil = true
-      expect(field.can_be_nil?).to be true
+      field.null = true
+      expect(field.null?).to be true
     end
 
     it 'should be false if the field does not specify a preference' do
       field = Rapid::Definitions::Field.new(:id)
-      expect(field.can_be_nil?).to be false
+      expect(field.null?).to be false
     end
 
     it 'should be false if the field cannot be nil' do
       field = Rapid::Definitions::Field.new(:id)
-      field.can_be_nil = false
-      expect(field.can_be_nil?).to be false
+      field.null = false
+      expect(field.null?).to be false
     end
   end
 

@@ -154,11 +154,11 @@ module CoreAPI
       field :id, type: :string
       field :name, type: :string
 
-      # When you pass `nil: true` to the field the API will allow nil values
+      # When you pass `null: true` to the field the API will allow nil values
       # to be returned in place of the defined type. If you don't specify
       # this and a nil value is encountered the request will fail so be
       # careful with this.
-      field :description, type: :string, nil: true
+      field :description, type: :string, null: true
 
       # You can reference other objects too
       field :owner, type: Objects::User

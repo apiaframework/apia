@@ -10,12 +10,12 @@ module Rapid
 
       field :id, type: :string
       field :name, type: :string
-      field :description, type: :string, nil: true
+      field :description, type: :string, null: true
       field :type, type: :string do
         backend { |f| f.type.id }
       end
-      field :can_be_nil, type: :boolean do
-        backend(&:can_be_nil?)
+      field :null, type: :boolean do
+        backend(&:null?)
       end
       field :array, type: :boolean do
         backend(&:array?)

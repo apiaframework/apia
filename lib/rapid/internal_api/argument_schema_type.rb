@@ -9,7 +9,7 @@ module Rapid
       no_schema
 
       field :name, type: :string
-      field :description, type: :string, nil: true
+      field :description, type: :string, null: true
       field :type, type: :string do
         backend { |f| f.type.id }
       end

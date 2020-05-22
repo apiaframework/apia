@@ -17,15 +17,15 @@ module Rapid
         backend { |api| api.definition.id }
       end
 
-      field :name, type: :string, nil: true do
+      field :name, type: :string, null: true do
         backend { |api| api.definition.name }
       end
 
-      field :description, type: :string, nil: true do
+      field :description, type: :string, null: true do
         backend { |api| api.definition.description }
       end
 
-      field :authenticator, type: AuthenticatorSchemaType, nil: true do
+      field :authenticator, type: AuthenticatorSchemaType, null: true do
         condition { |api| api.definition&.schema? }
         backend { |api| api.definition&.authenticator&.definition }
       end

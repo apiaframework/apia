@@ -10,8 +10,8 @@ module Rapid
       no_schema
 
       field :id, type: :string
-      field :name, type: :string, nil: true
-      field :description, type: :string, nil: true
+      field :name, type: :string, null: true
+      field :description, type: :string, null: true
       field :arguments, type: [ArgumentSchemaType] do
         backend { |as| as.arguments.values }
       end

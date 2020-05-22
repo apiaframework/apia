@@ -10,8 +10,8 @@ module Rapid
       no_schema
 
       field :id, type: :string
-      field :name, type: :string, nil: true
-      field :description, type: :string, nil: true
+      field :name, type: :string, null: true
+      field :description, type: :string, null: true
       field :type, type: :string
       field :potential_errors, type: [ErrorSchemaType] do
         backend { |a| a.potential_errors.map(&:definition) }

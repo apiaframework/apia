@@ -31,15 +31,15 @@ describe Rapid::DSLs::Field do
     end
   end
 
-  context '#can_be_nil' do
+  context '#null' do
     it 'should be able to set the ability to be nil (true)' do
-      dsl.can_be_nil true
-      expect(field.can_be_nil?).to be true
+      dsl.null true
+      expect(field.null?).to be true
     end
 
     it 'should be able to set the ability to be nil (false)' do
-      dsl.can_be_nil false
-      expect(field.can_be_nil?).to be false
+      dsl.null false
+      expect(field.null?).to be false
     end
   end
 

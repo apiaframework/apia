@@ -13,7 +13,7 @@ class UserType < Rapid::Object
   description 'Represents any user in the system'
 
   field :name, type: :string
-  field :age, type: :integer, nil: true
+  field :age, type: :integer, null: true
   field :status, type: UserStatusEnum
 end
 

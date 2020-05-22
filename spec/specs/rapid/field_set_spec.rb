@@ -12,7 +12,7 @@ describe Rapid::FieldSet do
     it 'should set fields to nil if they are nil' do
       field = Rapid::Definitions::Field.new(:name)
       field.type = :string
-      field.can_be_nil = true
+      field.null = true
       field_set.add field
 
       hash = field_set.generate_hash(name: nil)

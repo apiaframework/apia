@@ -19,7 +19,7 @@ module Rapid
             field.array = false
           end
 
-          field.can_be_nil = options[:nil] if options.key?(:nil)
+          field.null = options[:null] if options.key?(:null)
           field.array = options[:array] if options.key?(:array)
           field.include = options[:include] if options.key?(:include)
 

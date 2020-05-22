@@ -144,7 +144,7 @@ describe Rapid::Object do
       type = Rapid::Object.create('ExampleType') do
         field :id, type: :integer
         field :name, type: :string
-        field :age, type: :integer, nil: true
+        field :age, type: :integer, null: true
       end
       type_instance = type.new(id: 1234)
       expect do

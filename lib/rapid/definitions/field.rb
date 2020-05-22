@@ -14,7 +14,7 @@ module Rapid
       attr_accessor :description
       attr_accessor :backend
       attr_accessor :array
-      attr_accessor :can_be_nil
+      attr_accessor :null
       attr_accessor :condition
       attr_accessor :type
       attr_accessor :include
@@ -34,8 +34,8 @@ module Rapid
       # Can the result for thsi field be nil?
       #
       # @return [Boolean]
-      def can_be_nil?
-        @can_be_nil == true
+      def null?
+        @null == true
       end
 
       # Is the result from this field expected to be an array?
@@ -85,7 +85,7 @@ module Rapid
       def value(object, request: nil, path: [])
         raw_value = raw_value_from_object(object)
 
-        return nil if raw_value.nil? && can_be_nil?
+        return nil if raw_value.nil? && null?
         raise Rapid::NullFieldValueError.new(self, object) if raw_value.nil?
 
         if array? && raw_value.is_a?(Array)
