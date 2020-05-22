@@ -229,5 +229,44 @@ describe Rapid::ArgumentSet do
         expect(e.issue).to eq :invalid_enum_value
       end
     end
+
+    it 'should raise an error if a lookup argument set is invalid' do
+      lookup_as = Rapid::LookupArgumentSet.create('LookupAS') do
+        argument :id, type: :string
+        argument :permalink, type: :string
+      end
+      as = Rapid::ArgumentSet.create('ExampleSet') do
+        argument :user, type: lookup_as
+      end
+      expect { as.new({ user: {} }) }.to raise_error(Rapid::InvalidArgumentError) do |e|
+        expect(e.issue).to eq :missing_lookup_value
+      end
+    end
+
+    it 'should raise an error if the wrong type of object is provided for an array argument' do
+      as = Rapid::ArgumentSet.create('ExampleSet') do
+        argument :names, type: [:string]
+      end
+      ['', {}, 123].each do |object_to_test|
+        expect { as.new({ names: object_to_test }) }.to raise_error(Rapid::InvalidArgumentError) do |e|
+          expect(e.issue).to eq :array_expected
+        end
+      end
+    end
+
+    it 'should raise an error if a non-hash object is provided for an argument set' do
+      lookup_as = Rapid::LookupArgumentSet.create('LookupAS') do
+        argument :id, type: :string
+        argument :permalink, type: :string
+      end
+      as = Rapid::ArgumentSet.create('ExampleSet') do
+        argument :user, type: lookup_as
+      end
+      [123, '111', []].each do |object_to_test|
+        expect { as.new({ user: object_to_test }) }.to raise_error(Rapid::InvalidArgumentError) do |e|
+          expect(e.issue).to eq :object_expected
+        end
+      end
+    end
   end
 end

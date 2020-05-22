@@ -14,7 +14,9 @@ module Rapid
       invalid_scalar: 'The value provided was not of an appropriate type for the scalar that was requested. For example, you may have passed a string where an integer was required etc...',
       parse_error: 'The value provided could not be parsed into an appropriate value by the server. For example, if a date was expected and the value could not be interpretted as such.',
       validation_error: 'A validation rule that has been specified for this argument was not satisfied. See the further details in the response and in the documentation.',
-      invalid_enum_value: 'The value provided was not one of the options suitable for the enum.'
+      invalid_enum_value: 'The value provided was not one of the options suitable for the enum.',
+      missing_lookup_value: 'A value for a lookup argument set has not been provided but at least one value is required.',
+      ambiguous_lookup_values: 'More than one value has been provided for a lookup argument set. Only one option may be provided.'
     }.freeze
 
     attr_reader :argument

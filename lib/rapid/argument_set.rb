@@ -84,13 +84,22 @@ module Rapid
       @source.dig(*values)
     end
 
+    # Validate an argument set and return any errors as appropriate
+    #
+    # @param argument [Rapid::Argument]
+    def validate(argument, index: nil)
+    end
+
     private
 
-    def parse_value(argument, value, index: nil)
+    def parse_value(argument, value, index: nil, in_array: false)
       if argument.array? && value.is_a?(Array)
         value.each_with_index.map do |v, index|
-          parse_value(argument, v, index: index)
+          parse_value(argument, v, index: index, in_array: true)
         end
+
+      elsif argument.array? && !in_array
+        raise InvalidArgumentError.new(argument, issue: :array_expected, index: index, path: @path + [argument])
 
       elsif argument.type.scalar?
         begin
@@ -109,7 +118,13 @@ module Rapid
         type
 
       elsif argument.type.argument_set?
-        argument.type.klass.new(value, path: @path + [argument])
+        unless value.is_a?(Hash)
+          raise InvalidArgumentError.new(argument, issue: :object_expected, index: index, path: @path + [argument])
+        end
+
+        value = argument.type.klass.new(value, path: @path + [argument])
+        value.validate(argument, index: index)
+        value
 
       elsif argument.type.enum?
         unless argument.type.klass.definition.values[value]
