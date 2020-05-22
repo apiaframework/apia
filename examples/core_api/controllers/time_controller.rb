@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'core_api/objects/time'
+require 'core_api/argument_sets/time_lookup_argument_set'
 
 module CoreAPI
   module Controllers
@@ -19,37 +20,12 @@ module CoreAPI
       end
 
       endpoint :format do
-        field :time, type: :string
-        http_method :post
-        argument :time, type: :date, required: true
+        description 'Format the given time'
+        argument :time, type: ArgumentSets::TimeLookupArgumentSet, required: true
+        field :formatted_time, type: :string
         action do |request, response|
-          response.add_field :time, request.arguments[:time].inspect
-        end
-      end
-
-      class SomeEnum < Rapid::Enum
-
-        value 'active'
-        value 'inactive'
-
-      end
-
-      endpoint :tomorrow do
-        field :method, type: :string
-        field :arguments, type: :string
-        field :json, type: :string
-        field :params, type: :string
-
-        http_method :post
-
-        argument :test, type: :string, required: true
-        argument :enum, type: SomeEnum
-
-        action do |request, response|
-          response.add_field :method, request.request_method
-          response.add_field :arguments, request.arguments.inspect
-          response.add_field :json, request.json_body.inspect
-          response.add_field :params, request.params.inspect
+          time = request.arguments[:time]
+          response.add_field :formatted_time, time.lookup(request).to_s
         end
       end
 
