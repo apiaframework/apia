@@ -31,8 +31,20 @@ module Rapid
     private
 
     def find_error_by_name(error_name)
-      @request.authenticator&.definition&.potential_errors&.find { |e| e.definition.id == error_name } ||
-        @request.endpoint&.definition&.potential_errors&.find { |e| e.definition.id == error_name }
+      find_potential_error(@request.endpoint, error_name) ||
+        find_potential_error(@request.authenticator, error_name)
+    end
+
+    def find_potential_error(source, name)
+      return nil if source.nil?
+
+      unless name =~ /\//
+        name = source.definition.id + '/' + name
+      end
+
+      source.definition.potential_errors.find do |error|
+        error.definition.id == name
+      end
     end
 
   end

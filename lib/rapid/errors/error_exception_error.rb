@@ -8,6 +8,8 @@ module Rapid
   # to raise.
   class ErrorExceptionError < Rapid::RuntimeError
 
+    attr_reader :error_class
+
     def initialize(error_class, fields = {})
       @error_class = error_class
       @fields = fields
