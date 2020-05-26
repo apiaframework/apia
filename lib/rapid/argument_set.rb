@@ -36,7 +36,7 @@ module Rapid
       # @param request [Rapid::Request]
       # @return [Rapid::ArgumentSet]
       def create_from_request(request)
-        new(request.json_body || request.params || {})
+        new(request.json_body || request.params || {}, request: request)
       end
 
     end
@@ -47,12 +47,13 @@ module Rapid
     # @param hash [Hash]
     # @param path [Array]
     # @return [Rapid::ArgumentSet]
-    def initialize(hash, path: [])
+    def initialize(hash, path: [], request: nil)
       unless hash.is_a?(Hash)
         raise Rapid::RuntimeError, 'Hash was expected for argument'
       end
 
       @path = path
+      @request = request
       @source = hash.each_with_object({}) do |(key, value), source|
         argument = self.class.definition.arguments[key.to_sym]
         next unless argument
@@ -122,7 +123,7 @@ module Rapid
           raise InvalidArgumentError.new(argument, issue: :object_expected, index: index, path: @path + [argument])
         end
 
-        value = argument.type.klass.new(value, path: @path + [argument])
+        value = argument.type.klass.new(value, path: @path + [argument], request: @request)
         value.validate(argument, index: index)
         value
 

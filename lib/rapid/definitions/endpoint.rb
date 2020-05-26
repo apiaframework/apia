@@ -4,6 +4,7 @@ require 'rapid/definition'
 require 'rapid/argument_set'
 require 'rapid/dsls/endpoint'
 require 'rapid/field_set'
+require 'rapid/error_set'
 require 'rack/utils'
 
 module Rapid
@@ -16,11 +17,9 @@ module Rapid
       attr_accessor :action
       attr_accessor :http_status
       attr_accessor :http_method
-      attr_reader :potential_errors
       attr_reader :fields
 
       def setup
-        @potential_errors = []
         @fields = FieldSet.new
         @http_method = :get
         @http_status = 200
@@ -28,6 +27,10 @@ module Rapid
 
       def argument_set
         @argument_set ||= Rapid::ArgumentSet.create("#{@id}/BaseArgumentSet")
+      end
+
+      def potential_errors
+        @potential_errors ||= Rapid::ErrorSet.new
       end
 
       def dsl
@@ -61,12 +64,6 @@ module Rapid
           errors.add self, 'InvalidHTTPStatus', 'The HTTP status is not valid (must be an integer)'
         end
 
-        @potential_errors.each_with_index do |error, index|
-          unless error.respond_to?(:ancestors) && error.ancestors.include?(Rapid::Error)
-            errors.add self, 'InvalidPotentialError', "Potential error at index #{index} must be a class that inherits from Rapid::Error"
-          end
-        end
-
         if @authenticator
           unless @authenticator.respond_to?(:ancestors) && @authenticator.ancestors.include?(Rapid::Authenticator)
             errors.add self, 'InvalidAuthenticator', 'The authenticator must be a class that inherits from Rapid::Authenticator'
@@ -74,6 +71,7 @@ module Rapid
         end
 
         @fields.validate(errors, self)
+        @potential_errors&.validate(errors, self)
       end
 
     end

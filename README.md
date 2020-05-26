@@ -197,6 +197,7 @@ This provides a very basic overview of the framework but there is much more that
 
 - Authentication
 - Endpoint arguments
+- Lookup arguments
 - Endpoint methods & statuses
 - Field specs
 - Errors

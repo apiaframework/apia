@@ -31,4 +31,46 @@ describe Rapid::LookupArgumentSet do
       end
     end
   end
+
+  context '#resolve' do
+    it 'should return nil if theres no resolver' do
+      klass = described_class.create('LookupAS') do
+        argument :id, type: :integer
+      end
+
+      as = klass.new({ id: 1234 })
+      expect(as.resolve).to eq nil
+    end
+
+    it 'should return the resolved object' do
+      klass = described_class.create('LookupAS') do
+        argument :id, type: :integer
+
+        resolver do |set, request|
+          case set[:id]
+          when 1 then 'Adam'
+          when 2 then 'Charlie'
+          end
+        end
+      end
+
+      expect(klass.new({ id: 1 }).resolve).to eq 'Adam'
+      expect(klass.new({ id: 2 }).resolve).to eq 'Charlie'
+      expect(klass.new({ id: 3 }).resolve).to be nil
+    end
+
+    it 'should cache the resolved object' do
+      klass = described_class.create('LookupAS') do
+        argument :id, type: :integer
+
+        resolver do |set, request|
+          'Hello!'
+        end
+      end
+
+      value = klass.new({ id: 1 })
+      object_id = value.resolve.object_id
+      expect(value.resolve.object_id).to eq object_id
+    end
+  end
 end

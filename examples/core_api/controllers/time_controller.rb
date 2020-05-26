@@ -7,6 +7,7 @@ module CoreAPI
   module Controllers
     class TimeController < Rapid::Controller
 
+      name 'Time API'
       description 'Returns the current time in varying ways'
 
       endpoint :now do
@@ -25,7 +26,7 @@ module CoreAPI
         field :formatted_time, type: :string
         action do |request, response|
           time = request.arguments[:time]
-          response.add_field :formatted_time, time.lookup(request).to_s
+          response.add_field :formatted_time, time.resolve
         end
       end
 

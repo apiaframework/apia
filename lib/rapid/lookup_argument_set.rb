@@ -1,15 +1,40 @@
 # frozen_string_literal: true
 
+require 'rapid/argument_set'
+require 'rapid/definitions/lookup_argument_set'
+
 module Rapid
   class LookupArgumentSet < ArgumentSet
 
-    # Handles the lookup for this argument set by looking up the appropriate
-    # value and returning it. This should be overriden by the underlying object
-    # otherwise this won't work very well.
-    #
-    # @param request [Rapid::Request]
-    # @return [Object, nil]
-    def lookup(request)
+    class << self
+
+      # Return the definition for this argument set
+      #
+      # @return [Rapid::Definitions::ArgumentSet]
+      def definition
+        @definition ||= Definitions::LookupArgumentSet.new(Helpers.class_name_to_id(name))
+      end
+
+      # Finds all objects referenced by this argument set and add them
+      # to the provided set.
+      #
+      # @param set [Rapid::ObjectSet]
+      # @return [void]
+      def collate_objects(set)
+        super
+
+        definition.potential_errors.each do |error|
+          set.add_object(error)
+        end
+      end
+
+    end
+
+    def resolve
+      return if self.class.definition.resolver.nil?
+      return @resolved_value if instance_variable_defined?('@resolved_value')
+
+      @resolved_value = self.class.definition.resolver.call(self, @request)
     end
 
     def validate(argument, index: nil)

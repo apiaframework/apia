@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rapid/definition'
+require 'rapid/error_set'
 require 'rapid/dsls/argument_set'
 
 module Rapid
