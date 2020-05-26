@@ -48,8 +48,8 @@ module Rapid
       end
     end
 
-    def respond_to_missing?(name)
-      definition.dsl.respond_to?(name)
+    def respond_to_missing?(name, include_private = false)
+      definition.dsl.respond_to?(name) || super
     end
 
   end
