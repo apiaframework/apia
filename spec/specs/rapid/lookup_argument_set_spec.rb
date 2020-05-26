@@ -46,7 +46,7 @@ describe Rapid::LookupArgumentSet do
       klass = described_class.create('LookupAS') do
         argument :id, type: :integer
 
-        resolver do |set, request|
+        resolver do |set|
           case set[:id]
           when 1 then 'Adam'
           when 2 then 'Charlie'
@@ -63,7 +63,7 @@ describe Rapid::LookupArgumentSet do
       klass = described_class.create('LookupAS') do
         argument :id, type: :integer
 
-        resolver do |set, request|
+        resolver do
           'Hello!'
         end
       end
@@ -79,7 +79,7 @@ describe Rapid::LookupArgumentSet do
         potential_error 'InlineError' do
           code :some_inline_error
         end
-        resolver do |set, request|
+        resolver do
           raise_error 'InlineError'
         end
       end
