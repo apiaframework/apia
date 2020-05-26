@@ -11,6 +11,8 @@ module Rapid
 
       Scalars.register :date, self
 
+      name 'Date'
+
       cast do |value|
         value.strftime('%Y-%m-%d')
       end

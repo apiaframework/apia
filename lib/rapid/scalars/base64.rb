@@ -10,6 +10,8 @@ module Rapid
 
       Scalars.register :base64, self
 
+      name 'Base64-encoded string'
+
       cast do |value|
         ::Base64.encode64(value).sub(/\n\z/, '')
       end

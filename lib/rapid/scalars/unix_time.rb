@@ -11,6 +11,8 @@ module Rapid
 
       Scalars.register :unix_time, self
 
+      name 'Unix Timestamp'
+
       cast do |time|
         time.to_i
       end

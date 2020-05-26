@@ -9,6 +9,8 @@ module Rapid
 
       Scalars.register :integer, self
 
+      name 'Integer'
+
       cast do |value|
         value.to_i
       end

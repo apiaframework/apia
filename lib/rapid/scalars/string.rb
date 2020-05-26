@@ -9,6 +9,8 @@ module Rapid
 
       Scalars.register :string, self
 
+      name 'String'
+
       description 'A value containing alpha-numeric characters (including symbols)'
 
       cast do |value|

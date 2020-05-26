@@ -9,6 +9,8 @@ module Rapid
 
       Scalars.register :boolean, self
 
+      name 'Boolean'
+
       cast do |value|
         value ? true : false
       end

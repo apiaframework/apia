@@ -9,6 +9,8 @@ module Rapid
 
       Scalars.register :decimal, self
 
+      name 'Decimal'
+
       cast do |value|
         value.to_f
       end
