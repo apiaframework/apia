@@ -3,7 +3,7 @@
 require 'rapid/helpers'
 require 'rapid/defineable'
 require 'rapid/definitions/endpoint'
-require 'rapid/environment'
+require 'rapid/request_environment'
 
 module Rapid
   class Endpoint
@@ -41,7 +41,7 @@ module Rapid
       # @param request [Rapid::Request]
       # @return [Rapid::Response]
       def execute(request)
-        environment = Environment.new(request)
+        environment = RequestEnvironment.new(request)
         response = Response.new(request, self)
 
         catch_errors(response) do

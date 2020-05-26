@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'rapid/authenticator'
 require 'rapid/error'
 require 'rapid/object_set'
-require 'rapid/environment'
+require 'rapid/request_environment'
 
 describe Rapid::Authenticator do
   context '.collate_objects' do
@@ -34,7 +34,7 @@ describe Rapid::Authenticator do
         end
       end
       endpoint = Rapid::Endpoint.create('ExampleEndpoint')
-      environment = Rapid::Environment.new(Rapid::Request.empty)
+      environment = Rapid::RequestEnvironment.new(Rapid::Request.empty)
       response = Rapid::Response.new(environment, endpoint)
       auth.execute(environment, response)
       expect(response.headers['x-executed']).to eq '123'

@@ -2,6 +2,7 @@
 
 require 'rapid/argument_set'
 require 'rapid/definitions/lookup_argument_set'
+require 'rapid/lookup_environment'
 
 module Rapid
   class LookupArgumentSet < ArgumentSet
@@ -34,7 +35,11 @@ module Rapid
       return if self.class.definition.resolver.nil?
       return @resolved_value if instance_variable_defined?('@resolved_value')
 
-      @resolved_value = self.class.definition.resolver.call(self, @request)
+      @resolved_value = environment.call(@request, &self.class.definition.resolver)
+    end
+
+    def environment
+      @environment ||= LookupEnvironment.new(self)
     end
 
     def validate(argument, index: nil)

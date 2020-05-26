@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rapid/environment'
+require 'rapid/request_environment'
 require 'rack/mock'
 
-describe Rapid::Environment do
+describe Rapid::RequestEnvironment do
   subject(:request) do
     Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"Phillip"}'))
   end

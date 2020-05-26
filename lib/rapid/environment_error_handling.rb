@@ -1,19 +1,7 @@
 # frozen_string_literal: true
 
 module Rapid
-  # This is the environment/scope that all actions are executed within. It is purely here
-  # to provide access to some helper methods.
-  class Environment
-
-    def initialize(request)
-      @request = request
-    end
-
-    def call(response, &block)
-      return unless block_given?
-
-      instance_exec(@request, response, &block)
-    end
+  module EnvironmentErrorHandling
 
     # Raise an error
     #
@@ -31,8 +19,14 @@ module Rapid
     private
 
     def find_error_by_name(error_name)
-      find_potential_error(@request.endpoint, error_name) ||
-        find_potential_error(@request.authenticator, error_name)
+      return nil if @potential_error_sources.nil?
+
+      @potential_error_sources.each do |source|
+        error = find_potential_error(source, error_name)
+        return error if error
+      end
+
+      nil
     end
 
     def find_potential_error(source, name)

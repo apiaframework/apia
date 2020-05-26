@@ -72,5 +72,20 @@ describe Rapid::LookupArgumentSet do
       object_id = value.resolve.object_id
       expect(value.resolve.object_id).to eq object_id
     end
+
+    it 'should be able to raise errors' do
+      klass = described_class.create('LookupAS') do
+        argument :id, type: :integer
+        potential_error 'InlineError' do
+          code :some_inline_error
+        end
+        resolver do |set, request|
+          raise_error 'InlineError'
+        end
+      end
+      expect { klass.new({ id: 1 }).resolve }.to raise_error Rapid::ErrorExceptionError do |e|
+        expect(e.error_class.definition.code).to eq :some_inline_error
+      end
+    end
   end
 end
