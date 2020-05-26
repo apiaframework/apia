@@ -36,7 +36,7 @@ describe Rapid::Scalars::UnixTime do
       expect(date.year).to eq 2020
       expect(date.month).to eq 5
       expect(date.day).to eq 26
-      expect(date.hour).to eq 12
+      expect(date.hour).to eq 11
       expect(date.min).to eq 2
       expect(date.sec).to eq 12
     end

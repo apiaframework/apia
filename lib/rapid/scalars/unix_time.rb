@@ -32,7 +32,7 @@ module Rapid
           raise Rapid::ParseError, 'Integer must be positive or zero'
         end
 
-        Time.at(integer)
+        Time.at(integer).utc
       end
 
     end
