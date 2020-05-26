@@ -1,4 +1,4 @@
-name: Lint, Test and Publish
+name: CI
 on: push
 jobs:
   lint:
