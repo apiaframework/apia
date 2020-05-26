@@ -1,2 +1,6 @@
 inherit_from:
   - https://dev.k.io/rubocop/rubocop.yml
+  - .rubocop_todo.yml
+
+Layout/LineLength:
+  Enabled: false

@@ -32,14 +32,14 @@ module Rapid
 
       field :controllers, type: [APIControllerSchemaType] do
         backend do |api|
-          api.definition&.controllers.each_with_object([]) do |(key, c), array|
+          api.definition&.controllers&.each_with_object([]) do |(key, c), array|
             next unless c.definition.schema?
 
             array << {
               name: key.to_s,
               controller: c.definition
             }
-          end
+          end || []
         end
       end
 

@@ -22,6 +22,8 @@ module Rapid
         if cast && !cast.is_a?(Proc)
           errors.add self, 'CastMustBeProc', 'The value provided for casting an enum must be an instance of Proc'
         end
+
+        true
       end
 
     end

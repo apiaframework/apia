@@ -16,10 +16,7 @@ module Rapid
         ::Base64.encode64(value).sub(/\n\z/, '')
       end
 
-      validator do |value|
-        # Anything can go into base64
-        true
-      end
+      validator { true }
 
       parse do |value|
         unless value.is_a?(::String)

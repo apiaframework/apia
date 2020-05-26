@@ -44,6 +44,8 @@ module Rapid
         unless @matcher.is_a?(Proc)
           errors.add self, 'MissingMatcher', "A matcher must be provided for all options (missing for #{name})"
         end
+
+        true
       end
 
     end

@@ -16,7 +16,7 @@ module Rapid
       attr_accessor :array
       attr_accessor :null
       attr_accessor :condition
-      attr_accessor :type
+      attr_writer :type
       attr_accessor :include
 
       def initialize(name, id: nil)
@@ -89,7 +89,7 @@ module Rapid
         raise Rapid::NullFieldValueError.new(self, object) if raw_value.nil?
 
         if array? && raw_value.is_a?(Array)
-          raw_value.each_with_index.map { |v, i| type.cast(v, request: request, path: path) }
+          raw_value.map { |v| type.cast(v, request: request, path: path) }
         else
           type.cast(raw_value, request: request, path: path)
         end

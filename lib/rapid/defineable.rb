@@ -48,5 +48,9 @@ module Rapid
       end
     end
 
+    def respond_to_missing?(name)
+      definition.dsl.respond_to?(name)
+    end
+
   end
 end

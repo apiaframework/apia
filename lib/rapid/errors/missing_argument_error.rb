@@ -8,6 +8,7 @@ module Rapid
   class MissingArgumentError < Rapid::RuntimeError
 
     attr_reader :argument
+
     def initialize(argument, path: [])
       @argument = argument
       @path = path

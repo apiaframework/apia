@@ -27,7 +27,6 @@ describe Rapid::Authenticator do
     end
 
     it 'should call the action providing the request & response' do
-      executed_block = false
       auth = Rapid::Authenticator.create('ExampleAuthenticator') do
         action do |_req, res|
           res.add_header 'x-executed', 123

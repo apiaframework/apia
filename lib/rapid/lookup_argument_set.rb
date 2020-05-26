@@ -50,6 +50,8 @@ module Rapid
       if @source.values.compact.size > 1
         raise InvalidArgumentError.new(argument, issue: :ambiguous_lookup_values, index: index, path: @path)
       end
+
+      true
     end
 
   end

@@ -36,20 +36,17 @@ module Rapid
     # @param path [String] /core/v1/controller/endpoint
     # @return [nil, Hash]
     def parse_path(path)
-      if path =~ /\A#{Regexp.escape(@namespace)}#{PATH_COMPONENT_REGEX}/i
-        { controller: Regexp.last_match[:controller], endpoint: Regexp.last_match[:endpoint] }
-      end
+      return unless path =~ /\A#{Regexp.escape(@namespace)}#{PATH_COMPONENT_REGEX}/i
+
+      { controller: Regexp.last_match[:controller], endpoint: Regexp.last_match[:endpoint] }
     end
 
     # Return the API object
     #
     # @return [Rapid::API]
     def api
-      if @api.is_a?(String) && development?
-        return Object.const_get(@api)
-      elsif @api.is_a?(String)
-        return @cached_api ||= Object.const_get(@api)
-      end
+      return Object.const_get(@api) if @api.is_a?(String) && development?
+      return @cached_api ||= Object.const_get(@api) if @api.is_a?(String)
 
       @api
     end
@@ -115,11 +112,13 @@ module Rapid
     end
 
     def validate_http_method(request)
-      return if request.endpoint.definition.http_method == :any
+      required_http_method = request.endpoint.definition.http_method
 
-      if request.endpoint.definition.http_method.to_s.downcase != request.request_method.to_s.downcase
-        raise RackError.new(400, 'invalid_http_method', "This endpoint requires the #{request.endpoint.definition.http_method.to_s.upcase} method be used (this request is a #{request.request_method} method)")
-      end
+      return if required_http_method == :any
+      return if required_http_method.to_s.downcase == request.request_method.to_s.downcase
+
+      raise RackError.new(400, 'invalid_http_method', "This endpoint requires the #{required_http_method.to_s.upcase}" \
+                                                      "method be used (this request is a #{request.request_method} method)")
     end
 
     def triplet_for_exception(exception)

@@ -7,6 +7,7 @@ module Rapid
 
     attr_reader :enum
     attr_reader :given_value
+
     def initialize(enum, given_value)
       @enum = enum
       @given_value = given_value

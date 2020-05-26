@@ -6,7 +6,7 @@ module Rapid
     class << self
 
       def fetch(item, default = nil)
-        all[item.to_sym]
+        all[item.to_sym] || default
       end
 
       def register(name, klass)
@@ -16,7 +16,7 @@ module Rapid
       private
 
       def all
-        @scalars ||= {}
+        @all ||= {}
       end
 
     end

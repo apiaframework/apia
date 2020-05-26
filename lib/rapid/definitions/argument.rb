@@ -12,7 +12,7 @@ module Rapid
       attr_reader :validations
       attr_accessor :required
       attr_accessor :array
-      attr_accessor :type
+      attr_writer :type
 
       def initialize(name, id: nil)
         @id = id

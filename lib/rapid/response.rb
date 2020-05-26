@@ -7,9 +7,9 @@ module Rapid
   class Response
 
     attr_accessor :status
-    attr_accessor :body
     attr_reader :fields
     attr_reader :headers
+    attr_writer :body
 
     def initialize(request, endpoint)
       @request = request

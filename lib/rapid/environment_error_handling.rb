@@ -9,11 +9,13 @@ module Rapid
     def raise_error(error, fields = {})
       if error.respond_to?(:ancestors) && error.ancestors.include?(Rapid::Error)
         raise error.exception(fields)
-      elsif found_error = find_error_by_name(error)
-        raise found_error.exception(fields)
-      else
-        raise Rapid::RuntimeError, "No error defined named #{error}"
       end
+
+      if found_error = find_error_by_name(error)
+        raise found_error.exception(fields)
+      end
+
+      raise Rapid::RuntimeError, "No error defined named #{error}"
     end
 
     private

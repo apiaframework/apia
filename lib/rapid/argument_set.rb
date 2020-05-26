@@ -95,8 +95,8 @@ module Rapid
 
     def parse_value(argument, value, index: nil, in_array: false)
       if argument.array? && value.is_a?(Array)
-        value.each_with_index.map do |v, index|
-          parse_value(argument, v, index: index, in_array: true)
+        value.each_with_index.map do |v, i|
+          parse_value(argument, v, index: i, in_array: true)
         end
 
       elsif argument.array? && !in_array

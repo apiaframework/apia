@@ -26,16 +26,16 @@ module Rapid
 
     def json_body
       return unless content_type =~ /\Aapplication\/json/
-      return unless has_body?
+      return unless body?
 
       @json_body ||= begin
-        JSON.parse(body.read)
+                       JSON.parse(body.read)
                      rescue JSON::ParserError => e
                        raise InvalidJSONError, e.message
-      end
+                     end
     end
 
-    def has_body?
+    def body?
       has_header?('rack.input')
     end
 
@@ -46,7 +46,7 @@ module Rapid
         if json_body
           string = json_body['fields']
           FieldSpec.parse(string)
-        elsif has_body? && string = params['fields']
+        elsif body? && string = params['fields']
           FieldSpec.parse(string)
         elsif string = headers['x-field-spec']
           FieldSpec.parse(string)

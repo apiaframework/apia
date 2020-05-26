@@ -55,7 +55,7 @@ module Rapid
     #
     # @return [FieldSpec]
     def spec
-      @field_spec ||= begin
+      @spec ||= begin
         spec = each_with_object([]) do |(key, field), array|
           next if field.include == false
 

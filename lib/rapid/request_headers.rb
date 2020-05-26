@@ -22,12 +22,12 @@ module Rapid
       end
 
       def create_from_request(request)
-        hash = request.each_header.each_with_object({}) do |(key, value), hash|
+        hash = request.each_header.each_with_object({}) do |(key, value), inner_hash|
           next unless key =~ /\AHTTP\_(\w+)\z/
 
           name = Regexp.last_match[1]
 
-          hash[name] = value
+          inner_hash[name] = value
         end
         new(hash)
       end
