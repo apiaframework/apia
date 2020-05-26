@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.summary       = 'This gem provides a friendly DSL for constructing HTTP APIs.'
   s.homepage      = 'https://github.com/krystal/rapid'
   s.version       = Rapid::VERSION
-  s.files         = Dir.glob('{lib}/**/*')
+  s.files         = Dir.glob('VERSION') + Dir.glob('{lib}/**/*')
   s.require_paths = ['lib']
   s.authors       = ['Adam Cooke']
   s.email         = ['adam@k.io']

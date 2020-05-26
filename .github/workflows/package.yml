@@ -17,6 +17,9 @@ jobs:
         with:
           ruby-version: 2.6.x
 
+      - name: Export version from tag name
+        run: echo ${GITHUB_REF/refs\/tags\//} > VERSION
+
       - name: Build Gem
         run: gem build *.gemspec
 
