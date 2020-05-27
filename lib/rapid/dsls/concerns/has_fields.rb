@@ -8,7 +8,9 @@ module Rapid
     module Concerns
       module HasFields
 
-        def field(name, type: nil, **options, &block)
+        def field(name, *args, type: nil, **options, &block)
+          type = args[0] if type.nil?
+
           field = Definitions::Field.new(name, id: "#{@definition.id}/#{Helpers.camelize(name)}Field")
 
           if type.is_a?(Array)

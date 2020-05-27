@@ -11,6 +11,13 @@ shared_examples 'has fields dsl' do
       expect(definition.fields[:name].null?).to eq false
     end
 
+    it 'should be able to define the type as the second argument' do
+      dsl.field :name, :string
+      expect(definition.fields[:name]).to be_a Rapid::Definitions::Field
+      expect(definition.fields[:name].type.klass).to eq Rapid::Scalars::String
+      expect(definition.fields[:name].array?).to be false
+    end
+
     it 'should be able to add a field with an array' do
       dsl.field :names, type: [:string]
       expect(definition.fields[:names].type.klass).to eq Rapid::Scalars::String
