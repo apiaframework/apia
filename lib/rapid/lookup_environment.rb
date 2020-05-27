@@ -12,10 +12,10 @@ module Rapid
       @potential_error_sources = [set.class]
     end
 
-    def call(request, &block)
+    def call(request, *args, &block)
       return unless block_given?
 
-      instance_exec(@set, request, &block)
+      instance_exec(@set, request, *args, &block)
     end
 
   end

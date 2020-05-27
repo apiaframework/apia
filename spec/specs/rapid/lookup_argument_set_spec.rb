@@ -59,18 +59,15 @@ describe Rapid::LookupArgumentSet do
       expect(klass.new({ id: 3 }).resolve).to be nil
     end
 
-    it 'should cache the resolved object' do
+    it 'should send provided args to the resolver' do
       klass = described_class.create('LookupAS') do
         argument :id, type: :integer
 
-        resolver do
-          'Hello!'
+        resolver do |_, _, arg1|
+          "Adam...#{arg1}"
         end
       end
-
-      value = klass.new({ id: 1 })
-      object_id = value.resolve.object_id
-      expect(value.resolve.object_id).to eq object_id
+      expect(klass.new({ id: 1 }).resolve('!')).to eq 'Adam...!'
     end
 
     it 'should be able to raise errors' do

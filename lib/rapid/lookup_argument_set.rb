@@ -31,11 +31,10 @@ module Rapid
 
     end
 
-    def resolve
+    def resolve(*args)
       return if self.class.definition.resolver.nil?
-      return @resolved_value if instance_variable_defined?('@resolved_value')
 
-      @resolved_value = environment.call(@request, &self.class.definition.resolver)
+      environment.call(@request, *args, &self.class.definition.resolver)
     end
 
     def environment
