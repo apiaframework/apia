@@ -31,6 +31,13 @@ describe Rapid::DSLs::ArgumentSet do
       expect(argument_set.arguments[:user].array?).to be false
     end
 
+    it 'should be able to define the type as the second argument' do
+      dsl.argument :name, :string
+      expect(argument_set.arguments[:name]).to be_a Rapid::Definitions::Argument
+      expect(argument_set.arguments[:name].type.klass).to eq Rapid::Scalars::String
+      expect(argument_set.arguments[:name].array?).to be false
+    end
+
     it 'should invoke the block' do
       dsl.argument :user, type: :string do
         required true

@@ -8,7 +8,9 @@ module Rapid
   module DSLs
     class ArgumentSet < DSL
 
-      def argument(name, type: nil, **options, &block)
+      def argument(name, *args, type: nil, **options, &block)
+        type = args[0] if type.nil?
+
         argument = Definitions::Argument.new(name, id: "#{@definition.id}/#{Helpers.camelize(name.to_s)}Argument")
 
         if type.is_a?(Array)
