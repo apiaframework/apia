@@ -57,6 +57,11 @@ describe Rapid::Request do
       expect(request.field_spec.include?(:something_else)).to be false
     end
 
+    it 'should return no field spec if we have a JSON body but no fields are provided' do
+      request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => {}.to_json))
+      expect(request.field_spec).to be nil
+    end
+
     it 'should return the value from the X-Field-Spec header' do
       request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'HTTP_X_FIELD_SPEC' => 'name,description'))
       expect(request.field_spec).to be_a Rapid::FieldSpec

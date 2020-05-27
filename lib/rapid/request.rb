@@ -43,8 +43,7 @@ module Rapid
       return @field_spec if instance_variable_defined?('@field_spec')
 
       @field_spec = begin
-        if json_body
-          string = json_body['fields']
+        if json_body && string = json_body['fields']
           FieldSpec.parse(string)
         elsif body? && string = params['fields']
           FieldSpec.parse(string)
