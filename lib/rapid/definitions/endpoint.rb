@@ -17,6 +17,7 @@ module Rapid
       attr_accessor :action
       attr_accessor :http_status
       attr_accessor :http_method
+      attr_accessor :paginated_field
       attr_reader :fields
 
       def setup

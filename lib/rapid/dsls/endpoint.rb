@@ -2,6 +2,7 @@
 
 require 'rapid/dsl'
 require 'rapid/dsls/concerns/has_fields'
+require 'rapid/pagination_object'
 
 module Rapid
   module DSLs
@@ -41,6 +42,30 @@ module Rapid
 
       def http_status(status)
         @definition.http_status = status
+      end
+
+      def field(name, *args, type: nil, **options, &block)
+        if pagination_options = options.delete(:paginate)
+
+          unless @definition.paginated_field.nil?
+            raise Rapid::RuntimeError, 'Cannot define more than one paginated field per endpoint'
+          end
+
+          pagination_options ||= {}
+          @definition.paginated_field = name
+
+          argument :page, type: Scalars::Integer, default: 1 do
+            validation(:greater_than_zero) { |o| o.positive? }
+          end
+
+          argument :per_page, type: Scalars::Integer, default: 20 do
+            validation(:greater_than_zero) { |o| o.positive? }
+            validation(:less_than_or_equal_to_100) { |o| o <= pagination_options[:maximum_per_page] || 100 }
+          end
+
+          field :pagination, type: PaginationObject
+        end
+        super(name, *args, type: type, **options, &block)
       end
 
     end

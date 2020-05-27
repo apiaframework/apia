@@ -94,4 +94,41 @@ describe Rapid::DSLs::Endpoint do
       expect(endpoint.argument_set.definition.arguments[:name]).to be_a Rapid::Definitions::Argument
     end
   end
+
+  context '#field' do
+    context 'when paginated' do
+      it 'should add a `page` argument' do
+        dsl.field :widgets, type: [:string], paginate: true
+        expect(endpoint.argument_set.definition.arguments[:page]).to be_a Rapid::Definitions::Argument
+        expect(endpoint.argument_set.definition.arguments[:page].type.klass).to eq Rapid::Scalars::Integer
+        expect(endpoint.argument_set.definition.arguments[:page].required?).to be false
+      end
+
+      it 'should add a `per_page` argument' do
+        dsl.field :widgets, type: [:string], paginate: true
+        expect(endpoint.argument_set.definition.arguments[:per_page]).to be_a Rapid::Definitions::Argument
+        expect(endpoint.argument_set.definition.arguments[:per_page].type.klass).to eq Rapid::Scalars::Integer
+        expect(endpoint.argument_set.definition.arguments[:per_page].required?).to be false
+      end
+
+      it 'should add a `pagination` field' do
+        dsl.field :widgets, type: [:string], paginate: true
+        expect(endpoint.fields[:pagination]).to be_a Rapid::Definitions::Field
+        expect(endpoint.fields[:pagination].type.klass).to eq Rapid::PaginationObject
+        expect(endpoint.fields[:pagination].null?).to be false
+      end
+
+      it 'should set the paginated field' do
+        dsl.field :widgets, type: [:string], paginate: true
+        expect(endpoint.paginated_field).to eq :widgets
+      end
+
+      it 'should raise an error if called twice' do
+        dsl.field :widgets, type: [:string], paginate: true
+        expect do
+          dsl.field :potatos, type: [:string], paginate: true
+        end.to raise_error Rapid::RuntimeError, /cannot define more than one paginated field/i
+      end
+    end
+  end
 end
