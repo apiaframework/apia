@@ -29,6 +29,12 @@ shared_examples 'has fields dsl' do
       expect(definition.fields[:name].null?).to eq true
     end
 
+    it 'should allow the backend to be provided as an option' do
+      example_proc = proc { 1234 }
+      dsl.field :name, type: :string, backend: example_proc
+      expect(definition.fields[:name].backend).to eq example_proc
+    end
+
     it 'should execute the block' do
       dsl.field :name, type: :string do
         condition { 1234 }

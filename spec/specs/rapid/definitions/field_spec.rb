@@ -87,6 +87,21 @@ describe Rapid::Definitions::Field do
       field.backend = proc { |n| "#{n}!" }
       expect(field.raw_value_from_object(444)).to eq '444!'
     end
+
+    it 'should use the name of the backend when looking up from a hash' do
+      field = Rapid::Definitions::Field.new(:id)
+      field.type = :string
+      field.backend = :something
+      expect(field.raw_value_from_object({ something: 'Hello!' })).to eq 'Hello!'
+    end
+
+    it 'should use the name of the backend as a method name when looking up from any non-hash object' do
+      field = Rapid::Definitions::Field.new(:id)
+      field.type = :string
+      field.backend = :something
+      struct = Struct.new(:something).new('World!')
+      expect(field.raw_value_from_object(struct)).to eq 'World!'
+    end
   end
 
   context '#value' do

@@ -70,11 +70,9 @@ module Rapid
       # @return [Object]
       def raw_value_from_object(object)
         if @backend
-          @backend.call(object)
-        elsif object.is_a?(Hash)
-          object[@name.to_sym] || object[@name.to_s]
+          get_value_from_backend(object)
         else
-          object.public_send(@name.to_sym)
+          get_value_directly_from_object(object, @name)
         end
       end
 
@@ -92,6 +90,25 @@ module Rapid
           raw_value.map { |v| type.cast(v, request: request, path: path) }
         else
           type.cast(raw_value, request: request, path: path)
+        end
+      end
+
+      private
+
+      def get_value_from_backend(object)
+        case @backend
+        when Symbol
+          get_value_directly_from_object(object, @backend)
+        when Proc
+          @backend.call(object)
+        end
+      end
+
+      def get_value_directly_from_object(object, name)
+        if object.is_a?(Hash)
+          object[name.to_sym] || object[name.to_s]
+        else
+          object.public_send(name.to_sym)
         end
       end
 
