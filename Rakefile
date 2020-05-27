@@ -13,8 +13,11 @@ task lint: :rubocop
 
 # rubocop:disable Metrics/BlockLength
 task :tag do
+  last_tag = `git tag`.split(/\n/).select { |t| t =~ /\Av/ }.map { |t| Gem::Version.new(t.sub(/\Av/, '')) }.max || 'none'
+  last_tag = 'v' + last_tag.to_s if last_tag
+
   begin
-    $stdout.print "Enter the version number that you wish to release: \e[34mv"
+    $stdout.print "Enter the version number that you wish to release (last: #{last_tag || 'n/a'}): \e[34mv"
     version = $stdin.gets.strip
   ensure
     $stdout.print "\e[0m"
