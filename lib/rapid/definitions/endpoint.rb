@@ -11,7 +11,7 @@ module Rapid
   module Definitions
     class Endpoint < Definition
 
-      HTTP_METHODS = [:get, :head, :post, :patch, :put, :delete, :options].freeze
+      HTTP_METHODS = [:get, :head, :post, :patch, :put, :delete].freeze
 
       attr_accessor :authenticator
       attr_accessor :action
