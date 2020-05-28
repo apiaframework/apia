@@ -15,13 +15,13 @@ describe Rapid::Endpoint do
         request = Rapid::Request.new(Rack::MockRequest.env_for('/', input: ''))
 
         api_auth = Rapid::Authenticator.create('ExampleAPIAuthenticator')
-        api_auth.action { |_req, res| res.add_header 'x-auth', 'api' }
+        api_auth.action { response.add_header 'x-auth', 'api' }
 
         controller_auth = Rapid::Authenticator.create('ExampleControllerAuthenticator')
-        controller_auth.action { |_req, res| res.add_header 'x-auth', 'controller' }
+        controller_auth.action { response.add_header 'x-auth', 'controller' }
 
         endpoint_auth = Rapid::Authenticator.create('ExampleEndpointAuthenticator')
-        endpoint_auth.action { |_req, res| res.add_header 'x-auth', 'endpoint' }
+        endpoint_auth.action { response.add_header 'x-auth', 'endpoint' }
 
         request.api = Rapid::API.create('ExampleAPI') do
           authenticator api_auth
@@ -49,10 +49,10 @@ describe Rapid::Endpoint do
         request = Rapid::Request.new(Rack::MockRequest.env_for('/', input: ''))
 
         api_auth = Rapid::Authenticator.create('ExampleAPIAuthenticator')
-        api_auth.action { |_req, res| res.add_header 'x-auth', 'api' }
+        api_auth.action { response.add_header 'x-auth', 'api' }
 
         controller_auth = Rapid::Authenticator.create('ExampleControllerAuthenticator')
-        controller_auth.action { |_req, res| res.add_header 'x-auth', 'controller' }
+        controller_auth.action { response.add_header 'x-auth', 'controller' }
 
         request.api = Rapid::API.create('ExampleAPI') do
           authenticator api_auth
@@ -78,7 +78,7 @@ describe Rapid::Endpoint do
         request = Rapid::Request.new(Rack::MockRequest.env_for('/', input: ''))
 
         api_auth = Rapid::Authenticator.create('ExampleAPIAuthenticator')
-        api_auth.action { |_req, res| res.add_header 'x-auth', 'api' }
+        api_auth.action { response.add_header 'x-auth', 'api' }
 
         request.api = Rapid::API.create('ExampleAPI') do
           authenticator api_auth

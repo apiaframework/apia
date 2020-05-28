@@ -23,7 +23,8 @@ describe Rapid::Authenticator do
       endpoint = Rapid::Endpoint.create('ExampleEndpoint')
       request = Rapid::Request.empty
       response = Rapid::Response.new(request, endpoint)
-      expect(auth.execute(request, response)).to be_nil
+      environment = Rapid::RequestEnvironment.new(request, response)
+      expect(auth.execute(environment)).to be_nil
     end
 
     it 'should call the action providing the request & response' do
@@ -34,9 +35,9 @@ describe Rapid::Authenticator do
       end
       endpoint = Rapid::Endpoint.create('ExampleEndpoint')
       request = Rapid::Request.empty
-      environment = Rapid::RequestEnvironment.new(request)
       response = Rapid::Response.new(request, endpoint)
-      auth.execute(environment, response)
+      environment = Rapid::RequestEnvironment.new(request, response)
+      auth.execute(environment)
       expect(response.headers['x-executed']).to eq '123'
     end
   end

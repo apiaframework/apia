@@ -32,12 +32,11 @@ module Rapid
       # Execute this authenticator within the given environment
       #
       # @param environment [Rapid::Environment]
-      # @param response [Rapid::Response]
       # @return [void]
-      def execute(environment, response)
+      def execute(environment)
         return if definition.action.nil?
 
-        environment.call(response, &definition.action)
+        environment.call(&definition.action)
       end
 
     end

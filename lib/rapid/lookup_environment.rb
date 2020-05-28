@@ -9,13 +9,18 @@ module Rapid
 
     def initialize(set)
       @set = set
-      @potential_error_sources = [set.class]
     end
 
     def call(request, *args, &block)
       return unless block_given?
 
       instance_exec(@set, request, *args, &block)
+    end
+
+    private
+
+    def potential_error_sources
+      [@set.class]
     end
 
   end

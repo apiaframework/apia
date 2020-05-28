@@ -21,9 +21,9 @@ module Rapid
     private
 
     def find_error_by_name(error_name)
-      return nil if @potential_error_sources.nil?
+      return nil if potential_error_sources.nil?
 
-      @potential_error_sources.each do |source|
+      potential_error_sources.each do |source|
         error = find_potential_error(source, error_name)
         return error if error
       end

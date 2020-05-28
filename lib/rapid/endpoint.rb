@@ -41,20 +41,20 @@ module Rapid
       # @param request [Rapid::Request]
       # @return [Rapid::Response]
       def execute(request)
-        environment = RequestEnvironment.new(request)
         response = Response.new(request, self)
+        environment = RequestEnvironment.new(request, response)
 
         catch_errors(response) do
           # Determine an authenticator and execute it before the request happens
           request.authenticator = definition.authenticator || request.controller&.definition&.authenticator || request.api&.definition&.authenticator
-          request.authenticator&.execute(environment, response)
+          request.authenticator&.execute(environment)
 
           # Process arguments into the request. This happens after the authentication
           # stage because a) authenticators shouldn't be using endpoint specific args
           # and b) the argument conditions may need to know the identity.
           request.arguments = definition.argument_set.create_from_request(request)
 
-          environment.call(response, &definition.action)
+          environment.call(&definition.action)
 
           # We're going to call this here because we want to cache the actual values of
           # the output within the catch_errors block.

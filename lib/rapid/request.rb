@@ -12,12 +12,16 @@ module Rapid
     attr_accessor :controller
     attr_accessor :endpoint
     attr_accessor :identity
-    attr_accessor :arguments
+    attr_writer :arguments
     attr_accessor :authenticator
     attr_accessor :namespace
 
     def self.empty(options: {})
       new(options)
+    end
+
+    def arguments
+      @arguments ||= {}
     end
 
     def headers
