@@ -51,7 +51,7 @@ module Rapid
             raise Rapid::RuntimeError, 'Cannot define more than one paginated field per endpoint'
           end
 
-          pagination_options ||= {}
+          pagination_options = {} if pagination_options == true
           @definition.paginated_field = name
 
           argument :page, type: Scalars::Integer, default: 1 do

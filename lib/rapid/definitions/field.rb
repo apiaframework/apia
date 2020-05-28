@@ -106,7 +106,7 @@ module Rapid
 
       def get_value_directly_from_object(object, name)
         if object.is_a?(Hash)
-          object[name.to_sym] || object[name.to_s]
+          object.fetch(name.to_sym, object[name.to_s])
         else
           object.public_send(name.to_sym)
         end

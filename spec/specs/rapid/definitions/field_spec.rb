@@ -72,6 +72,18 @@ describe Rapid::Definitions::Field do
       expect(field.raw_value_from_object(id: 1234)).to eq 1234
     end
 
+    it 'should be able to pull false values from a hash where the symbols are keys' do
+      field = Rapid::Definitions::Field.new(:active)
+      field.type = :boolean
+      expect(field.raw_value_from_object(active: false)).to eq false
+    end
+
+    it 'should be able to pull nil values from a hash where both strings & symbols are provided (for consistency)' do
+      field = Rapid::Definitions::Field.new(:active)
+      field.type = :string
+      expect(field.raw_value_from_object(active: nil, 'active' => 'hello')).to eq nil
+    end
+
     it 'should be able to pull a value from an object' do
       require 'ostruct'
       field = Rapid::Definitions::Field.new(:id)
