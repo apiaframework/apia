@@ -4,6 +4,8 @@ module Rapid
   module InternalAPI
     class HTTPMethodEnum < Rapid::Enum
 
+      no_schema
+
       Rapid::Definitions::Endpoint::HTTP_METHODS.each do |method|
         value method.to_s.upcase
       end
