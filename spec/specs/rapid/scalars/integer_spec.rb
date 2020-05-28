@@ -24,4 +24,23 @@ describe Rapid::Scalars::Integer do
       end
     end
   end
+
+  context '.parse' do
+    {
+      1234 => 1234,
+      '1234' => 1234,
+      '-100' => -100,
+      -100 => -100
+    }.each do |input, expectation|
+      it "should be able to parse integers & strings (#{input.inspect} -> #{expectation.inspect})" do
+        expect(described_class.parse(input)).to eq expectation
+      end
+    end
+
+    ['12.00', 12.33, false, '-12.01', 'he12.00'].each do |input|
+      it 'should raise a parse error for invalid values' do
+        expect { described_class.parse(input) }.to raise_error Rapid::ParseError
+      end
+    end
+  end
 end

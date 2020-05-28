@@ -19,6 +19,16 @@ module Rapid
         value.is_a?(::Integer)
       end
 
+      parse do |value|
+        if value.is_a?(::String) && value =~ /\A\-?\d+\z/
+          value.to_i
+        elsif value.is_a?(::Integer)
+          value
+        else
+          raise Rapid::ParseError, 'Integer must be provided as an integer or a string only containing numbers'
+        end
+      end
+
     end
   end
 end

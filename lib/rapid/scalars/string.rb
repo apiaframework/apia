@@ -11,8 +11,6 @@ module Rapid
 
       name 'String'
 
-      description 'A value containing alpha-numeric characters (including symbols)'
-
       cast do |value|
         value.to_s
       end

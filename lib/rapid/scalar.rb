@@ -43,6 +43,7 @@ module Rapid
       end
 
       return value if definition.parse.nil?
+      return nil if value.nil?
 
       definition.parse.call(value)
     end
