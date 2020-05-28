@@ -22,6 +22,10 @@ module Rapid
       description 'The total number of items across all pages'
     end
 
+    field :per_page, type: Scalars::Integer do
+      description 'The number of items per page'
+    end
+
     field :large_set, type: Scalars::Boolean do
       description 'Is this a large set and therefore the total number of records cannot be returned?'
     end
