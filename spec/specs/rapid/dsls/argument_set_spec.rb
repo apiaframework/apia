@@ -57,5 +57,12 @@ describe Rapid::DSLs::ArgumentSet do
       expect(argument_set.arguments[:users].array?).to be true
       expect(argument_set.arguments[:users].type.klass).to eq Rapid::Scalars::String
     end
+
+    it 'should allow the default to be set' do
+      dsl.argument :user, type: :string
+      dsl.argument :book, type: :string, default: 'Hello'
+      expect(argument_set.arguments[:user].default).to be nil
+      expect(argument_set.arguments[:book].default).to eq 'Hello'
+    end
   end
 end

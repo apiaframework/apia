@@ -73,7 +73,7 @@ describe Rapid::ArgumentSet do
       expect(as_instance['age']).to eq 1234
     end
 
-    it 'should raise an error if a require argument is missing' do
+    it 'should raise an error if a required argument is missing' do
       as = Rapid::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string
         argument :age, type: :integer, required: true
@@ -81,6 +81,14 @@ describe Rapid::ArgumentSet do
       expect do
         as.new(name: 'Adam')
       end.to raise_error Rapid::MissingArgumentError
+    end
+
+    it 'should provide the default value if one is provided' do
+      as = Rapid::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :string, default: 'Adam'
+      end
+      as_instance = as.new({})
+      expect(as_instance[:name]).to eq 'Adam'
     end
 
     it 'should raise an error if an object is not valid for the underlying scalar' do

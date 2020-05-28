@@ -35,4 +35,11 @@ describe Rapid::DSLs::Argument do
       expect(argument.required?).to be false
     end
   end
+
+  context '#default' do
+    it 'should set default value' do
+      dsl.default 10
+      expect(argument.default).to eq 10
+    end
+  end
 end

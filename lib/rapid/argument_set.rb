@@ -54,19 +54,22 @@ module Rapid
 
       @path = path
       @request = request
-      @source = hash.each_with_object({}) do |(key, value), source|
-        argument = self.class.definition.arguments[key.to_sym]
-        next unless argument
+      @source = self.class.definition.arguments.each_with_object({}) do |(arg_key, argument), source|
+        given_value = hash[arg_key.to_s] || hash[arg_key.to_sym] || argument.default
+        next if given_value.nil? && !argument.required?
 
-        value = parse_value(argument, value)
-        validation_errors = argument.validate_value(value)
+        if given_value.nil?
+          raise MissingArgumentError.new(argument, path: @path + [argument])
+        end
+
+        given_value = parse_value(argument, given_value)
+        validation_errors = argument.validate_value(given_value)
         unless validation_errors.empty?
           raise InvalidArgumentError.new(argument, issue: :validation_errors, errors: validation_errors, path: @path + [argument])
         end
 
-        source[key.to_sym] = value
+        source[argument.name.to_sym] = given_value
       end
-      check_for_missing_required_arguments
     end
 
     # Return an item from the argument set
@@ -140,8 +143,6 @@ module Rapid
       self.class.definition.arguments.each_value do |arg|
         next unless arg.required?
         next if self[arg.name]
-
-        raise MissingArgumentError.new(arg, path: @path + [arg])
       end
     end
 

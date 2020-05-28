@@ -18,6 +18,10 @@ module Rapid
         @definition.array = value
       end
 
+      def default(value)
+        @definition.default = value
+      end
+
     end
   end
 end

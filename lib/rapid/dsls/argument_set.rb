@@ -22,6 +22,7 @@ module Rapid
         end
 
         argument.required = options[:required] if options.key?(:required)
+        argument.default = options[:default] if options.key?(:default)
 
         argument.dsl.instance_eval(&block) if block_given?
 

@@ -16,6 +16,9 @@ module Rapid
       field :required, type: :boolean do
         backend(&:required?)
       end
+      field :default, type: :string, null: true do
+        backend { |o| o.default&.to_s }
+      end
 
     end
   end
