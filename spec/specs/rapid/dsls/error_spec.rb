@@ -39,4 +39,16 @@ describe Rapid::DSLs::Error do
       expect(error.http_status).to eq 403
     end
   end
+
+  context '#catch_exception' do
+    it 'should store the exception to catch' do
+      dsl.catch_exception StandardError do |fields|
+        fields[:test] = 'hello'
+      end
+      expect(error.catchable_exceptions[StandardError]).to be_a Proc
+      fields = {}
+      error.catchable_exceptions[StandardError].call(fields)
+      expect(fields[:test]).to eq 'hello'
+    end
+  end
 end

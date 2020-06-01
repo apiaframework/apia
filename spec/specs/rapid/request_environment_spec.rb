@@ -7,11 +7,65 @@ require 'rack/mock'
 describe Rapid::RequestEnvironment do
   def setup_api(&block)
     request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"Phillip"}'))
-    request.api = Rapid::API.create('ExampleAPI', &block)
+
+    if block_given?
+      request.api = Rapid::API.create('ExampleAPI', &block)
+    else
+      request.api = Rapid::API.create('ExampleAPI') do
+        controller(:test) { endpoint(:test) {} }
+      end
+    end
     request.controller = request.api.definition.controllers[:test]
     request.endpoint = request.controller.definition.endpoints[:test]
     response = Rapid::Response.new(request, request.endpoint)
     described_class.new(request, response)
+  end
+
+  context '#call' do
+    it 'should execute the given block' do
+      executed = false
+      environment = setup_api
+      environment.call { executed = true }
+      expect(executed).to be true
+    end
+    it 'should receive any arguments given to it' do
+      executed = false
+      environment = setup_api
+      environment.call(1234) { |req, res, value| executed = value }
+      expect(executed).to eq 1234
+    end
+
+    it 'should translate known exceptions into appropriate error classes' do
+      error_class = Class.new(StandardError)
+      environment = setup_api do
+        controller :test do
+          endpoint :test do
+            potential_error 'ExampleError' do
+              code :example_error
+              catch_exception error_class do |fields, exception|
+                fields[:field_value] = exception.message
+              end
+            end
+          end
+        end
+      end
+
+      expect do
+        environment.call { raise(error_class, 'Example error string!') }
+      end.to raise_error Rapid::ErrorExceptionError do |e|
+        expect(e.error_class.definition.code).to eq :example_error
+        expect(e.fields[:field_value]).to eq 'Example error string!'
+      end
+    end
+
+    it 'should not translate unknown exceptions' do
+      error_class = Class.new(StandardError)
+      environment = setup_api
+
+      expect do
+        environment.call { raise(error_class, 'Example error string!') }
+      end.to raise_error error_class, /example error string/i
+    end
   end
 
   context '#raise_error' do
@@ -78,6 +132,36 @@ describe Rapid::RequestEnvironment do
         expect(e.error_class.definition.http_status).to eq 422
         expect(e.error_class.definition.code).to eq :defined_error
       end
+    end
+  end
+
+  context '#error_for_exception' do
+    it 'should return nil if no potential error in either the authenticator or endpoint defines it can handle it' do
+      environment = setup_api do
+        controller :test do
+          endpoint :test do
+          end
+        end
+      end
+      example_error = Class.new(StandardError)
+      expect(environment.error_for_exception(example_error)).to be nil
+    end
+
+    it 'should return the class object for a given exception' do
+      example_error = Class.new(StandardError)
+      environment = setup_api do
+        controller :test do
+          endpoint :test do
+            potential_error 'ExampleError' do
+              code :example_error
+              catch_exception example_error
+            end
+          end
+        end
+      end
+      expect(environment.error_for_exception(example_error)).to_not be_nil
+      expect(environment.error_for_exception(example_error)[:error].ancestors).to include Rapid::Error
+      expect(environment.error_for_exception(example_error)[:error].definition.code).to eq :example_error
     end
   end
 

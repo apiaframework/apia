@@ -17,6 +17,10 @@ module Rapid
         @definition.http_status = http_status
       end
 
+      def catch_exception(klass, &block)
+        @definition.catchable_exceptions[klass] = block
+      end
+
     end
   end
 end

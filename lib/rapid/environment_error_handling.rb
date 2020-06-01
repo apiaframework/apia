@@ -18,6 +18,24 @@ module Rapid
       raise Rapid::RuntimeError, "No error defined named #{error}"
     end
 
+    # Return an error instance for a given exception class
+    #
+    # @param exception_class [Class] any error class
+    # @return [Class, nil] any class that inherits from Rapid::Error or nil if no error is found
+    def error_for_exception(exception_class)
+      potential_error_sources.each do |source|
+        source.definition.potential_errors.each do |error|
+          if error.definition.catchable_exceptions.key?(exception_class)
+            return {
+              error: error,
+              block: error.definition.catchable_exceptions[exception_class]
+            }
+          end
+        end
+      end
+      nil
+    end
+
     private
 
     def find_error_by_name(error_name)
@@ -41,6 +59,15 @@ module Rapid
       source.definition.potential_errors.find do |error|
         error.definition.id == name
       end
+    end
+
+    def raise_exception(exception)
+      error = error_for_exception(exception.class)
+      raise exception if error.nil?
+
+      fields = {}
+      error[:block]&.call(fields, exception)
+      raise error[:error].exception(fields)
     end
 
   end

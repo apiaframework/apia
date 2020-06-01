@@ -11,9 +11,11 @@ module Rapid
       attr_accessor :code
       attr_accessor :http_status
       attr_reader :fields
+      attr_reader :catchable_exceptions
 
       def setup
         @fields = FieldSet.new
+        @catchable_exceptions = {}
       end
 
       def dsl

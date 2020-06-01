@@ -15,10 +15,12 @@ module Rapid
       @response = response
     end
 
-    def call(&block)
+    def call(*args, &block)
       return unless block_given?
 
-      instance_exec(@request, @response, &block)
+      instance_exec(@request, @response, *args, &block)
+    rescue StandardError => e
+      raise_exception(e)
     end
 
     # Set appropriate pagination for the given set based on the configuration
@@ -61,7 +63,7 @@ module Rapid
     private
 
     def potential_error_sources
-      [@request.endpoint, @request.authenticator]
+      [@request.endpoint, @request.authenticator].compact
     end
 
   end

@@ -9,6 +9,7 @@ module Rapid
   class ErrorExceptionError < Rapid::RuntimeError
 
     attr_reader :error_class
+    attr_reader :fields
 
     def initialize(error_class, fields = {})
       @error_class = error_class
