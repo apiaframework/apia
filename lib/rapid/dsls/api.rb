@@ -25,6 +25,10 @@ module Rapid
         @definition.controllers[name.to_sym] = klass
       end
 
+      def exception_handler(block_var = nil, &block)
+        @definition.exception_handlers.add(block_var, &block)
+      end
+
     end
   end
 end

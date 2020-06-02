@@ -73,14 +73,22 @@ module Rapid
 
       response = endpoint.execute(request)
       response.rack_triplet
-    rescue RackError, Rapid::ManifestError => e
-      e.triplet
     rescue StandardError => e
-      if development?
-        triplet_for_exception(e)
-      else
-        self.class.error_triplet('unhandled_exception', status: 500)
+      @api.definition.exception_handlers.call(e, {
+        env: env,
+        api: api,
+        request: defined?(request) ? request : nil
+      })
+
+      if e.is_a?(RackError) || e.is_a?(Rapid::ManifestError)
+        return e.triplet
       end
+
+      if development?
+        return triplet_for_exception(e)
+      end
+
+      self.class.error_triplet('unhandled_exception', status: 500)
     end
 
     private

@@ -54,4 +54,17 @@ describe Rapid::DSLs::API do
       expect(api.controllers[:users]).to eq controller
     end
   end
+
+  context '#exception_handler' do
+    it 'should be able to receive a proc' do
+      proc = proc {}
+      dsl.exception_handler proc
+      expect(api.exception_handlers).to include proc
+    end
+
+    it 'should be able to provide a block' do
+      dsl.exception_handler { 1234 }
+      expect(api.exception_handlers.call).to eq [1234]
+    end
+  end
 end

@@ -3,6 +3,7 @@
 require 'rapid/definition'
 require 'rapid/dsls/api'
 require 'rapid/internal_api/controller'
+require 'rapid/hook_set'
 
 module Rapid
   module Definitions
@@ -10,9 +11,11 @@ module Rapid
 
       attr_accessor :authenticator
       attr_reader :controllers
+      attr_reader :exception_handlers
 
       def setup
         @controllers = { rapid: InternalAPI::Controller }
+        @exception_handlers = HookSet.new
       end
 
       def dsl

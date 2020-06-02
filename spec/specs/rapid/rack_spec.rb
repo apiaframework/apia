@@ -146,6 +146,29 @@ describe Rapid::Rack do
       expect(result[2][0]).to_not include '{"class":"ZeroDivisionError"'
     end
 
+    it 'should call exception handlers on the API if there are any exceptions' do
+      handler_artifacts = {}
+      api = Rapid::API.create('MyAPI') do
+        exception_handler do |exception, options|
+          handler_artifacts[:exception] = exception
+          handler_artifacts[:options] = options
+        end
+        controller :test do
+          endpoint :test do
+            action do |_req, _res|
+              1 / 0
+            end
+          end
+        end
+      end
+      rack = described_class.new(app, api, 'api/v1')
+      rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
+      expect(handler_artifacts[:exception]).to be_a ZeroDivisionError
+      expect(handler_artifacts[:options][:request]).to be_a Rapid::Request
+      expect(handler_artifacts[:options][:env]).to be_a Hash
+      expect(handler_artifacts[:options][:api]).to eq api
+    end
+
     it 'should validate the whole API in development' do
       api = Rapid::API.create('MyAPI') do
         authenticator {}
