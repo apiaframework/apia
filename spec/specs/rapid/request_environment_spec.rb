@@ -28,10 +28,11 @@ describe Rapid::RequestEnvironment do
       environment.call { executed = true }
       expect(executed).to be true
     end
+
     it 'should receive any arguments given to it' do
       executed = false
       environment = setup_api
-      environment.call(1234) { |req, res, value| executed = value }
+      environment.call(1234) { |_, _, value| executed = value }
       expect(executed).to eq 1234
     end
 
