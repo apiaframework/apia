@@ -74,7 +74,7 @@ module Rapid
       response = endpoint.execute(request)
       response.rack_triplet
     rescue StandardError => e
-      @api.definition.exception_handlers.call(e, {
+      api.definition.exception_handlers.call(e, {
         env: env,
         api: api,
         request: defined?(request) ? request : nil
