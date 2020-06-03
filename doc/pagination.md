@@ -8,8 +8,7 @@ An endpoint can only return a single field which is paginated. You should define
 add a `paginate` reference to say that the results here should be paginated.
 
 ```ruby
-field :widgets, [Widget]
-paginate :widgets
+field :widgets, [Widget], paginate: true
 ```
 
 Adding `paginate` does a few things by default:

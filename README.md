@@ -102,8 +102,8 @@ module CoreAPI
       endpoint :list do
         name 'List products'
         description 'Returns a full list of products'
-        field :products, type: [:string]
-        action do |request, response|
+        field :products, [:string]
+        action do
           product_names = Products.all.map(&:name)
           response.add_field :products, product_names
         end
@@ -136,6 +136,9 @@ The following scalars are built-in:
 - `:integer`
 - `:boolean`
 - `:date`
+- `:unix_time`
+- `:base64`
+- `:decimal`
 
 ### Testing
 
@@ -193,13 +196,4 @@ If you make the request now, you should receive an array of objects (hashes) rat
 
 ## Further reading
 
-This provides a very basic overview of the framework but there is much more that still needs to be documented:
-
-- Authentication
-- Endpoint arguments
-- Lookup arguments
-- Endpoint methods & statuses
-- Field specs
-- Errors
-- Enums
-- Polymorphs
+Take a look through the docs folder
