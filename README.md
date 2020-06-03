@@ -154,23 +154,23 @@ module CoreAPI
     class Product < Rapid::Object
 
       # Define a couple of string fields that must always be required.
-      field :id, type: :string
-      field :name, type: :string
+      field :id, :string
+      field :name, :string
 
       # When you pass `null: true` to the field the API will allow nil values
       # to be returned in place of the defined type. If you don't specify
       # this and a nil value is encountered the request will fail so be
       # careful with this.
-      field :description, type: :string, null: true
+      field :description, :string, null: true
 
       # You can reference other objects too
-      field :owner, type: Objects::User
+      field :owner, Objects::User
 
       # By default, Rapid will try to find a value for a field by calling
       # a method named the same as field on the source object (or looking
       # for a string or symbol by the same name in a Hash object). If
       # needed, you can override this behaviour by providing a backend.
-      field :units_sold, type: :integer do
+      field :units_sold, :integer do
         backend { |product| product.sales.sum(:quantity) }
       end
 
@@ -185,7 +185,7 @@ Once you have created your object class, you will need to update your endpoint t
 
 ```ruby
 endpoint :list do
-  field :products, type: [Objects::Product]
+  field :products, [Objects::Product]
   action do |request, response|
     response.add_field :products, Products.all.to_a
   end
