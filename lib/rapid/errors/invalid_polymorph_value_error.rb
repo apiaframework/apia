@@ -14,7 +14,7 @@ module Rapid
     end
 
     def to_s
-      "Invalid value for `#{polymorph.id}` (got: #{@given_value.inspect})"
+      "Invalid value for `#{polymorph.definition.id}` (got: #{@given_value.inspect})"
     end
 
   end
