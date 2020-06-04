@@ -277,4 +277,34 @@ describe Rapid::ArgumentSet do
       end
     end
   end
+
+  context '#to_hash' do
+    it 'should return a hash of the values' do
+      as = Rapid::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :string
+        argument :age, type: :integer
+      end
+      instance = as.new({ name: 'Dave', age: 40, invalid: '999' })
+      expect(instance.to_hash).to be_a Hash
+      expect(instance.to_hash[:name]).to eq 'Dave'
+      expect(instance.to_hash[:age]).to eq 40
+      expect(instance.to_hash.keys).to_not include :invalid
+    end
+
+    it 'should return nested objects too' do
+      as1 = Rapid::ArgumentSet.create('ExampleSet1') do
+        argument :name, type: :string
+        argument :age, type: :integer
+      end
+      as2 = Rapid::ArgumentSet.create('ExampleSet2') do
+        argument :user, type: as1
+        argument :title, type: :string
+      end
+      instance = as2.new({ title: 'Hello!', user: { name: 'Dave', age: 40 } })
+      hash = instance.to_hash
+      expect(hash).to be_a Hash
+      expect(hash[:user]).to be_a Hash
+      expect(hash[:user][:name]).to eq 'Dave'
+    end
+  end
 end

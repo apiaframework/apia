@@ -88,6 +88,15 @@ module Rapid
       @source.dig(*values)
     end
 
+    # Return the source object
+    #
+    # @return [Hash]
+    def to_hash
+      @source.transform_values do |value|
+        value.is_a?(ArgumentSet) ? value.to_hash : value
+      end
+    end
+
     # Validate an argument set and return any errors as appropriate
     #
     # @param argument [Rapid::Argument]
