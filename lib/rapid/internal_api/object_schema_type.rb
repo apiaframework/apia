@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rapid/object'
+require 'rapid/internal_api/field_schema_type'
 
 module Rapid
   module InternalAPI

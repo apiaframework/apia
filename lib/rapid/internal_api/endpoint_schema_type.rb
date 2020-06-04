@@ -18,8 +18,8 @@ module Rapid
       field :description, type: :string, null: true
       field :http_status, type: :integer, backend: :http_status_code
       field :http_method, type: HTTPMethodEnum
-      field :authenticator, type: AuthenticatorSchemaType, null: true do
-        backend { |e| e.authenticator&.definition }
+      field :authenticator, type: :string, null: true do
+        backend { |e| e.authenticator&.definition&.id }
       end
       field :argument_set, type: ArgumentSetSchemaType do
         backend { |e| e.argument_set.definition }
@@ -27,8 +27,8 @@ module Rapid
       field :fields, type: [FieldSchemaType] do
         backend { |e| e.fields.values }
       end
-      field :potential_errors, type: [ErrorSchemaType] do
-        backend { |a| a.potential_errors.map(&:definition) }
+      field :potential_errors, type: [:string] do
+        backend { |a| a.potential_errors.map { |e| e.definition.id } }
       end
 
     end

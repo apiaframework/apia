@@ -10,7 +10,7 @@ module Rapid
       no_schema
 
       field :name, type: :string
-      field :endpoint, type: EndpointSchemaType
+      field :endpoint, type: :string
 
     end
   end

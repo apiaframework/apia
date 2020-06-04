@@ -27,7 +27,11 @@ module Rapid
       end
 
       def argument_set
-        @argument_set ||= Rapid::ArgumentSet.create("#{@id}/BaseArgumentSet")
+        @argument_set ||= begin
+          as = Rapid::ArgumentSet.create("#{@id}/BaseArgumentSet")
+          as.definition.schema = schema?
+          as
+        end
       end
 
       def potential_errors

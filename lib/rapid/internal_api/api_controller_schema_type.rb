@@ -10,7 +10,7 @@ module Rapid
       no_schema
 
       field :name, type: :string
-      field :controller, type: ControllerSchemaType
+      field :controller, type: :string
 
     end
   end
