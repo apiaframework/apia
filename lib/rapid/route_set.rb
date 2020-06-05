@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-module Moonstone
+module Rapid
   class RouteSet
+
     attr_reader :routes
 
     def initialize
@@ -15,7 +16,7 @@ module Moonstone
     def add(route)
       parts = self.class.split_path(route.path).map { |p| p =~ /\A\:/ ? '?' : p }
       parts.size.times do |i|
-        source = i == 0 ? @routes : @routes.dig(*parts[0, i])
+        i == 0 ? source = @routes : source = @routes.dig(*parts[0, i])
         source[parts[i]] ||= { _routes: [] }
         source[parts[i]][:_routes] << route if i == parts.size - 1
       end
@@ -37,12 +38,13 @@ module Moonstone
     end
 
     class << self
+
       # Remove slashes from the start and end of a given string
       #
       # @param string [String]
       # @return [String]
       def strip_slashes(string)
-        string.sub(%r{\A/+}, '').sub(%r{/\z}, '')
+        string.sub(/\A\/+/, '').sub(/\/\z/, '')
       end
 
       # Split a URL part into its appropriate parts
@@ -52,6 +54,8 @@ module Moonstone
       def split_path(path)
         strip_slashes(path).split('/')
       end
+
     end
+
   end
 end

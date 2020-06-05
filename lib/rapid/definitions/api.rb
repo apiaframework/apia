@@ -1,14 +1,10 @@
 # frozen_string_literal: true
 
-<<<<<<< HEAD:lib/moonstone/definitions/api.rb
-require 'moonstone/dsls/api'
-require 'moonstone/route_set'
-=======
 require 'rapid/definition'
 require 'rapid/dsls/api'
 require 'rapid/internal_api/controller'
 require 'rapid/hook_set'
->>>>>>> master:lib/rapid/definitions/api.rb
+require 'rapid/route_set'
 
 module Rapid
   module Definitions

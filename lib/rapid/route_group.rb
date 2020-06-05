@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-module Moonstone
+module Rapid
   class RouteGroup
+
     def initialize(name)
       @name = name
     end
+
   end
 end

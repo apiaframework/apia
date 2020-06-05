@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-require 'moonstone/route'
+require 'rapid/route'
 
-module Moonstone
+module Rapid
   module DSL
     class Routing
+
       def initialize(definition)
         @definition = definition
       end
@@ -22,11 +23,12 @@ module Moonstone
 
       def group(name)
         @groups ||= []
-        @groups << group = RouteGroup.new(name)
+        @groups << RouteGroup.new(name)
         yield
       ensure
         @groups.pop
       end
+
     end
   end
 end

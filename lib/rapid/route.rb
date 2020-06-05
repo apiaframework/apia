@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
-require 'moonstone/route_set'
+require 'rapid/route_set'
 
-module Moonstone
+module Rapid
   class Route
+
     attr_reader :path
     attr_reader :controller
     attr_reader :endpoint_name
@@ -38,5 +39,6 @@ module Moonstone
         hash[Regexp.last_match[1]] = value
       end
     end
+
   end
 end
