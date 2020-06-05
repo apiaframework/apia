@@ -31,7 +31,11 @@ module Rapid
 
       parts = self.class.split_path(route.path).map { |p| p =~ /\A\:/ ? '?' : p }
       parts.size.times do |i|
-        i == 0 ? source = @map : source = @map.dig(*parts[0, i])
+        if i.zero?
+          source = @map
+        else
+          source = @map.dig(*parts[0, i])
+        end
         source[parts[i]] ||= { _routes: [] }
         source[parts[i]][:_routes] << route if i == parts.size - 1
       end

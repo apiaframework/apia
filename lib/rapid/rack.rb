@@ -54,11 +54,11 @@ module Rapid
     # @param env [Hash]
     # @return [Array] a rack triplet
     def call(env)
-      if env['PATH_INFO'] =~ /\A#{Regexp.escape(@namespace)}\/([a-z].*)\z/i
-        api_path = Regexp.last_match(1)
-      else
+      unless env['PATH_INFO'] =~ /\A#{Regexp.escape(@namespace)}\/([a-z].*)\z/i
         return @app.call(env)
       end
+
+      api_path = Regexp.last_match(1)
 
       validate_api if development?
 

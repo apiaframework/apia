@@ -5,7 +5,7 @@ require 'rapid/request_environment'
 require 'rack/mock'
 
 describe Rapid::RequestEnvironment do
-  def setup_api(&block)
+  def setup_api
     request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"Phillip"}'))
 
     request.api = Rapid::API.create('ExampleAPI')
