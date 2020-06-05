@@ -1,288 +1,199 @@
-# Moonstone
+# Rapid 🚅
 
-Moonstone is a Ruby REST API framework for building a complete flexible HTTP API in any Ruby application (including Rails).
+Rapid is an API framework for building a self-documenting HTTP API in any Ruby application (including Rails).
 
-## Types
+🚧 This is still under construction. 🚧
+
+## Getting started
+
+To begin, you just need to install the gem into the application.
+
+```ruby
+source 'https://github.pkg.github.com/krystal' do
+  gem 'rapid', '~> 1.0'
+end
+```
+
+Once installed, you need to decide where to store your API (or APIs). If you are working with a Rails application, it is recommended to put your API into an `app/apis` directory. Within this, you can create a directory for each API you wish to create (or you can put each API in different locations). For this example, we'll create an API called `CoreAPI` which will live in `app/apis/core_api`.
+
+### Creating your API
+
+To begin, you need to create a class which is the top-level of your API. This should be a class that inherits from `Rapid::API`. This is the main entry point to your application. All configuration for your API will start here.
 
 ```ruby
 module CoreAPI
-  class UserType < Moonstone::Type
+  class Base < Rapid::API
 
-    description 'Any user on the system'
-
-    # By default, any request can render any type.
-    # If you wish to limit this specific type being rendered,
-    # you may do so by specifying a condition on the whole type.
-    condition do |user, request|
-      request.identity.can_access_user?(user)
-    end
-
-    # Most simple, define an attribute that should be returned
-    # for this object. Every field must specify a type.
-    field :rid, type: :string
-
-    # By default, fields just call the method on the underlying
-    # object. Rather than specifying the type on the same line,
-    # you can do so within the block of attributes.
-    field :full_name, type: :string do
-      backend { |u| "#{u.first_name} #{u.last_name}" }
-    end
-
-    # By default, it will be expected that all fields can NOT
-    # be null. It's important to set this correctly because if an
-    # object is null and this type does not expect that it will
-    # raise an error when rendering the type.
-    field :date_of_birth, type: :date, null: true
-
-    # Fields can also be other types!
-    field :role, type: RoleType
-
-    # Fields can also return an array of items. It's important
-    # that all items in the array are the same type.
-    field :books, type: [BookType]
-    field :keys, type: [:string]
-
-    # If a field's inclusion is conditional on the context of
-    # the API request, you can exclude it entirely.
-    field :admin, type: :boolean do
-      backend { |user| user.admin? }
-      condition { |user, request| request.identity.admin? }
-    end
+    name 'Core API'
+    description 'Some description to describe this API which will be displayed in the schema & documentation'
 
   end
 end
 ```
 
-## Enums
+At the most basic, you will define a name and description for your API. We'll be adding to this class shortly.
+
+### Routing requests to your API
+
+Rapid provides a Rack middleware that will handle all requests for your API and pass any non-matching requesst through the stack to your application. You can define this in your `config.ru` or, if you're using a Rails application, it can go into `config/application.rb`.
 
 ```ruby
-module CoreAPI
-  class UserStateEnumType < Moonstone::Enum
+module MyApp
+  class Application < Rails::Application
 
-    # Define all the values for the enum.
-    value 'active'
-    value 'suspended'
-    value 'disabled'
-    value 'pending_activation'
+    # ... other configuration for your application will also be in this file.
 
-    # Define how the source value for this enum can be converted into
-    # one of the type above.
-    cast do |source|
-      source.to_s
-    end
-  end
-
-  class UserType < Moonstone::Type
-
-    # You can use enums the same as any other type when definining
-    # fields on a type.
-    field :status, type: UserStateEnumType
+    config.middleware.use Rapid::Rack, 'CoreAPI::Base', '/api/core/v1', development: Rails.env.development?
 
   end
 end
 ```
 
-## Argument Sets
+The key thing to note here is that the `CoreAPI::Base` reference is provided as a string rather than the constant itself. You can provide the constant here but using a string will ensure that API can be reloaded in development when classes are unloaded.
+
+### Testing the API
+
+At this point, the API should be working and you should be able to make a request to the schema endpoint which will reveal the schema for your whole API. Make a request to the following URL to see what is returned. You won't see too much at this point because the API doesn't do anything yet.
+
+```
+GET /api/core/v1/rapid/schema
+```
+
+### Creating a controller and endpoint
+
+A controller is a collection of actions (or endpoints) that will perform actions and return data as appropriate. An API can have as many controllers as you need and a controller can have as many endpoints as needed. At present, there is a two level structure for API requests - you make requests to a specific endpoint by requesting `api/core/v1/{controller-name}/{endpoint-name}`.
+
+Begin by creating a new `controllers` directory in your `app/apis/core_api` directory. Within that, add a file for your first controller. In this example, we'll make a controller for managing products and thus we'll call it the `Products` controller. This controller should inherit from `Rapid::Controller`.
 
 ```ruby
 module CoreAPI
-  class UserArgumentSet < Moonstone::ArgumentSet
+  module Controllers
+    module Products < Rapid::Controller
 
-    # Most simply, define an argument with a type.
-    argument :name, type: :string
+      name 'Products'
+      description 'Allows you to list & manages products in the product database'
 
-    # By default, all arguments are required unless they're
-    # marked as such.
-    argument :date_of_bith, type: :date, required: false
-
-    # If you want to do some specific validations on an
-    # argument, you can do so by specifying some validations
-    # on the argument.
-    argument :name, type: :string do
-      validation do
-        name :must_start_with_dave
-        condition { |value| value =~ /\ADave/}
-      end
     end
-
-    # If you want to accept an array of items, you can do this too.
-    argument :pins, type: :string, array: true
   end
 end
 ```
 
-## Controllers
+Once you have added your controller, you need to add it to your API. Open up `app/apis/core_api/base` and add a reference for the controller as shown below. The `:products` reference is how the controller will be referenced in any request for its endpoints.
 
 ```ruby
 module CoreAPI
+  class Base < Rapid::API
 
-  class ValidationError < Moonstone::Error
-
-    code :validation_error
-    http_code 400
-    description 'A validation error occurred saving an object'
-
-    field :errors, [:string] do
-      description "An array of all errors related to this validation"
-    end
+    controller :products, Controllers::Products
 
   end
+end
+```
 
-  class UsersController < Moonstone::Controller
+As with the API, this is a very basic implementation of a controller. If you refresh your schema (`rapid/schema`) then you should see this controller has been added to the controllers array.
 
-    # Set the description for thiscontroller
-    description 'Handles user stuff'
+A controller isn't much use without an endpoint through so we can add an endpoint here.
 
-    # Specify how you wish this controller to be authenticated. You can
-    # choose a single authenticator per controller which will handle
-    # pre-action authentication actions.
-    #
-    # This will be the default authenticator for all actions in this controller.
-    # Unless overriden on a per-action basis.
-    authenticator UserAuthenticator
+```ruby
+module CoreAPI
+  module Controllers
+    module Products < Rapid::Controller
 
-    # Define an action within the controller by providing a name that you
-    # wish to use for it.
-    endpoint :create do
-      label 'Create a new user'
-      description "This action will create a new user"
-
-      # Specify the HTTP method that must be used when submitting this request
-      method :post
-
-      # Specify the HTTP status that should be returned for a successful response
-      http_status 201
-
-      # Optionally set the authenticator use (if not defined, will use the
-      # controller default, or the API default)
-      authenticator DefaultAuthenticator
-
-      # Define any arguments that you'd like to receive for this action.
-      # By default, all arguments are required.
-      argument :user, type: UserArgumentSet
-
-      # Define the fields that will be returned by this action.
-      field :user, type: UserType
-
-      # Define a list of potential errors that may be raised by this action.
-      # Errors should be defined
-      potential_error ValidationError
-
-      # Define what you actually want to be invoked when this action is called.
-      # All argument validations will run before actually executing this action.
-      #
-      # The request and the response are provided for you to work with.
-      endpoint do |request, response|
-        user = User.new
-
-        # You can access the validated and typecast arguments provided
-        # through the request.
-        user.full_name = request.arguments[:user][:full_name]
-        user.date_of_birth = request.arguments[:user][:date_of_birth]
-
-        if user.save
-          # You can add fields to the response which will be set up appropriate
-          # based on the type defined for the action.
-          response.add_field :user, user
-        else
-          # If something goes wrong, you can set up an error which will be
-          # returned instead of the error.
-          raise_error ValidationError do
-            field :errors, user.errors
-          end
+      endpoint :list do
+        name 'List products'
+        description 'Returns a full list of products'
+        field :products, [:string]
+        action do
+          product_names = Products.all.map(&:name)
+          response.add_field :products, product_names
         end
       end
-    end
 
+    end
   end
 end
 ```
 
-## Authenticators
+This is a very simple endpoint. Walking through each section...
+
+- Firstly, we define the name of the endpoint which, in this case, is `list`. This will be addressed as `products/list` when requests are made to it.
+
+- Then we define the name and description for it. This will appear in the schema & documentation.
+
+- Then we add a field which we will expect to be returned when this action is invoked. In this case, we're creating a field called `products` and specifying that it will be an array of strings that will be returned.
+
+- Then we define an action which will actually be executed when this endpoint is executed. This action has access to the request and the response. The `request` object contains information about the request being made and the `response` object allows you to influence what is returned to the consumer.
+
+- Finally, we use `response.add_field` to add data for the `products` field that we defined earlier. In this case, an array of product names.
+
+#### A note about types
+
+When you define a field (or an argument) you must define a `type`. A type is what type of object that the consumer can expect to receive (or the server will expect to receive in the case of arguments). A type can be provided as a symbol to reference a scalar or a class that inherits from `Rapid::Scalar` (for scalars), `Rapid::Object` (for objects), `Rapid::Enum` (for enums) or `Rapid::Polymorph` (for polymorphs).
+
+The following scalars are built-in:
+
+- `:string`
+- `:integer`
+- `:boolean`
+- `:date`
+- `:unix_time`
+- `:base64`
+- `:decimal`
+
+### Testing
+
+We can now test that works by making a request to `products/list`. By default, all requests are expected to be `GET` request (although this can (should) be changed a per-endpoint basis - actions that make changes should be POST/PATCH/PUT/DELETE etc...).
+
+### Returning objects
+
+In the product example above, we returned an array of strings. In reality, we'll need to be able to return objects containing multiple properties. To do this, you need to create a `Rapid::Object` class which defines the fields available on each object. This is an example object for our ficticious product class.
 
 ```ruby
 module CoreAPI
-  class InvalidAPITokenError < Moonstone::Error
-    code :invalid_api_token
-    http_code 403
-    description 'The API token provided is invalid'
-  end
+  module Objects
+    class Product < Rapid::Object
 
-  class Authenticator < Moonstone::Authenticator
+      # Define a couple of string fields that must always be required.
+      field :id, :string
+      field :name, :string
 
-    # Define the type of authentication you wish to use. The only
-    # option available here is :bearer now.
-    type :bearer
+      # When you pass `null: true` to the field the API will allow nil values
+      # to be returned in place of the defined type. If you don't specify
+      # this and a nil value is encountered the request will fail so be
+      # careful with this.
+      field :description, :string, null: true
 
-    # Define which errors can be potentially raised by the
-    # authenticator.
-    potential_error 'InvalidNetworkError' do
-      description 'You are connecting to the API from an IP address that is not permitted'
-      code :invalid_network_error
-      http_status 403
-      field :ip_address, type: :string do
-        description 'The IP address given'
+      # You can reference other objects too
+      field :owner, Objects::User
+
+      # By default, Rapid will try to find a value for a field by calling
+      # a method named the same as field on the source object (or looking
+      # for a string or symbol by the same name in a Hash object). If
+      # needed, you can override this behaviour by providing a backend.
+      field :units_sold, :integer do
+        backend { |product| product.sales.sum(:quantity) }
       end
+
     end
-
-    potential_error InvalidNetworkError
-
-    # Define the action to take to set the identity variable.
-    # The contents of this method behave in the same way as a controller action.
-    action do |request, response|
-      given_token = request.headers['Authorization'].sub(/\ABearer /, '')
-      api_token = APIToken.find_by(token: given_token)
-      if api_token.nil?
-        # Raise an error by specifying the name of the error class
-        # that you wish to raise. It must be specified as a potential
-        # error for this endpoint.
-        response.error InvalidAPITokenError
-        return
-      end
-
-      unless api_token.valid_ip_address?(request.ip)
-        # If you have defined an anonymous error you can raise an error
-        # by giving the name of the error you have defined within
-        # this endpoint.
-        response.error 'InvalidNetworkError' do |error|
-          error.add_field :ip_address, request.ip
-        end
-        return
-      end
-
-      request.set_identity api_token
-      response.headers['X-Auth-Identity'] = api_token.rid
-    end
-
   end
 end
 ```
 
-## API
+By default, Rapid will try to find a value for your fields by calling a method named the same as the field
+
+Once you have created your object class, you will need to update your endpoint to reference the object.
 
 ```ruby
-module CoreAPI
-  class Base < Moonstone::API
-
-    # List any authenticators that you wish to be invoked for
-    # all requests to this API.
-    authenticator Authenticator
-
-    # List all controllers that should be published for this API.
-    # All controllers will be available and will be listed in any
-    # documentation and auto generated SDKs.
-    controller :users, UsersController
-
+endpoint :list do
+  field :products, [Objects::Product]
+  action do |request, response|
+    response.add_field :products, Products.all.to_a
   end
 end
 ```
 
-## Routing
+If you make the request now, you should receive an array of objects (hashes) rather than strings now.
 
-```ruby
-# In a config.ru
-use Moonstone::Rack.new(CoreAPI::Base, "/api/core/v1")
+## Further reading
 
-# In Rails middleware
-app.middleware.use Moonstone::Rack, CoreAPI::Base, "/api/core/v1"
-```
+Take a look through the docs folder

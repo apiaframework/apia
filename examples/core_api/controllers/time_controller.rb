@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
-require 'core_api/types/time_type'
+require 'core_api/objects/time'
+require 'core_api/argument_sets/time_lookup_argument_set'
 
 module CoreAPI
   module Controllers
-    class TimeController < Moonstone::Controller
+    class TimeController < Rapid::Controller
+
+      name 'Time API'
       description 'Returns the current time in varying ways'
 
       endpoint :now do
-        label 'Current time'
         description 'Returns the current time'
         http_method :post
-        field :time, type: Types::TimeType
+        field :time, type: Objects::Time
         action do |_request, response|
           time = Time.now
           response.add_field :time, time
@@ -19,33 +21,15 @@ module CoreAPI
       end
 
       endpoint :format do
-        field :time, type: :string
-        http_method :post
-        argument :time, type: :date, required: true
+        description 'Format the given time'
+        argument :time, type: ArgumentSets::TimeLookupArgumentSet, required: true
+        field :formatted_time, type: :string
         action do |request, response|
-          response.add_field :time, request.arguments[:time].inspect
+          time = request.arguments[:time]
+          response.add_field :formatted_time, time.resolve
         end
       end
 
-      endpoint :tomorrow do
-        field :method, type: :string
-        field :arguments, type: :string
-        field :json, type: :string
-        field :params, type: :string
-
-        argument :test, type: :string, required: true do
-          validation :must_be_adam do |value|
-            value == 'Adam'
-          end
-        end
-
-        action do |request, response|
-          response.add_field :method, request.request_method
-          response.add_field :arguments, request.arguments.inspect
-          response.add_field :json, request.json_body.inspect
-          response.add_field :params, request.params.inspect
-        end
-      end
     end
   end
 end

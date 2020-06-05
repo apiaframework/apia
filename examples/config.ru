@@ -3,14 +3,14 @@
 $LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
 $LOAD_PATH.unshift(File.expand_path(__dir__))
 
-require 'moonstone'
-require 'moonstone/rack'
+require 'rapid'
+require 'rapid/rack'
 require 'core_api/base'
 
-use Moonstone::Rack, CoreAPI::Base, '/core/v1', development: true
+use Rapid::Rack, CoreAPI::Base, '/core/v1', development: true
 
 app = proc do
-  [400, { 'Content-Type' => 'text/plain' }, ['Moonstone Example API Server. Make a request to a an example API for example /core/v1.']]
+  [400, { 'Content-Type' => 'text/plain' }, ['Rapid Example API Server. Make a request to a an example API for example /core/v1.']]
 end
 
 run app
