@@ -8,7 +8,6 @@ Endpoints are the main core of the framework and this is where the majority of t
 - `potential_error` - defines any potential errors which may be raised by the endpoint
 - `argument` - defines an argument that is available to this endpoint
 - `field` - defines a field that will be returned by the endpoint
-- `http_method` - defines the HTTP method that must be used to access this endpoint (defaults to `:get`)
 - `http_status` - defines the HTTP status that will be returned when successful (defaults to 200)
 - `action` - defines the block that will be executed
 
@@ -21,9 +20,6 @@ endpoint :update do
   # Defines some details about this endpoint for documentation
   name 'Update user details'
   description 'Updates a user details with the new information'
-
-  # Specify that we'll only accept PATCH requests for this endpoint
-  http_method :patch
 
   # Specify that we'll be returning a 200 status if the endpoint is successful
   http_status 200
