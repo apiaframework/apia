@@ -17,7 +17,7 @@ module Rapid
 
       def setup
         @route_set = RouteSet.new
-        @controllers = { rapid: InternalAPI::Controller }
+        @controllers = {}
         @exception_handlers = HookSet.new
       end
 

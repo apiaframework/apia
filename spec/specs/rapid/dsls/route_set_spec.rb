@@ -9,12 +9,16 @@ describe Rapid::DSLs::RouteSet do
 
   context '#route' do
     it 'should add a route' do
-      controller = Rapid::Controller.create('MyController')
-      route = dsl.route 'users', request_method: :post, controller: controller, endpoint_name: :test
+      controller = Rapid::Controller.create('MyController') do
+        endpoint :test do
+          name 'Test endpoint'
+        end
+      end
+      route = dsl.route 'users', request_method: :post, controller: controller, endpoint: :test
       expect(route_set.find(:post, 'users')).to include route
       expect(route.controller).to eq controller
       expect(route.request_method).to eq :post
-      expect(route.endpoint_name).to eq :test
+      expect(route.endpoint.definition.name).to eq 'Test endpoint'
     end
   end
 

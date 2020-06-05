@@ -10,14 +10,28 @@ module Rapid
     attr_reader :endpoint_name
     attr_reader :request_method
     attr_reader :group
+    attr_writer :endpoint
 
     def initialize(path, **options)
       @path = path
 
       @group = options[:group]
+
       @controller = options[:controller]
-      @endpoint_name = options[:endpoint_name]
+      @endpoint = options[:endpoint]
+
       @request_method = options[:request_method] || :get
+    end
+
+    # Return the endpoint object for this route
+    #
+    # @return [Rapid::Endpoint]
+    def endpoint
+      if @endpoint.is_a?(Symbol)
+        return controller.definition.endpoints[@endpoint]
+      end
+
+      @endpoint
     end
 
     # Return the parts for this route

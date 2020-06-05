@@ -11,16 +11,16 @@ module Rapid
         @route_set = route_set
       end
 
-      def route(path, **options)
+      def route(path, request_method: nil, **options, &block)
         options[:group] = @groups&.last
 
-        route = Route.new(path, **options)
+        route = Route.new(path, request_method: request_method, **options)
         @route_set.add(route)
       end
 
       [:get, :post, :patch, :put, :delete].each do |method_name|
         define_method method_name do |path, **options|
-          route(path, **options.merge(request_method: method_name))
+          route(path, request_method: method_name, **options)
         end
       end
 

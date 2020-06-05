@@ -16,15 +16,6 @@ module Rapid
         @definition.authenticator = klass
       end
 
-      def controller(name, klass = nil, &block)
-        if block_given? && klass.nil?
-          id = "#{@definition.id}/#{Helpers.camelize(name)}Controller"
-          klass = Rapid::Controller.create(id, &block)
-        end
-
-        @definition.controllers[name.to_sym] = klass
-      end
-
       def exception_handler(block_var = nil, &block)
         @definition.exception_handlers.add(block_var, &block)
       end

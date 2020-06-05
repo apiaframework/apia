@@ -32,13 +32,10 @@ module Rapid
           set.add_object(definition.authenticator)
         end
 
-        definition.controllers.each_value do |con|
-          set.add_object(con)
-        end
-
         definition.route_set.controllers.each do |con|
           set.add_object(con)
         end
+
         set
       end
 

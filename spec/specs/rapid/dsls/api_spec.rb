@@ -47,14 +47,6 @@ describe Rapid::DSLs::API do
     end
   end
 
-  context '#controller' do
-    it 'should be able to add a controller' do
-      controller = Rapid::Controller.create('UsersController')
-      dsl.controller :users, controller
-      expect(api.controllers[:users]).to eq controller
-    end
-  end
-
   context '#exception_handler' do
     it 'should be able to receive a proc' do
       proc = proc {}

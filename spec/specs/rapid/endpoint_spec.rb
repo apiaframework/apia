@@ -25,16 +25,15 @@ describe Rapid::Endpoint do
 
         request.api = Rapid::API.create('ExampleAPI') do
           authenticator api_auth
-          controller :test do
-            authenticator controller_auth
-            endpoint :test do
-              authenticator endpoint_auth
-              action { 1234 }
-            end
-          end
         end
-        request.controller = request.api.definition.controllers[:test]
-        request.endpoint = request.controller.definition.endpoints[:test]
+
+        request.controller = Rapid::Controller.create('Controller') do
+          authenticator controller_auth
+        end
+
+        request.endpoint = Rapid::Endpoint.create('Endpoint') do
+          authenticator endpoint_auth
+        end
 
         expect(request.endpoint.definition.authenticator).to eq endpoint_auth
         expect(request.controller.definition.authenticator).to eq controller_auth
@@ -54,16 +53,17 @@ describe Rapid::Endpoint do
         controller_auth = Rapid::Authenticator.create('ExampleControllerAuthenticator')
         controller_auth.action { response.add_header 'x-auth', 'controller' }
 
-        request.api = Rapid::API.create('ExampleAPI') do
-          authenticator api_auth
-          controller :test do
-            authenticator controller_auth
-            endpoint :test do
-              action { 1234 }
-            end
+        request.controller = Rapid::Controller.create('Controller') do
+          authenticator controller_auth
+          endpoint :test do
+            action { 1234 }
           end
         end
-        request.controller = request.api.definition.controllers[:test]
+
+        request.api = Rapid::API.create('ExampleAPI') do
+          authenticator api_auth
+        end
+
         request.endpoint = request.controller.definition.endpoints[:test]
 
         expect(request.controller.definition.authenticator).to eq controller_auth
@@ -82,19 +82,12 @@ describe Rapid::Endpoint do
 
         request.api = Rapid::API.create('ExampleAPI') do
           authenticator api_auth
-          controller :test do
-            endpoint :test do
-              action { 1234 }
-            end
-          end
         end
-        request.controller = request.api.definition.controllers[:test]
-        request.endpoint = request.controller.definition.endpoints[:test]
 
+        request.controller = Rapid::Controller.create('Controller')
+        request.endpoint = Rapid::Endpoint.create('Endpoint')
         expect(request.api.definition.authenticator).to eq api_auth
-
         response = request.endpoint.execute(request)
-
         expect(response.headers['x-auth']).to eq 'api'
       end
     end
@@ -102,15 +95,9 @@ describe Rapid::Endpoint do
     context 'arguments' do
       it 'should create an argument set instance for the request' do
         request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"Phillip"}'))
-        request.api = Rapid::API.create('ExampleAPI') do
-          controller :test do
-            endpoint :test do
-              argument :name, type: :string
-            end
-          end
+        request.endpoint = Rapid::Endpoint.create('Endpoint') do
+          argument :name, type: :string
         end
-        request.controller = request.api.definition.controllers[:test]
-        request.endpoint = request.controller.definition.endpoints[:test]
         request.endpoint.execute(request)
         expect(request.arguments).to be_a Rapid::ArgumentSet
         expect(request.arguments['name']).to eq 'Phillip'
@@ -124,15 +111,14 @@ describe Rapid::Endpoint do
           raise Rapid::RuntimeError, 'My example message'
         end
       end
-      request.api = Rapid::API.create('ExampleAPI') do
-        authenticator auth
-        controller :test do
-          endpoint :test do
-            argument :name, type: :string
-          end
+      request.controller = Rapid::Controller.create('ExampleAPI') do
+        endpoint :test do
+          argument :name, type: :string
         end
       end
-      request.controller = request.api.definition.controllers[:test]
+      request.api = Rapid::API.create('ExampleAPI') do
+        authenticator auth
+      end
       request.endpoint = request.controller.definition.endpoints[:test]
       response = request.endpoint.execute(request)
       expect(response.body[:error]).to be_a Hash
@@ -143,19 +129,13 @@ describe Rapid::Endpoint do
 
     it 'should catch runtime errors when processing arguments' do
       request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"Phillip"}'))
-      request.api = Rapid::API.create('ExampleAPI') do
-        controller :test do
-          endpoint :test do
-            argument :name, type: :string do
-              validation(:something) do
-                raise Rapid::RuntimeError, 'My example argument message'
-              end
-            end
+      request.endpoint = Rapid::Endpoint.create('Endpoint') do
+        argument :name, type: :string do
+          validation(:something) do
+            raise Rapid::RuntimeError, 'My example argument message'
           end
         end
       end
-      request.controller = request.api.definition.controllers[:test]
-      request.endpoint = request.controller.definition.endpoints[:test]
       response = request.endpoint.execute(request)
       expect(response.body[:error]).to be_a Hash
       expect(response.body[:error][:code]).to eq 'generic_runtime_error'
@@ -165,17 +145,11 @@ describe Rapid::Endpoint do
 
     it 'should catch runtime errors when running the endpoint action' do
       request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"Phillip"}'))
-      request.api = Rapid::API.create('ExampleAPI') do
-        controller :test do
-          endpoint :test do
-            action do
-              raise Rapid::RuntimeError, 'My example endpoint message'
-            end
-          end
+      request.endpoint = Rapid::Endpoint.create('Endpoint') do
+        action do
+          raise Rapid::RuntimeError, 'My example endpoint message'
         end
       end
-      request.controller = request.api.definition.controllers[:test]
-      request.endpoint = request.controller.definition.endpoints[:test]
       response = request.endpoint.execute(request)
       expect(response.body[:error]).to be_a Hash
       expect(response.body[:error][:code]).to eq 'generic_runtime_error'
@@ -185,17 +159,11 @@ describe Rapid::Endpoint do
 
     it 'should run the endpoint action' do
       request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"Phillip"}'))
-      request.api = Rapid::API.create('ExampleAPI') do
-        controller :test do
-          endpoint :test do
-            action do |_req, res|
-              res.body = { hello: 'world' }
-            end
-          end
+      request.endpoint = Rapid::Endpoint.create('Test') do
+        action do |_req, res|
+          res.body = { hello: 'world' }
         end
       end
-      request.controller = request.api.definition.controllers[:test]
-      request.endpoint = request.controller.definition.endpoints[:test]
       response = request.endpoint.execute(request)
       expect(response.body[:hello]).to eq 'world'
     end

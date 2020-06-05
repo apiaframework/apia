@@ -42,7 +42,7 @@ module Rapid
       last = @routes
       parts.size.times do |i|
         last = last[parts[i]] || last['?']
-        return nil if last.nil?
+        return [] if last.nil?
       end
       last[:_routes].select { |r| r.request_method == request_method }
     end

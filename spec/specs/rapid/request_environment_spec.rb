@@ -8,15 +8,10 @@ describe Rapid::RequestEnvironment do
   def setup_api(&block)
     request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"Phillip"}'))
 
-    if block_given?
-      request.api = Rapid::API.create('ExampleAPI', &block)
-    else
-      request.api = Rapid::API.create('ExampleAPI') do
-        controller(:test) { endpoint(:test) {} }
-      end
-    end
-    request.controller = request.api.definition.controllers[:test]
-    request.endpoint = request.controller.definition.endpoints[:test]
+    request.api = Rapid::API.create('ExampleAPI')
+    request.endpoint = Rapid::Endpoint.create('ExampleEndpoint')
+    request.controller = Rapid::Controller.create('ExampleController')
+
     response = Rapid::Response.new(request, request.endpoint)
     described_class.new(request, response)
   end
@@ -38,16 +33,11 @@ describe Rapid::RequestEnvironment do
 
     it 'should translate known exceptions into appropriate error classes' do
       error_class = Class.new(StandardError)
-      environment = setup_api do
-        controller :test do
-          endpoint :test do
-            potential_error 'ExampleError' do
-              code :example_error
-              catch_exception error_class do |fields, exception|
-                fields[:field_value] = exception.message
-              end
-            end
-          end
+      environment = setup_api
+      environment.request.endpoint.potential_error 'ExampleError' do
+        code :example_error
+        catch_exception error_class do |fields, exception|
+          fields[:field_value] = exception.message
         end
       end
 
@@ -71,17 +61,13 @@ describe Rapid::RequestEnvironment do
 
   context '#raise_error' do
     it 'should raise an error by name within the same endpoint' do
-      environment = setup_api do
-        controller :test do
-          endpoint :test do
-            potential_error 'ExampleError' do
-              code :example_error
-              http_status 417
-            end
-          end
-        end
+      environment = setup_api
+      environment.request.endpoint.potential_error 'ExampleError' do
+        code :example_error
+        http_status 417
       end
-      expect { environment.raise_error('ExampleAPI/TestController/TestEndpoint/ExampleError') }.to raise_error Rapid::ErrorExceptionError do |e|
+
+      expect { environment.raise_error('ExampleEndpoint/ExampleError') }.to raise_error Rapid::ErrorExceptionError do |e|
         expect(e.error_class.definition.http_status).to eq 417
         expect(e.error_class.definition.code).to eq :example_error
       end
@@ -93,20 +79,15 @@ describe Rapid::RequestEnvironment do
     end
 
     it 'should raise an error by name within the active authenticator' do
-      environment = setup_api do
-        authenticator 'MainAuthenticator' do
-          potential_error 'AuthError' do
-            http_status 403
-            code :auth_error
-          end
-        end
-        controller :test do
-          endpoint :test do
-          end
+      environment = setup_api
+      environment.request.authenticator = Rapid::Authenticator.create('MainAuthenticator') do
+        potential_error 'AuthError' do
+          http_status 403
+          code :auth_error
         end
       end
-      environment.request.authenticator = environment.request.api.definition.authenticator
-      expect { environment.raise_error('ExampleAPI/MainAuthenticator/AuthError') }.to raise_error Rapid::ErrorExceptionError do |e|
+
+      expect { environment.raise_error('MainAuthenticator/AuthError') }.to raise_error Rapid::ErrorExceptionError do |e|
         expect(e.error_class.definition.http_status).to eq 403
         expect(e.error_class.definition.code).to eq :auth_error
       end
@@ -122,13 +103,7 @@ describe Rapid::RequestEnvironment do
         http_status 422
         code :defined_error
       end
-      environment = setup_api do
-        controller :test do
-          endpoint :test do
-            potential_error error
-          end
-        end
-      end
+      environment = setup_api
       expect { environment.raise_error(error) }.to raise_error Rapid::ErrorExceptionError do |e|
         expect(e.error_class.definition.http_status).to eq 422
         expect(e.error_class.definition.code).to eq :defined_error
@@ -138,27 +113,17 @@ describe Rapid::RequestEnvironment do
 
   context '#error_for_exception' do
     it 'should return nil if no potential error in either the authenticator or endpoint defines it can handle it' do
-      environment = setup_api do
-        controller :test do
-          endpoint :test do
-          end
-        end
-      end
+      environment = setup_api
       example_error = Class.new(StandardError)
       expect(environment.error_for_exception(example_error)).to be nil
     end
 
     it 'should return the class object for a given exception' do
       example_error = Class.new(StandardError)
-      environment = setup_api do
-        controller :test do
-          endpoint :test do
-            potential_error 'ExampleError' do
-              code :example_error
-              catch_exception example_error
-            end
-          end
-        end
+      environment = setup_api
+      environment.request.endpoint.potential_error 'ExampleError' do
+        code :example_error
+        catch_exception example_error
       end
       expect(environment.error_for_exception(example_error)).to_not be_nil
       expect(environment.error_for_exception(example_error)[:error].ancestors).to include Rapid::Error
@@ -168,23 +133,14 @@ describe Rapid::RequestEnvironment do
 
   context '#paginate' do
     it 'should raise an error if no pagination has been configured for the endpoint' do
-      environment = setup_api do
-        controller :test do
-          endpoint :test do
-          end
-        end
-      end
+      environment = setup_api
       expect { environment.paginate(PaginatedSet.new(10)) }.to raise_error Rapid::RuntimeError, /no pagination has been configured/
     end
 
     subject(:environment) do
-      setup_api do
-        controller :test do
-          endpoint :test do
-            field :widgets, type: [:string], paginate: true
-          end
-        end
-      end
+      environment = setup_api
+      environment.request.endpoint.field :widgets, type: [:string], paginate: true
+      environment
     end
 
     it 'should work for the first page in the set' do
