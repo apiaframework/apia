@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
 require 'rapid/dsls/route_set'
 require 'rapid/route_set'
 
@@ -25,33 +26,33 @@ describe Rapid::DSLs::RouteSet do
   context '#group' do
     it 'should group all routes' do
       dsl.group :virtual_machines do
-        dsl.get 'virtual_machines'
+        get 'virtual_machines'
       end
 
       route = route_set.find(:get, 'virtual_machines').first
       expect(route.group).to be_a Rapid::RouteGroup
-      expect(route.group.name).to eq :virtual_machines
+      expect(route.group.id).to eq :virtual_machines
       expect(route.group.parent).to be nil
     end
 
     it 'should nest groups' do
       dsl.group :virtual_machines do
-        dsl.get 'virtual_machines/:id'
-        dsl.group :power_functions do\
-          dsl.post 'virtual_machines/:id/start'
-          dsl.post 'virtual_machines/:id/stop'
+        get 'virtual_machines/:id'
+        group :power_functions do
+          post 'virtual_machines/:id/start'
+          post 'virtual_machines/:id/stop'
         end
-        dsl.delete 'virtual_machines/:id'
+        delete 'virtual_machines/:id'
       end
       route = route_set.find(:post, 'virtual_machines/123/start').first
       expect(route.group).to be_a Rapid::RouteGroup
-      expect(route.group.name).to eq :power_functions
+      expect(route.group.id).to eq :power_functions
       expect(route.group.parent).to be_a Rapid::RouteGroup
-      expect(route.group.parent.name).to eq :virtual_machines
+      expect(route.group.parent.id).to eq :virtual_machines
 
       route = route_set.find(:delete, 'virtual_machines/123').first
       expect(route.group).to be_a Rapid::RouteGroup
-      expect(route.group.name).to eq :virtual_machines
+      expect(route.group.id).to eq :virtual_machines
     end
   end
 

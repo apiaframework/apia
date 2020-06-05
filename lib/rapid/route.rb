@@ -5,6 +5,8 @@ require 'rapid/route_set'
 module Rapid
   class Route
 
+    REQUEST_METHODS = [:get, :post, :patch, :put, :delete].freeze
+
     attr_reader :path
     attr_reader :controller
     attr_reader :endpoint_name
