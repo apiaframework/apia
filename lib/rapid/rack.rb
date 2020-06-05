@@ -68,6 +68,7 @@ module Rapid
       end
 
       request = Rapid::Request.new(env)
+      request.api_path = api_path
       request.namespace = @namespace
       request.api = api
       request.controller = route.controller

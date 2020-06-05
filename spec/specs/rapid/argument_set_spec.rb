@@ -60,8 +60,9 @@ describe Rapid::ArgumentSet do
     end
 
     it 'should include arguments included in the path' do
-      env = Rack::MockRequest.env_for('/test/123/test', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"john"}')
+      env = Rack::MockRequest.env_for('/api/v1/test/123/test', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"john"}')
       request = Rapid::Request.new(env)
+      request.api_path = 'test/123/test'
       request.route = Rapid::Route.new('test/:id/test')
       argument_set = Rapid::ArgumentSet.create('ExampleSet') do
         argument :id, type: :integer
@@ -71,8 +72,9 @@ describe Rapid::ArgumentSet do
     end
 
     it 'it should include arguments included in the path if they reference an argument set' do
-      env = Rack::MockRequest.env_for('/test/123/test/potato', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"john"}')
+      env = Rack::MockRequest.env_for('/api/v1/test/123/test/potato', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"john"}')
       request = Rapid::Request.new(env)
+      request.api_path = 'test/123/test/potato'
       request.route = Rapid::Route.new('test/:user/test/:another')
       argument_set1 = Rapid::ArgumentSet.create('ExampleSet') do
         argument :id, type: :integer

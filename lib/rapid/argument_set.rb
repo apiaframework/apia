@@ -160,7 +160,7 @@ module Rapid
       return if request.nil?
       return if request.route.nil?
 
-      route_args = request.route.extract_arguments(request.fullpath)
+      route_args = request.route.extract_arguments(request.api_path)
       if argument.type.argument_set?
         # If the argument is an argument set, we'll just want to try and
         # populate the first argument.

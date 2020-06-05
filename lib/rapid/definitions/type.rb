@@ -69,7 +69,7 @@ module Rapid
         end
       end
 
-      # Does this field return a scalar?
+      # Does this field return an argument set?
       #
       # @return [Boolean]
       def argument_set?

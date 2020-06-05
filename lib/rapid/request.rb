@@ -16,6 +16,7 @@ module Rapid
     attr_accessor :authenticator
     attr_accessor :namespace
     attr_accessor :route
+    attr_accessor :api_path
 
     def self.empty(options: {})
       new(options)
