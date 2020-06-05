@@ -2,10 +2,10 @@
 
 require 'rapid/controller'
 require 'rapid/authenticator'
-require 'rapid/internal_api/object_schema_polymorph'
+require 'rapid/schema/object_schema_polymorph'
 
 module Rapid
-  module InternalAPI
+  module Schema
     class Controller < Rapid::Controller
 
       no_schema

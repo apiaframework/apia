@@ -3,7 +3,6 @@
 require 'rapid/defineable'
 require 'rapid/definitions/api'
 require 'rapid/helpers'
-require 'rapid/internal_api/controller'
 require 'rapid/manifest_errors'
 require 'rapid/object_set'
 

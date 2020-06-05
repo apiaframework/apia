@@ -11,6 +11,11 @@ module Rapid
         @route_set = route_set
       end
 
+      def schema(path: 'schema')
+        require 'rapid/schema/controller'
+        get path, controller: Schema::Controller, endpoint: :schema
+      end
+
       def route(path, request_method: nil, **options, &block)
         options[:group] = @groups&.last
 

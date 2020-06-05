@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Rapid
-  module InternalAPI
+  module Schema
     class PolymorphOptionSchemaType < Rapid::Object
 
       no_schema

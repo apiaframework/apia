@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require 'rapid/object'
-require 'rapid/internal_api/authenticator_schema_type'
-require 'rapid/internal_api/field_schema_type'
-require 'rapid/internal_api/argument_set_schema_type'
-require 'rapid/internal_api/error_schema_type'
+require 'rapid/schema/authenticator_schema_type'
+require 'rapid/schema/field_schema_type'
+require 'rapid/schema/argument_set_schema_type'
+require 'rapid/schema/error_schema_type'
 
 module Rapid
-  module InternalAPI
+  module Schema
     class EndpointSchemaType < Rapid::Object
 
       no_schema

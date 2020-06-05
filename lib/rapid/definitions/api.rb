@@ -2,7 +2,6 @@
 
 require 'rapid/definition'
 require 'rapid/dsls/api'
-require 'rapid/internal_api/controller'
 require 'rapid/hook_set'
 require 'rapid/route_set'
 

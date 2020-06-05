@@ -9,10 +9,12 @@ module CoreAPI
     authenticator MainAuthenticator
 
     routes do
-      get 'time/now', controller: Controllers::TimeController, endpoint: :now
-      get 'time/format', controller: Controllers::TimeController, endpoint: :format
+      schema
 
-      get 'schema', controller: Rapid::InternalAPI::Controller, endpoint: :schema
+      group :time do
+        get 'time/now', controller: Controllers::TimeController, endpoint: :now
+        get 'time/format', controller: Controllers::TimeController, endpoint: :format
+      end
     end
 
   end

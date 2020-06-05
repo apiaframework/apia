@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'rapid/object'
-require 'rapid/internal_api/endpoint_schema_type'
+require 'rapid/schema/endpoint_schema_type'
 
 module Rapid
-  module InternalAPI
+  module Schema
     class ControllerEndpointSchemaType < Rapid::Object
 
       no_schema

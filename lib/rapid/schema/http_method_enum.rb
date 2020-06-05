@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Rapid
-  module InternalAPI
+  module Schema
     class HTTPMethodEnum < Rapid::Enum
 
       no_schema

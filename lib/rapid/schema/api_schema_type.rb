@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'rapid/object'
-require 'rapid/internal_api/authenticator_schema_type'
-require 'rapid/internal_api/api_controller_schema_type'
-require 'rapid/internal_api/object_schema_polymorph'
+require 'rapid/schema/authenticator_schema_type'
+require 'rapid/schema/api_controller_schema_type'
+require 'rapid/schema/object_schema_polymorph'
 
 module Rapid
-  module InternalAPI
+  module Schema
     class APISchemaType < Rapid::Object
 
       no_schema
