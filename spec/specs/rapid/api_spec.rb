@@ -17,6 +17,16 @@ describe Rapid::API do
       api = Rapid::API.create('BaseAPI') { authenticator auth }
       expect(api.objects).to include auth
     end
+
+    it 'should return controllers referenced by routes' do
+      controller = Rapid::Controller.create('Controller')
+      api = Rapid::API.create('BaseAPI') do
+        routes do
+          get 'virtual_machines', controller: controller
+        end
+      end
+      expect(api.objects).to include controller
+    end
   end
 
   context '.validate_all' do

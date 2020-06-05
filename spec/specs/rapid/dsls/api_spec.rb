@@ -67,4 +67,13 @@ describe Rapid::DSLs::API do
       expect(api.exception_handlers.call).to eq [1234]
     end
   end
+
+  context '#routes' do
+    it 'should provide for routes to be defined' do
+      dsl.routes do
+        get 'virtual_machines'
+      end
+      expect(api.route_set.find(:get, 'virtual_machines').first).to be_a Rapid::Route
+    end
+  end
 end

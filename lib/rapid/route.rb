@@ -9,13 +9,15 @@ module Rapid
     attr_reader :controller
     attr_reader :endpoint_name
     attr_reader :request_method
+    attr_reader :group
 
     def initialize(path, **options)
       @path = path
 
+      @group = options[:group]
       @controller = options[:controller]
       @endpoint_name = options[:endpoint_name]
-      @request_method = options[:request_method]
+      @request_method = options[:request_method] || :get
     end
 
     # Return the parts for this route

@@ -1,12 +1,20 @@
 # frozen_string_literal: true
 
+require 'rapid/dsls/route_set'
+
 module Rapid
   class RouteSet
 
     attr_reader :routes
+    attr_reader :controllers
 
     def initialize
       @routes = {}
+      @controllers = []
+    end
+
+    def dsl
+      @dsl ||= DSLs::RouteSet.new(self)
     end
 
     # Add a new route to the set
@@ -20,21 +28,23 @@ module Rapid
         source[parts[i]] ||= { _routes: [] }
         source[parts[i]][:_routes] << route if i == parts.size - 1
       end
+      @controllers << route.controller unless @controllers.include?(route.controller)
       route
     end
 
     # Find routes that exactly match a given path
     #
+    # @param request_method [Symbol]
     # @param path [String]
     # @return [Array<Moonstone::Route>]
-    def find(path)
+    def find(request_method, path)
       parts = self.class.split_path(path)
       last = @routes
       parts.size.times do |i|
         last = last[parts[i]] || last['?']
         return nil if last.nil?
       end
-      last[:_routes]
+      last[:_routes].select { |r| r.request_method == request_method }
     end
 
     class << self

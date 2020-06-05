@@ -29,6 +29,10 @@ module Rapid
         @definition.exception_handlers.add(block_var, &block)
       end
 
+      def routes(&block)
+        @definition.route_set.dsl.instance_eval(&block) if block_given?
+      end
+
     end
   end
 end

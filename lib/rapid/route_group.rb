@@ -3,8 +3,12 @@
 module Rapid
   class RouteGroup
 
-    def initialize(name)
+    attr_reader :name
+    attr_reader :parent
+
+    def initialize(name, parent)
       @name = name
+      @parent = parent
     end
 
   end
