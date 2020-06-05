@@ -58,6 +58,33 @@ describe Rapid::ArgumentSet do
       as_instance = as.create_from_request(request)
       expect(as_instance['name']).to eq nil
     end
+
+    it 'should include arguments included in the path' do
+      env = Rack::MockRequest.env_for('/test/123/test', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"john"}')
+      request = Rapid::Request.new(env)
+      request.route = Rapid::Route.new('test/:id/test')
+      argument_set = Rapid::ArgumentSet.create('ExampleSet') do
+        argument :id, type: :integer
+      end
+      as_instance = argument_set.create_from_request(request)
+      expect(as_instance['id']).to eq 123
+    end
+
+    it 'it should include arguments included in the path if they reference an argument set' do
+      env = Rack::MockRequest.env_for('/test/123/test/potato', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"john"}')
+      request = Rapid::Request.new(env)
+      request.route = Rapid::Route.new('test/:user/test/:another')
+      argument_set1 = Rapid::ArgumentSet.create('ExampleSet') do
+        argument :id, type: :integer
+      end
+      argument_set2 = Rapid::ArgumentSet.create('ExampleSet2') do
+        argument :user, type: argument_set1
+        argument :another, type: :string
+      end
+      as_instance = argument_set2.create_from_request(request)
+      expect(as_instance['user']['id']).to eq 123
+      expect(as_instance['another']).to eq 'potato'
+    end
   end
 
   context '#initialize' do

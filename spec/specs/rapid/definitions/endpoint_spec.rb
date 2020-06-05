@@ -38,16 +38,6 @@ describe Rapid::Definitions::Endpoint do
       expect(errors.for(endpoint)).to be_empty
     end
 
-    [2, :potatos, 'get', 'GET', proc {}].each do |value|
-      it "should add errors if the HTTP method is not supporte (#{value.inspect})" do
-        endpoint = described_class.new('Endpint')
-        endpoint.http_method = value
-        errors = Rapid::ManifestErrors.new
-        endpoint.validate(errors)
-        expect(errors.for(endpoint)).to include 'InvalidHTTPMethod'
-      end
-    end
-
     [50, 'bananas', :invalid, -12, 601, 344, proc {}].each do |value|
       it "should add errors if the HTTP status is not supported (#{value.inspect})" do
         endpoint = described_class.new('Endpint')

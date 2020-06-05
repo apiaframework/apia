@@ -2,10 +2,11 @@
 
 require 'rapid/controller'
 require 'rapid/authenticator'
-require 'rapid/internal_api/object_schema_polymorph'
+require 'rapid/schema/object_schema_polymorph'
+require 'rapid/schema/route_set_schema_type'
 
 module Rapid
-  module InternalAPI
+  module Schema
     class Controller < Rapid::Controller
 
       no_schema
@@ -23,6 +24,7 @@ module Rapid
         field :namespace, type: :string
         field :api, type: :string
         field :schema_version, type: :integer
+        field :route_set, type: RouteSetSchemaType
         field :objects, type: [ObjectSchemaPolymorph]
         action do |request, response|
           response.add_field :schema_version, 1
@@ -30,6 +32,7 @@ module Rapid
           response.add_field :api, request.api.definition.id
           response.add_field :namespace, request.namespace
           response.add_field :host, request.host
+          response.add_field :route_set, request.api.definition.route_set
         end
       end
 

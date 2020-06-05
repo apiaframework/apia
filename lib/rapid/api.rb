@@ -3,7 +3,6 @@
 require 'rapid/defineable'
 require 'rapid/definitions/api'
 require 'rapid/helpers'
-require 'rapid/internal_api/controller'
 require 'rapid/manifest_errors'
 require 'rapid/object_set'
 
@@ -32,9 +31,10 @@ module Rapid
           set.add_object(definition.authenticator)
         end
 
-        definition.controllers.each_value do |con|
+        definition.route_set.controllers.each do |con|
           set.add_object(con)
         end
+
         set
       end
 

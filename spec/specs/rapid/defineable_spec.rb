@@ -23,12 +23,9 @@ describe Rapid::Defineable do
         authenticator 'MainAuthenticator' do
           type :bearer
         end
-        controller :test do
-        end
       end
       expect(api.definition.id).to eq 'ExampleAPI'
       expect(api.definition.authenticator.definition.id).to eq 'ExampleAPI/MainAuthenticator'
-      expect(api.definition.controllers[:test].definition.id).to eq 'ExampleAPI/TestController'
     end
 
     it 'should have an ID with the original class name if defined that way' do

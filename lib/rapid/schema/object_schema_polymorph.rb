@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 require 'rapid/polymorph'
-require 'rapid/internal_api/object_schema_type'
-require 'rapid/internal_api/scalar_schema_type'
-require 'rapid/internal_api/enum_schema_type'
-require 'rapid/internal_api/polymorph_schema_type'
-require 'rapid/internal_api/api_schema_type'
-require 'rapid/internal_api/lookup_argument_set_schema_type'
+require 'rapid/schema/object_schema_type'
+require 'rapid/schema/scalar_schema_type'
+require 'rapid/schema/enum_schema_type'
+require 'rapid/schema/polymorph_schema_type'
+require 'rapid/schema/api_schema_type'
+require 'rapid/schema/lookup_argument_set_schema_type'
 
 module Rapid
-  module InternalAPI
+  module Schema
     class ObjectSchemaPolymorph < Rapid::Polymorph
 
       no_schema

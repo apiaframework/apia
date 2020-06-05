@@ -51,17 +51,9 @@ end
 
 The key thing to note here is that the `CoreAPI::Base` reference is provided as a string rather than the constant itself. You can provide the constant here but using a string will ensure that API can be reloaded in development when classes are unloaded.
 
-### Testing the API
-
-At this point, the API should be working and you should be able to make a request to the schema endpoint which will reveal the schema for your whole API. Make a request to the following URL to see what is returned. You won't see too much at this point because the API doesn't do anything yet.
-
-```
-GET /api/core/v1/rapid/schema
-```
-
 ### Creating a controller and endpoint
 
-A controller is a collection of actions (or endpoints) that will perform actions and return data as appropriate. An API can have as many controllers as you need and a controller can have as many endpoints as needed. At present, there is a two level structure for API requests - you make requests to a specific endpoint by requesting `api/core/v1/{controller-name}/{endpoint-name}`.
+A controller is a collection of actions (or endpoints) that will perform actions and return data as appropriate. An API can have as many controllers as you need and a controller can have as many endpoints as needed.
 
 Begin by creating a new `controllers` directory in your `app/apis/core_api` directory. Within that, add a file for your first controller. In this example, we'll make a controller for managing products and thus we'll call it the `Products` controller. This controller should inherit from `Rapid::Controller`.
 
@@ -78,21 +70,7 @@ module CoreAPI
 end
 ```
 
-Once you have added your controller, you need to add it to your API. Open up `app/apis/core_api/base` and add a reference for the controller as shown below. The `:products` reference is how the controller will be referenced in any request for its endpoints.
-
-```ruby
-module CoreAPI
-  class Base < Rapid::API
-
-    controller :products, Controllers::Products
-
-  end
-end
-```
-
-As with the API, this is a very basic implementation of a controller. If you refresh your schema (`rapid/schema`) then you should see this controller has been added to the controllers array.
-
-A controller isn't much use without an endpoint through so we can add an endpoint here.
+As with the API, this is a very basic implementation of a controller. A controller isn't much use without an endpoint through so we can add an endpoint here.
 
 ```ruby
 module CoreAPI
@@ -140,9 +118,25 @@ The following scalars are built-in:
 - `:base64`
 - `:decimal`
 
+### Routing
+
+Once you have added your controller, you need to add it to your API. Open up `app/apis/core_api/base` and add a route for it.
+
+```ruby
+module CoreAPI
+  class Base < Rapid::API
+
+    routes do
+      get 'products', controller: Controllers::Products, endpoint: :list
+    end
+
+  end
+end
+```
+
 ### Testing
 
-We can now test that works by making a request to `products/list`. By default, all requests are expected to be `GET` request (although this can (should) be changed a per-endpoint basis - actions that make changes should be POST/PATCH/PUT/DELETE etc...).
+We can now test that works by making a GET request to `products`.
 
 ### Returning objects
 

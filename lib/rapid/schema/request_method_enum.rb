@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
+require 'rapid/route'
+
 module Rapid
-  module InternalAPI
-    class HTTPMethodEnum < Rapid::Enum
+  module Schema
+    class RequestMethodEnum < Rapid::Enum
 
       no_schema
 
-      Rapid::Definitions::Endpoint::HTTP_METHODS.each do |method|
+      Route::REQUEST_METHODS.each do |method|
         value method.to_s.upcase
       end
 

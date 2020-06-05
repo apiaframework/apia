@@ -66,13 +66,6 @@ describe Rapid::DSLs::Endpoint do
     end
   end
 
-  context '#http_method' do
-    it 'should set the HTTP method' do
-      dsl.http_method :patch
-      expect(endpoint.http_method).to eq :patch
-    end
-  end
-
   context '#http_status' do
     it 'should set the HTTP status' do
       dsl.http_status 202

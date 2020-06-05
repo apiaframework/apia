@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 require 'rapid/object'
-require 'rapid/internal_api/field_schema_type'
+require 'rapid/schema/argument_schema_type'
 
 module Rapid
-  module InternalAPI
-    class ObjectSchemaType < Rapid::Object
+  module Schema
+    class ArgumentSetSchemaType < Rapid::Object
 
       no_schema
 
       field :id, type: :string
       field :name, type: :string, null: true
       field :description, type: :string, null: true
-      field :fields, type: [FieldSchemaType] do
-        backend { |e| e.fields.values }
+      field :arguments, type: [ArgumentSchemaType] do
+        backend { |as| as.arguments.values }
       end
 
     end

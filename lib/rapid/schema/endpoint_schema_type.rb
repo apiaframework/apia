@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 require 'rapid/object'
-require 'rapid/internal_api/authenticator_schema_type'
-require 'rapid/internal_api/field_schema_type'
-require 'rapid/internal_api/argument_set_schema_type'
-require 'rapid/internal_api/http_method_enum'
-require 'rapid/internal_api/error_schema_type'
+require 'rapid/schema/authenticator_schema_type'
+require 'rapid/schema/field_schema_type'
+require 'rapid/schema/argument_set_schema_type'
+require 'rapid/schema/error_schema_type'
 
 module Rapid
-  module InternalAPI
+  module Schema
     class EndpointSchemaType < Rapid::Object
 
       no_schema
@@ -17,7 +16,6 @@ module Rapid
       field :name, type: :string, null: true
       field :description, type: :string, null: true
       field :http_status, type: :integer, backend: :http_status_code
-      field :http_method, type: HTTPMethodEnum
       field :authenticator, type: :string, null: true do
         backend { |e| e.authenticator&.definition&.id }
       end

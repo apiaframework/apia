@@ -17,6 +17,16 @@ describe Rapid::API do
       api = Rapid::API.create('BaseAPI') { authenticator auth }
       expect(api.objects).to include auth
     end
+
+    it 'should return controllers referenced by routes' do
+      controller = Rapid::Controller.create('Controller')
+      api = Rapid::API.create('BaseAPI') do
+        routes do
+          get 'virtual_machines', controller: controller
+        end
+      end
+      expect(api.objects).to include controller
+    end
   end
 
   context '.validate_all' do
@@ -27,16 +37,17 @@ describe Rapid::API do
     end
 
     it 'should find errors on any objects that may exist' do
+      controller = Rapid::Controller.create('Controller') do
+        endpoint :test do
+          # missing action
+        end
+      end
       api = Rapid::API.create('ExampleAPI') do
         authenticator do
           type :bearer
           # missing action
         end
-        controller :test do
-          endpoint :test do
-            # missing action
-          end
-        end
+        routes { get('test', controller: controller, endpoint: :test) }
       end
       errors = api.validate_all
       expect(errors).to be_a Rapid::ManifestErrors
@@ -45,8 +56,8 @@ describe Rapid::API do
       expect(authenticator_errors).to_not be_empty
       expect(authenticator_errors).to include 'MissingAction'
 
-      endpoint = api.definition.controllers[:test].definition.endpoints[:test].definition
-      endpoint_errors = errors.for(endpoint)
+      endpoint = api.definition.route_set.find(:get, 'test').first.endpoint
+      endpoint_errors = errors.for(endpoint.definition)
       expect(endpoint_errors).to_not be_empty
       expect(endpoint_errors).to include 'MissingAction'
     end

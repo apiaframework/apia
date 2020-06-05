@@ -2,8 +2,8 @@
 
 require 'rapid/definition'
 require 'rapid/dsls/api'
-require 'rapid/internal_api/controller'
 require 'rapid/hook_set'
+require 'rapid/route_set'
 
 module Rapid
   module Definitions
@@ -11,10 +11,12 @@ module Rapid
 
       attr_accessor :authenticator
       attr_reader :controllers
+      attr_reader :route_set
       attr_reader :exception_handlers
 
       def setup
-        @controllers = { rapid: InternalAPI::Controller }
+        @route_set = RouteSet.new
+        @controllers = {}
         @exception_handlers = HookSet.new
       end
 

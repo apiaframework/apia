@@ -8,8 +8,6 @@ require 'rapid/response'
 module Rapid
   class Rack
 
-    PATH_COMPONENT_REGEX = /(?:\/(?:(?<controller>[\w-]+)\/?(?:(?<endpoint>[\w-]+)\/?)?)?)?$/.freeze
-
     def initialize(app, api, namespace, **options)
       @app = app
       @api = api
@@ -35,10 +33,10 @@ module Rapid
     #
     # @param path [String] /core/v1/controller/endpoint
     # @return [nil, Hash]
-    def parse_path(path)
-      return unless path =~ /\A#{Regexp.escape(@namespace)}#{PATH_COMPONENT_REGEX}/i
+    def find_route(method, path)
+      return if api.nil?
 
-      { controller: Regexp.last_match[:controller], endpoint: Regexp.last_match[:endpoint] }
+      api.definition.route_set.find(method.to_s.downcase.to_sym, path).first
     end
 
     # Return the API object
@@ -56,22 +54,27 @@ module Rapid
     # @param env [Hash]
     # @return [Array] a rack triplet
     def call(env)
+      unless env['PATH_INFO'] =~ /\A#{Regexp.escape(@namespace)}\/([a-z].*)\z/i
+        return @app.call(env)
+      end
+
+      api_path = Regexp.last_match(1)
+
       validate_api if development?
 
-      path_components = parse_path(env['PATH_INFO'])
-      return @app.call(env) if path_components.nil?
-
-      controller, endpoint = find_endpoint(path_components)
+      route = find_route(env['REQUEST_METHOD'], api_path)
+      if route.nil?
+        raise RackError.new(404, 'no_route', "No route matches '#{api_path}' for #{env['REQUEST_METHOD']}")
+      end
 
       request = Rapid::Request.new(env)
       request.namespace = @namespace
       request.api = api
-      request.controller = controller
-      request.endpoint = endpoint
+      request.controller = route.controller
+      request.endpoint = route.endpoint
+      request.route = route
 
-      validate_http_method(request)
-
-      response = endpoint.execute(request)
+      response = request.endpoint.execute(request)
       response.rack_triplet
     rescue StandardError => e
       api.definition.exception_handlers.call(e, {
@@ -93,40 +96,8 @@ module Rapid
 
     private
 
-    def find_endpoint(path_components)
-      if path_components[:controller].nil?
-        raise RackError.new(404, 'controller_missing', 'No controller could be determined from the URL path')
-      end
-
-      if path_components[:endpoint].nil?
-        raise RackError.new(404, 'endpoint_missing', 'No endpoint could be determined from the URL path')
-      end
-
-      controller = api.definition.controllers[path_components[:controller].to_sym]
-      if controller.nil?
-        raise RackError.new(404, 'controller_invalid', "#{path_components[:controller]} is not a valid controller name")
-      end
-
-      endpoint = controller.definition.endpoints[path_components[:endpoint].to_sym]
-      if endpoint.nil?
-        raise RackError.new(404, 'endpoint_invalid', "#{path_components[:endpoint]} is not a valid endpoint name for the #{controller.definition.name} controller")
-      end
-
-      [controller, endpoint]
-    end
-
     def validate_api
       api.validate_all.raise_if_needed
-    end
-
-    def validate_http_method(request)
-      required_http_method = request.endpoint.definition.http_method
-
-      return if required_http_method == :any
-      return if required_http_method.to_s.downcase == request.request_method.to_s.downcase
-
-      raise RackError.new(400, 'invalid_http_method', "This endpoint requires the #{required_http_method.to_s.upcase}" \
-                                                      "method be used (this request is a #{request.request_method} method)")
     end
 
     def triplet_for_exception(exception)

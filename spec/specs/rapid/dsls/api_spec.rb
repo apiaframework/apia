@@ -47,14 +47,6 @@ describe Rapid::DSLs::API do
     end
   end
 
-  context '#controller' do
-    it 'should be able to add a controller' do
-      controller = Rapid::Controller.create('UsersController')
-      dsl.controller :users, controller
-      expect(api.controllers[:users]).to eq controller
-    end
-  end
-
   context '#exception_handler' do
     it 'should be able to receive a proc' do
       proc = proc {}
@@ -65,6 +57,15 @@ describe Rapid::DSLs::API do
     it 'should be able to provide a block' do
       dsl.exception_handler { 1234 }
       expect(api.exception_handlers.call).to eq [1234]
+    end
+  end
+
+  context '#routes' do
+    it 'should provide for routes to be defined' do
+      dsl.routes do
+        get 'virtual_machines'
+      end
+      expect(api.route_set.find(:get, 'virtual_machines').first).to be_a Rapid::Route
     end
   end
 end

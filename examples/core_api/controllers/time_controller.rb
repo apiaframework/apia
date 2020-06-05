@@ -12,7 +12,6 @@ module CoreAPI
 
       endpoint :now do
         description 'Returns the current time'
-        http_method :post
         field :time, type: Objects::Time
         action do |_request, response|
           time = Time.now

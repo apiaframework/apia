@@ -1,41 +1,35 @@
 # frozen_string_literal: true
 
 require 'rapid/rack'
+require 'rapid/api'
+require 'rack/mock'
 
 describe Rapid::Rack do
-  context '#parse_path' do
+  context '#find_route' do
     subject(:rack) { Rapid::Rack.new(nil, nil, '/api/core') }
 
-    it 'should return nil if the path is not within the namespace' do
-      expect(rack.parse_path('/something/random')).to be_nil
-      expect(rack.parse_path('/api/cord')).to be_nil
-      expect(rack.parse_path('/api/coreing')).to be_nil
-      expect(rack.parse_path('/api')).to be_nil
-      expect(rack.parse_path('/api/cor')).to be_nil
-      expect(rack.parse_path('api/core')).to be_nil
+    it 'should return nil if there is no matching route' do
+      expect(rack.find_route(:get, 'missing')).to be_nil
     end
 
-    it 'should return a hash with no controller and action if the namespace matches' do
-      expect(rack.parse_path('/api/core')).to be_a Hash
-      expect(rack.parse_path('/api/core')[:controller]).to be_nil
-      expect(rack.parse_path('/api/core')[:endpoint]).to be_nil
-
-      expect(rack.parse_path('/api/core/')).to be_a Hash
-      expect(rack.parse_path('/api/core/')[:controller]).to be_nil
-      expect(rack.parse_path('/api/core/')[:endpoint]).to be_nil
+    it 'should return the matching route' do
+      api = Rapid::API.create('MyAPI') do
+        routes do
+          get 'widgets'
+        end
+      end
+      rack = Rapid::Rack.new(nil, api, '/api/core')
+      expect(rack.find_route(:get, 'widgets')).to be_a Rapid::Route
     end
 
-    it 'should return the name of the controller if just the controller is provided' do
-      expect(rack.parse_path('/api/core/my-controller')[:controller]).to eq 'my-controller'
-      expect(rack.parse_path('/api/core/my-controller/')[:controller]).to eq 'my-controller'
-      expect(rack.parse_path('/api/core/my-controller')[:endpoint]).to be nil
-    end
-
-    it 'should return the name of the controller and endpoint' do
-      expect(rack.parse_path('/api/core/my-controller/some_endpoint')[:controller]).to eq 'my-controller'
-      expect(rack.parse_path('/api/core/my-controller/some_endpoint')[:endpoint]).to eq 'some_endpoint'
-      expect(rack.parse_path('/api/core/my-controller/some_endpoint/')[:controller]).to eq 'my-controller'
-      expect(rack.parse_path('/api/core/my-controller/some_endpoint/')[:endpoint]).to eq 'some_endpoint'
+    it 'should work when methods are given as strings' do
+      api = Rapid::API.create('MyAPI') do
+        routes do
+          get 'widgets'
+        end
+      end
+      rack = Rapid::Rack.new(nil, api, '/api/core')
+      expect(rack.find_route('GET', 'widgets')).to be_a Rapid::Route
     end
   end
 
@@ -76,10 +70,11 @@ describe Rapid::Rack do
         end
       end.new
     end
+
     it 'should return the base application if the namespace does not match' do
       api = Rapid::API.create('MyAPI')
       rack = described_class.new(app, api, 'api/v1')
-      ['invalid', 'api', 'api/v1/test/test/test'].each do |path|
+      ['invalid', 'api', 'api/v2'].each do |path|
         env = ::Rack::MockRequest.env_for(path)
         result = rack.call(env)
         expect(result).to be_a Array
@@ -88,17 +83,20 @@ describe Rapid::Rack do
     end
 
     it 'should execute the endpoint and return the response triplet' do
-      api = Rapid::API.create('MyAPI') do
-        controller :test do
-          endpoint :test do
-            action do |_req, res|
-              res.add_header 'x-demo', 'hello'
-            end
+      controller = Rapid::Controller.create('Controller') do
+        endpoint :test do
+          action do
+            response.add_header 'x-demo', 'hello'
           end
         end
       end
-      rack = described_class.new(app, api, 'api/v1', development: true)
-      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
+      api = Rapid::API.create('MyAPI') do
+        routes do
+          get 'test', controller: controller, endpoint: :test
+        end
+      end
+      rack = described_class.new(app, api, 'api/v1')
+      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
       expect(result).to be_a Array
       expect(result[1]['x-demo']).to eq 'hello'
     end
@@ -109,38 +107,36 @@ describe Rapid::Rack do
       result = rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
       expect(result).to be_a Array
       expect(result[0]).to eq 404
-      expect(result[2][0]).to include 'endpoint_missing'
+      expect(result[2][0]).to include 'no_route'
     end
 
     it 'should catch other errors and return a detailed error triplet in development only' do
-      api = Rapid::API.create('MyAPI') do
-        controller :test do
-          endpoint :test do
-            action do |_req, _res|
-              1 / 0
-            end
-          end
+      controller = Rapid::Controller.create('Controller') do
+        endpoint :test do
+          action { 1 / 0 }
         end
       end
+      api = Rapid::API.create('MyAPI') do
+        routes { get('test', controller: controller, endpoint: :test) }
+      end
       rack = described_class.new(app, api, 'api/v1', development: true)
-      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
+      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
       expect(result).to be_a Array
       expect(result[0]).to eq 500
       expect(result[2][0]).to include '{"class":"ZeroDivisionError"'
     end
 
     it 'should catch other errors and return a basic error triplet in non-development mode' do
-      api = Rapid::API.create('MyAPI') do
-        controller :test do
-          endpoint :test do
-            action do |_req, _res|
-              1 / 0
-            end
-          end
+      controller = Rapid::Controller.create('Controller') do
+        endpoint :test do
+          action { 1 / 0 }
         end
       end
+      api = Rapid::API.create('MyAPI') do
+        routes { get('test', controller: controller, endpoint: :test) }
+      end
       rack = described_class.new(app, api, 'api/v1')
-      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
+      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
       expect(result).to be_a Array
       expect(result[0]).to eq 500
       expect(result[2][0]).to_not include '{"class":"ZeroDivisionError"'
@@ -148,21 +144,20 @@ describe Rapid::Rack do
 
     it 'should call exception handlers on the API if there are any exceptions' do
       handler_artifacts = {}
+      controller = Rapid::Controller.create('Controller') do
+        endpoint :test do
+          action { 1 / 0 }
+        end
+      end
       api = Rapid::API.create('MyAPI') do
         exception_handler do |exception, options|
           handler_artifacts[:exception] = exception
           handler_artifacts[:options] = options
         end
-        controller :test do
-          endpoint :test do
-            action do |_req, _res|
-              1 / 0
-            end
-          end
-        end
+        routes { get('test', controller: controller, endpoint: :test) }
       end
       rack = described_class.new(app, api, 'api/v1')
-      rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
+      rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
       expect(handler_artifacts[:exception]).to be_a ZeroDivisionError
       expect(handler_artifacts[:options][:request]).to be_a Rapid::Request
       expect(handler_artifacts[:options][:env]).to be_a Hash
@@ -181,37 +176,20 @@ describe Rapid::Rack do
     end
 
     it 'should not validate the whole API when not in development' do
-      api = Rapid::API.create('MyAPI') do
-        authenticator {}
-        controller :test do
-          endpoint :test do
-            action { |_req, res| res.add_header 'x-demo', 'test' }
-          end
+      controller = Rapid::Controller.create('Controller') do
+        endpoint :test do
+          action { |_req, res| res.add_header 'x-demo', 'test' }
         end
       end
+      api = Rapid::API.create('MyAPI') do
+        authenticator {}
+        routes { get('test', controller: controller, endpoint: :test) }
+      end
       rack = described_class.new(app, api, 'api/v1')
-      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
+      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
       expect(result).to be_a Array
       expect(result[0]).to eq 200
       expect(result[1]['x-demo']).to eq 'test'
-    end
-
-    it 'should return an error if the request method is not valid for the endpoint' do
-      api = Rapid::API.create('MyAPI') do
-        controller :test do
-          endpoint :test do
-            http_method :post
-            action do |_req, res|
-              res.add_header 'x-demo', 'hello'
-            end
-          end
-        end
-      end
-      rack = described_class.new(app, api, 'api/v1', development: true)
-      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
-      expect(result).to be_a Array
-      expect(result[0]).to eq 400
-      expect(result[2][0]).to include '{"code":"invalid_http_method"'
     end
   end
 
