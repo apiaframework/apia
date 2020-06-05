@@ -15,6 +15,7 @@ module Rapid
     attr_writer :arguments
     attr_accessor :authenticator
     attr_accessor :namespace
+    attr_accessor :route
 
     def self.empty(options: {})
       new(options)

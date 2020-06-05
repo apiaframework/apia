@@ -72,6 +72,7 @@ module Rapid
       request.api = api
       request.controller = route.controller
       request.endpoint = route.endpoint
+      request.route = route
 
       response = request.endpoint.execute(request)
       response.rack_triplet
@@ -79,8 +80,7 @@ module Rapid
       api.definition.exception_handlers.call(e, {
         env: env,
         api: api,
-        request: defined?(request) ? request : nil,
-        route: defined?(route) ? route : nil
+        request: defined?(request) ? request : nil
       })
 
       if e.is_a?(RackError) || e.is_a?(Rapid::ManifestError)

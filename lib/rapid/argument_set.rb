@@ -55,7 +55,8 @@ module Rapid
       @path = path
       @request = request
       @source = self.class.definition.arguments.each_with_object({}) do |(arg_key, argument), source|
-        given_value = hash[arg_key.to_s] || hash[arg_key.to_sym] || argument.default
+        given_value = hash[arg_key.to_s] || hash[arg_key.to_sym] || value_from_route(argument, request) || argument.default
+
         next if given_value.nil? && !argument.required?
 
         if given_value.nil?
@@ -152,6 +153,24 @@ module Rapid
       self.class.definition.arguments.each_value do |arg|
         next unless arg.required?
         next if self[arg.name]
+      end
+    end
+
+    def value_from_route(argument, request)
+      return if request.nil?
+      return if request.route.nil?
+
+      route_args = request.route.extract_arguments(request.fullpath)
+      if argument.type.argument_set?
+        # If the argument is an argument set, we'll just want to try and
+        # populate the first argument.
+        if first_arg = argument.type.klass.definition.arguments.keys.first
+          { first_arg.to_s => route_args[argument.name.to_s] }
+        else
+          {}
+        end
+      else
+        route_args[argument.name.to_s]
       end
     end
 
