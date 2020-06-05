@@ -8,7 +8,12 @@ module CoreAPI
 
     authenticator MainAuthenticator
 
-    controller :time, Controllers::TimeController
+    routes do
+      get 'time/now', controller: Controllers::TimeController, endpoint: :now
+      get 'time/format', controller: Controllers::TimeController, endpoint: :format
+
+      get 'schema', controller: Rapid::InternalAPI::Controller, endpoint: :schema
+    end
 
   end
 end
