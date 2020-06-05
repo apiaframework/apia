@@ -12,8 +12,18 @@ module CoreAPI
       schema
 
       group :time do
-        get 'time/now', controller: Controllers::TimeController, endpoint: :now
-        get 'time/format', controller: Controllers::TimeController, endpoint: :format
+        name 'Time functions'
+        description 'Everything related to time elements'
+        controller Controllers::TimeController
+        get 'time/now', endpoint: :now
+        get 'time/format', endpoint: :format
+
+        group :formatting do
+          name 'Formatting'
+          controller Controllers::TimeController
+
+          get 'time/formatting/format', endpoint: :format
+        end
       end
     end
 

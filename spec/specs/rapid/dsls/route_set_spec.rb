@@ -31,7 +31,7 @@ describe Rapid::DSLs::RouteSet do
 
       route = route_set.find(:get, 'virtual_machines').first
       expect(route.group).to be_a Rapid::RouteGroup
-      expect(route.group.id).to eq :virtual_machines
+      expect(route.group.id).to eq 'virtual_machines'
       expect(route.group.parent).to be nil
     end
 
@@ -46,13 +46,13 @@ describe Rapid::DSLs::RouteSet do
       end
       route = route_set.find(:post, 'virtual_machines/123/start').first
       expect(route.group).to be_a Rapid::RouteGroup
-      expect(route.group.id).to eq :power_functions
+      expect(route.group.id).to eq 'virtual_machines.power_functions'
       expect(route.group.parent).to be_a Rapid::RouteGroup
-      expect(route.group.parent.id).to eq :virtual_machines
+      expect(route.group.parent.id).to eq 'virtual_machines'
 
       route = route_set.find(:delete, 'virtual_machines/123').first
       expect(route.group).to be_a Rapid::RouteGroup
-      expect(route.group.id).to eq :virtual_machines
+      expect(route.group.id).to eq 'virtual_machines'
     end
   end
 

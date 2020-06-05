@@ -9,7 +9,6 @@ module Rapid
 
     attr_reader :path
     attr_reader :controller
-    attr_reader :endpoint_name
     attr_reader :request_method
     attr_reader :group
     attr_writer :endpoint

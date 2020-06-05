@@ -9,16 +9,16 @@ describe Rapid::RouteSet do
   context '#add' do
     it 'should add new routes to the route set' do
       route = route_set.add(Rapid::Route.new('users'))
-      expect(route_set.routes['users']).to be_a Hash
-      expect(route_set.routes['users'][:_routes].size).to eq 1
-      expect(route_set.routes['users'][:_routes][0]).to eq route
+      expect(route_set.map['users']).to be_a Hash
+      expect(route_set.map['users'][:_routes].size).to eq 1
+      expect(route_set.map['users'][:_routes][0]).to eq route
     end
 
     it 'should remove leading slashes in the route set' do
       route = route_set.add(Rapid::Route.new('/users'))
-      expect(route_set.routes['users']).to be_a Hash
-      expect(route_set.routes['users'][:_routes].size).to eq 1
-      expect(route_set.routes['users'][:_routes][0]).to eq route
+      expect(route_set.map['users']).to be_a Hash
+      expect(route_set.map['users'][:_routes].size).to eq 1
+      expect(route_set.map['users'][:_routes][0]).to eq route
     end
   end
 

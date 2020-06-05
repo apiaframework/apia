@@ -8,7 +8,7 @@ require 'rapid/route_group'
 describe Rapid::DSLs::RouteGroup do
   subject(:route_set) { Rapid::RouteSet.new }
   subject(:route_group) { Rapid::RouteGroup.new(:example, nil) }
-  subject(:dsl) { described_class.new(route_set.dsl, route_group) }
+  subject(:dsl) { described_class.new(route_set, route_group) }
 
   context '#name' do
     it 'should set the name' do
@@ -68,8 +68,8 @@ describe Rapid::DSLs::RouteGroup do
           get 'test/test'
         end
       end
-      expect(route_set.find(:get, 'test').first.group.id).to eq :sub_group
-      expect(route_set.find(:get, 'test/test').first.group.id).to eq :sub_group2
+      expect(route_set.find(:get, 'test').first.group.id).to eq 'example.sub_group'
+      expect(route_set.find(:get, 'test/test').first.group.id).to eq 'example.sub_group.sub_group2'
     end
   end
 

@@ -29,9 +29,10 @@ module Rapid
       end
 
       def group(id, &block)
-        group = Rapid::RouteGroup.new(id, nil)
-        dsl = Rapid::DSLs::RouteGroup.new(self, group)
+        group = Rapid::RouteGroup.new(id.to_s, nil)
+        dsl = Rapid::DSLs::RouteGroup.new(@route_set, group)
         dsl.instance_eval(&block)
+        @route_set.groups << group
       end
 
     end

@@ -4,19 +4,20 @@ module Rapid
   module DSLs
     class RouteGroup
 
-      def initialize(route_set_dsl, group)
-        @route_set_dsl = route_set_dsl
+      def initialize(route_set, group)
+        @route_set = route_set
         @group = group
       end
 
       def route(path, **options)
-        @route_set_dsl.route(path, controller: options[:controller] || @group.default_controller, group: @group, **options)
+        @route_set.dsl.route(path, controller: options[:controller] || @group.default_controller, group: @group, **options)
       end
 
       def group(id, &block)
-        group = Rapid::RouteGroup.new(id, @group)
-        dsl = Rapid::DSLs::RouteGroup.new(@route_set_dsl, group)
+        group = Rapid::RouteGroup.new("#{@group.id}.#{id}", @group)
+        dsl = Rapid::DSLs::RouteGroup.new(@route_set, group)
         dsl.instance_eval(&block)
+        @group.groups << group
       end
 
       Route::REQUEST_METHODS.each do |method_name|

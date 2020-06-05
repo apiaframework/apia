@@ -5,12 +5,16 @@ require 'rapid/dsls/route_set'
 module Rapid
   class RouteSet
 
+    attr_reader :map
     attr_reader :routes
     attr_reader :controllers
+    attr_reader :groups
 
     def initialize
-      @routes = {}
+      @map = {}
+      @routes = []
       @controllers = []
+      @groups = []
     end
 
     def dsl
@@ -22,13 +26,15 @@ module Rapid
     # @param route [Moonstone::Route]
     # @return [Moonstone::Route]
     def add(route)
+      @routes << route
+      @controllers << route.controller unless @controllers.include?(route.controller)
+
       parts = self.class.split_path(route.path).map { |p| p =~ /\A\:/ ? '?' : p }
       parts.size.times do |i|
-        i == 0 ? source = @routes : source = @routes.dig(*parts[0, i])
+        i == 0 ? source = @map : source = @map.dig(*parts[0, i])
         source[parts[i]] ||= { _routes: [] }
         source[parts[i]][:_routes] << route if i == parts.size - 1
       end
-      @controllers << route.controller unless @controllers.include?(route.controller)
       route
     end
 
@@ -39,7 +45,7 @@ module Rapid
     # @return [Array<Moonstone::Route>]
     def find(request_method, path)
       parts = self.class.split_path(path)
-      last = @routes
+      last = @map
       parts.size.times do |i|
         last = last[parts[i]] || last['?']
         return [] if last.nil?
