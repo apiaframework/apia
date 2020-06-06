@@ -4,6 +4,7 @@ require 'rapid/object'
 require 'rapid/schema/authenticator_schema_type'
 require 'rapid/schema/api_controller_schema_type'
 require 'rapid/schema/object_schema_polymorph'
+require 'rapid/schema/route_set_schema_type'
 
 module Rapid
   module Schema
@@ -29,18 +30,7 @@ module Rapid
         backend { |api| api.authenticator&.definition&.id }
       end
 
-      field :controllers, type: [APIControllerSchemaType] do
-        backend do |api|
-          api.controllers&.each_with_object([]) do |(key, c), array|
-            next unless c.definition.schema?
-
-            array << {
-              name: key.to_s,
-              controller: c.definition.id
-            }
-          end || []
-        end
-      end
+      field :route_set, type: RouteSetSchemaType
 
     end
   end
