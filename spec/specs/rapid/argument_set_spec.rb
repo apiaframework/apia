@@ -280,6 +280,27 @@ describe Rapid::ArgumentSet do
       end
     end
 
+    it 'should not raise an error if a non-required lookup argument set is provided along with URL parameters' do
+      user_lookup_as = Rapid::LookupArgumentSet.create('LookupAS1') do
+        argument :id, type: :string
+        argument :permalink, type: :string
+      end
+      book_lookup_as = Rapid::LookupArgumentSet.create('LookupAS2') do
+        argument :id, type: :string
+      end
+      as = Rapid::ArgumentSet.create('ExampleSet') do
+        argument :book, type: book_lookup_as, required: true
+        argument :user, type: user_lookup_as
+      end
+
+      env = Rack::MockRequest.env_for('/api/v1/books/123/create', 'CONTENT_TYPE' => 'application/json', :input => '{}')
+      request = Rapid::Request.new(env)
+      request.api_path = 'books/123/create'
+      request.route = Rapid::Route.new('books/:book/create')
+
+      expect { as.new({}, request: request) }.to_not raise_error
+    end
+
     it 'should raise an error if the wrong type of object is provided for an array argument' do
       as = Rapid::ArgumentSet.create('ExampleSet') do
         argument :names, type: [:string]

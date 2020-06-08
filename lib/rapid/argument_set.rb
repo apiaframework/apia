@@ -161,16 +161,20 @@ module Rapid
       return if request.route.nil?
 
       route_args = request.route.extract_arguments(request.api_path)
+      value_for_arg = route_args[argument.name.to_s]
+
+      return nil if value_for_arg.nil?
+
       if argument.type.argument_set?
         # If the argument is an argument set, we'll just want to try and
         # populate the first argument.
         if first_arg = argument.type.klass.definition.arguments.keys.first
-          { first_arg.to_s => route_args[argument.name.to_s] }
+          { first_arg.to_s => value_for_arg }
         else
           {}
         end
       else
-        route_args[argument.name.to_s]
+        value_for_arg
       end
     end
 

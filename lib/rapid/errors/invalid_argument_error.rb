@@ -33,6 +33,10 @@ module Rapid
       @errors = errors
     end
 
+    def to_s
+      @issue.to_s
+    end
+
     def http_status
       400
     end
