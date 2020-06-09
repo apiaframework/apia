@@ -4,7 +4,7 @@ require 'rapid/object'
 
 module Rapid
   module Schema
-    class FieldIncludeOptionsSchemaType < Rapid::Object
+    class FieldSpecOptionsSchemaType < Rapid::Object
 
       no_schema
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rapid/object'
-require 'rapid/schema/field_include_options_schema_type'
+require 'rapid/schema/field_spec_options_schema_type'
 
 module Rapid
   module Schema
@@ -22,7 +22,7 @@ module Rapid
         backend(&:array?)
       end
 
-      field :include, type: FieldIncludeOptionsSchemaType do
+      field :spec, type: FieldSpecOptionsSchemaType do
         backend do |field|
           hash = {}
           hash[:all] = field.include.nil? || field.include == true
