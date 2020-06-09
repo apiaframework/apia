@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rapid/object'
+require 'rapid/schema/field_include_options_schema_type'
 
 module Rapid
   module Schema
@@ -19,6 +20,17 @@ module Rapid
       end
       field :array, type: :boolean do
         backend(&:array?)
+      end
+
+      field :include, type: FieldIncludeOptionsSchemaType do
+        backend do |field|
+          hash = {}
+          hash[:all] = field.include.nil? || field.include == true
+          if field.include.is_a?(String)
+            hash[:spec] = field.include
+          end
+          hash
+        end
       end
 
     end
