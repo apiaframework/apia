@@ -23,6 +23,7 @@ module Rapid
 
         argument.required = options[:required] if options.key?(:required)
         argument.default = options[:default] if options.key?(:default)
+        argument.description = options[:description] if options.key?(:description)
 
         argument.dsl.instance_eval(&block) if block_given?
 

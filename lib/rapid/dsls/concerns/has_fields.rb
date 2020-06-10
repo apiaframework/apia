@@ -25,6 +25,7 @@ module Rapid
           field.array = options[:array] if options.key?(:array)
           field.include = options[:include] if options.key?(:include)
           field.backend = options[:backend] if options.key?(:backend)
+          field.description = options[:description] if options.key?(:description)
 
           field.dsl.instance_eval(&block) if block_given?
 

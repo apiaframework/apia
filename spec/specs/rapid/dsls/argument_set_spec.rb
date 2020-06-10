@@ -52,6 +52,11 @@ describe Rapid::DSLs::ArgumentSet do
       expect(argument_set.arguments[:book].required?).to be true
     end
 
+    it 'should description to be provided as an ption' do
+      dsl.argument :book, type: :string, description: 'Example description'
+      expect(argument_set.arguments[:book].description).to eq 'Example description'
+    end
+
     it 'should be an array argument if the type is provided witin an array' do
       dsl.argument :users, type: [:string]
       expect(argument_set.arguments[:users].array?).to be true
