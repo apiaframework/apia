@@ -54,6 +54,10 @@ module Rapid
     # @param env [Hash]
     # @return [Array] a rack triplet
     def call(env)
+      if @options[:hosts]&.none? { |host| host == env['HTTP_HOST'] }
+        return @app.call(env)
+      end
+
       unless env['PATH_INFO'] =~ /\A#{Regexp.escape(@namespace)}\/([a-z].*)\z/i
         return @app.call(env)
       end

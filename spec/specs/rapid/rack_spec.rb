@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
 require 'rapid/rack'
 require 'rapid/api'
 require 'rack/mock'
@@ -80,6 +81,36 @@ describe Rapid::Rack do
         expect(result).to be_a Array
         expect(result[2][0]).to eq 'Hello world!'
       end
+    end
+
+    it 'should return the base application if hosts are provided and none of them match' do
+      api = Rapid::API.create('MyAPI')
+      rack = described_class.new(app, api, 'api/v1', hosts: ['api.example.com'])
+      ['blah.com', 'example.com', 'api.something.com'].each do |host|
+        env = ::Rack::MockRequest.env_for('/api/v1', 'HTTP_HOST' => host)
+        result = rack.call(env)
+        expect(result).to be_a Array
+        expect(result[2][0]).to eq 'Hello world!'
+      end
+    end
+
+    it 'should allow requests with matching hostnames through' do
+      controller = Rapid::Controller.create('Controller') do
+        endpoint :test do
+          action do
+            response.add_header 'x-demo', 'hello'
+          end
+        end
+      end
+      api = Rapid::API.create('MyAPI') do
+        routes do
+          get 'test', controller: controller, endpoint: :test
+        end
+      end
+      rack = described_class.new(app, api, 'api/v1', hosts: ['api.example.com'])
+      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test', 'HTTP_HOST' => 'api.example.com'))
+      expect(result).to be_a Array
+      expect(result[1]['x-demo']).to eq 'hello'
     end
 
     it 'should execute the endpoint and return the response triplet' do
