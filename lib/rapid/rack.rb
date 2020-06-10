@@ -139,6 +139,8 @@ module Rapid
       if env['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']
         triplet[1]['Access-Control-Allow-Headers'] = env['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']
       end
+
+      true
     end
 
     class << self
