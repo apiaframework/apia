@@ -20,10 +20,10 @@ module Rapid
       endpoint :schema do
         no_schema
         description 'Returns a payload outlining the full schema of the API'
+        field :schema_version, type: :integer
         field :host, type: :string
         field :namespace, type: :string
         field :api, type: :string
-        field :schema_version, type: :integer
         field :objects, type: [ObjectSchemaPolymorph]
         action do |request, response|
           response.add_field :schema_version, 1

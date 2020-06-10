@@ -62,4 +62,15 @@ describe Rapid::API do
       expect(endpoint_errors).to include 'MissingAction'
     end
   end
+
+  context '.schema' do
+    it 'should return the schema' do
+      api = Rapid::API.create('ExampleAPI')
+      schema = api.schema(host: 'api.example.com', namespace: 'v1')
+      expect(schema['host']).to eq 'api.example.com'
+      expect(schema['namespace']).to eq 'v1'
+      expect(schema['objects']).to be_a Array
+      expect(schema['api']).to eq 'ExampleAPI'
+    end
+  end
 end

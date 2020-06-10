@@ -51,6 +51,22 @@ module Rapid
         errors
       end
 
+      # Return the schema hash for this API
+      #
+      # @param host [String]
+      # @param namespace [String]
+      # @return [Hash]
+      def schema(host:, namespace:)
+        require 'rapid/schema/controller'
+        Schema::Controller.definition.endpoints[:schema].definition.fields.generate_hash({
+          schema_version: 1,
+          host: host,
+          namespace: namespace,
+          api: definition.id,
+          objects: objects.map(&:definition).select(&:schema?)
+        })
+      end
+
     end
 
   end
