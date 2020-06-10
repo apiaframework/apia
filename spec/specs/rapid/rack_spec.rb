@@ -94,6 +94,42 @@ describe Rapid::Rack do
       end
     end
 
+    context 'cors' do
+      it 'should return no content with CORS headers in response to all options requests' do
+        api = Rapid::API.create('MyAPI')
+        rack = described_class.new(app, api, 'api/v1')
+        env = ::Rack::MockRequest.env_for('/api/v1/test', method: 'OPTIONS')
+        result = rack.call(env)
+        expect(result).to be_a Array
+        expect(result[0]).to eq 204
+        expect(result[2][0]).to be_empty
+        expect(result[1]['Access-Control-Allow-Origin']).to eq '*'
+        expect(result[1]['Access-Control-Allow-Methods']).to eq '*'
+      end
+
+      it 'should include cors headers on successful requests' do
+        controller = Rapid::Controller.create('Controller') do
+          endpoint :test do
+            action do
+              response.add_header 'x-demo', 'hello'
+            end
+          end
+        end
+        api = Rapid::API.create('MyAPI') do
+          routes do
+            get 'test', controller: controller, endpoint: :test
+          end
+        end
+        rack = described_class.new(app, api, 'api/v1')
+        env = ::Rack::MockRequest.env_for('/api/v1/test')
+        result = rack.call(env)
+        expect(result).to be_a Array
+        expect(result[0]).to eq 200
+        expect(result[1]['Access-Control-Allow-Origin']).to eq '*'
+        expect(result[1]['Access-Control-Allow-Methods']).to eq '*'
+      end
+    end
+
     it 'should allow requests with matching hostnames through' do
       controller = Rapid::Controller.create('Controller') do
         endpoint :test do
@@ -138,7 +174,7 @@ describe Rapid::Rack do
       result = rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
       expect(result).to be_a Array
       expect(result[0]).to eq 404
-      expect(result[2][0]).to include 'no_route'
+      expect(result[2][0]).to include 'route_not_found'
     end
 
     it 'should catch other errors and return a detailed error triplet in development only' do

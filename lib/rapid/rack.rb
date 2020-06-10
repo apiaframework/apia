@@ -64,11 +64,23 @@ module Rapid
 
       api_path = Regexp.last_match(1)
 
+      triplet = handle_request(env, api_path)
+      add_cors_headers(env, triplet)
+      triplet
+    end
+
+    private
+
+    def handle_request(env, api_path)
+      if env['REQUEST_METHOD'].upcase == 'OPTIONS'
+        return [204, {}, ['']]
+      end
+
       validate_api if development?
 
       route = find_route(env['REQUEST_METHOD'], api_path)
       if route.nil?
-        raise RackError.new(404, 'no_route', "No route matches '#{api_path}' for #{env['REQUEST_METHOD']}")
+        raise RackError.new(404, 'route_not_found', "No route matches '#{api_path}' for #{env['REQUEST_METHOD']}")
       end
 
       request = Rapid::Request.new(env)
@@ -99,8 +111,6 @@ module Rapid
       self.class.error_triplet('unhandled_exception', status: 500)
     end
 
-    private
-
     def validate_api
       api.validate_all.raise_if_needed
     end
@@ -116,6 +126,19 @@ module Rapid
         },
         status: 500
       )
+    end
+
+    # Add cross origin headers to the response triplet
+    #
+    # @param env [Hash]
+    # @param triplet [Array]
+    # @return [void]
+    def add_cors_headers(env, triplet)
+      triplet[1]['Access-Control-Allow-Origin'] = '*'
+      triplet[1]['Access-Control-Allow-Methods'] = '*'
+      if env['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']
+        triplet[1]['Access-Control-Allow-Headers'] = env['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']
+      end
     end
 
     class << self
