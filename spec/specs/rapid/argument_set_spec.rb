@@ -208,6 +208,20 @@ describe Rapid::ArgumentSet do
       expect(instance[:user]).to be nil
     end
 
+    it 'should handle boolean argument values (true/false/unset)' do
+      as = Rapid::ArgumentSet.create('ExampleSet') do
+        argument :admin, :boolean, default: false
+        argument :active, :boolean
+        argument :premium, :boolean
+        argument :in_debt, :boolean
+      end
+      instance = as.new(active: true, premium: false)
+      expect(instance[:admin]).to eq false
+      expect(instance[:active]).to eq true
+      expect(instance[:premium]).to eq false
+      expect(instance[:in_debt]).to eq nil
+    end
+
     it 'should know about nested arguments in errors' do
       as1 = Rapid::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string

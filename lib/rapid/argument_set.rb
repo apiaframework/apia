@@ -55,7 +55,7 @@ module Rapid
       @path = path
       @request = request
       @source = self.class.definition.arguments.each_with_object({}) do |(arg_key, argument), source|
-        given_value = hash[arg_key.to_s] || hash[arg_key.to_sym] || value_from_route(argument, request) || argument.default
+        given_value = lookup_value(hash, arg_key, argument, request)
 
         next if given_value.nil? && !argument.required?
 
@@ -105,6 +105,16 @@ module Rapid
     end
 
     private
+
+    def lookup_value(hash, key, argument, request)
+      if hash.key?(key.to_s)
+        hash[key.to_s]
+      elsif hash.key?(key.to_sym)
+        hash[key.to_sym]
+      else
+        value_from_route(argument, request) || argument.default
+      end
+    end
 
     def parse_value(argument, value, index: nil, in_array: false)
       if argument.array? && value.is_a?(Array)
