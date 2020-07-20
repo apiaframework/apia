@@ -94,15 +94,15 @@ module Rapid
       response = request.endpoint.execute(request)
       response.rack_triplet
     rescue StandardError => e
+      if e.is_a?(RackError) || e.is_a?(Rapid::ManifestError)
+        return e.triplet
+      end
+
       api.definition.exception_handlers.call(e, {
         env: env,
         api: api,
         request: defined?(request) ? request : nil
       })
-
-      if e.is_a?(RackError) || e.is_a?(Rapid::ManifestError)
-        return e.triplet
-      end
 
       if development?
         return triplet_for_exception(e)
