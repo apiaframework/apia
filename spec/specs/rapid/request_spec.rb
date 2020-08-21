@@ -39,6 +39,12 @@ describe Rapid::Request do
       request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => 'blah1'))
       expect { request.json_body }.to raise_error Rapid::InvalidJSONError
     end
+
+    it 'should return a hash if no body is provided but there is an _arguments parameter containing a string' do
+      request = Rapid::Request.new(Rack::MockRequest.env_for('/', params: { _arguments: '{"name":"Jamie"}' }))
+      expect(request.json_body).to be_a Hash
+      expect(request.json_body['name']).to eq 'Jamie'
+    end
   end
 
   context '#field_spec' do
