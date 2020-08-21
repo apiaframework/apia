@@ -25,7 +25,7 @@ module CoreAPI
         field :formatted_time, type: :string
         action do |request, response|
           time = request.arguments[:time]
-          response.add_field :formatted_time, time.resolve
+          response.add_field :formatted_time, time.resolve.to_s
         end
       end
 

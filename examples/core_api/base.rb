@@ -23,6 +23,7 @@ module CoreAPI
           controller Controllers::TimeController
 
           get 'time/formatting/format', endpoint: :format
+          post 'time/formatting/format', endpoint: :format
         end
       end
     end
