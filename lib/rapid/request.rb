@@ -34,11 +34,7 @@ module Rapid
       return unless content_type =~ /\Aapplication\/json/
       return unless body?
 
-      @json_body ||= begin
-                       JSON.parse(body.read)
-                     rescue JSON::ParserError => e
-                       raise InvalidJSONError, e.message
-                     end
+      @json_body ||= parse_json_from_body(body.read)
     end
 
     def body?
@@ -59,6 +55,16 @@ module Rapid
           @endpoint.definition.fields.spec
         end
       end
+    end
+
+    private
+
+    def parse_json_from_body(body)
+      return {} if body.empty?
+
+      JSON.parse(body)
+    rescue JSON::ParserError => e
+      raise InvalidJSONError, e.message
     end
 
   end

@@ -23,15 +23,16 @@ describe Rapid::Request do
       expect(request.json_body['name']).to eq 'Lauren'
     end
 
+    it 'should return an empty hash when the body is missing but the content type is provided' do
+      request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => ''))
+      expect(request.json_body).to be_a Hash
+      expect(request.json_body).to be_empty
+    end
+
     it 'should work when the charset is provided with the content type' do
       request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json; charset=utf8', :input => '{"name":"Sarah"}'))
       expect(request.json_body).to be_a Hash
       expect(request.json_body['name']).to eq 'Sarah'
-    end
-
-    it 'should raise an error if the JSON is missing' do
-      request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => ''))
-      expect { request.json_body }.to raise_error Rapid::InvalidJSONError
     end
 
     it 'should raise an error if the JSON is invalid' do
