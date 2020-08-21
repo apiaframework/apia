@@ -4,3 +4,6 @@ inherit_from:
 
 Layout/LineLength:
   Enabled: false
+
+Metrics/PerceivedComplexity:
+  Max: 20
