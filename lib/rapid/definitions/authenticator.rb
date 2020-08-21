@@ -7,7 +7,7 @@ module Rapid
   module Definitions
     class Authenticator < Definition
 
-      TYPES = [:bearer].freeze
+      TYPES = [:bearer, :anonymous].freeze
 
       attr_accessor :type
       attr_accessor :action
