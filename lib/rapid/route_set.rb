@@ -29,7 +29,7 @@ module Rapid
       @routes << route
       @controllers << route.controller unless @controllers.include?(route.controller)
 
-      parts = self.class.split_path(route.path).map { |p| p =~ /\A\:/ ? '?' : p }
+      parts = self.class.split_path(route.path).map { |p| p =~ /\A:/ ? '?' : p }
       parts.size.times do |i|
         if i.zero?
           source = @map

@@ -23,7 +23,7 @@ module Rapid
 
       def create_from_request(request)
         hash = request.each_header.each_with_object({}) do |(key, value), inner_hash|
-          next unless key =~ /\AHTTP\_(\w+)\z/
+          next unless key =~ /\AHTTP_(\w+)\z/
 
           name = Regexp.last_match[1]
 

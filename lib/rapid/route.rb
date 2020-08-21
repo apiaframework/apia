@@ -50,7 +50,7 @@ module Rapid
     def extract_arguments(given_path)
       given_path_parts = RouteSet.split_path(given_path)
       path_parts.each_with_index.each_with_object({}) do |(part, index), hash|
-        next unless part =~ /\A\:(\w+)/
+        next unless part =~ /\A:(\w+)/
 
         value = given_path_parts[index]
         hash[Regexp.last_match[1]] = value

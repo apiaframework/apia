@@ -28,7 +28,7 @@ module Rapid
       def validate(errors)
         if @name.nil?
           errors.add self, 'MissingName', 'Arguments must have a name'
-        elsif @name.to_s !~ /\A[a-z0-9\-\_]+\z/
+        elsif @name.to_s !~ /\A[a-z0-9\-_]+\z/
           errors.add self, 'InvalidName', 'Argument name must only include letters, numbers, hyphens and underscores'
         end
 

@@ -20,7 +20,7 @@ module Rapid
       end
 
       parse do |value|
-        if value.is_a?(::String) && value =~ /\A\-?\d+(\.\d+)?\z/
+        if value.is_a?(::String) && value =~ /\A-?\d+(\.\d+)?\z/
           value.to_f
         elsif value.is_a?(::Float)
           value

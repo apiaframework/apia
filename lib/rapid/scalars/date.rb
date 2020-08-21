@@ -26,7 +26,7 @@ module Rapid
 
         begin
           string = string.to_s
-          unless string =~ /\A\d{4}\-\d{2}\-\d{2}\z/
+          unless string =~ /\A\d{4}-\d{2}-\d{2}\z/
             raise Rapid::ParseError, 'Date must be in the format of yyyy-mm-dd'
           end
 
