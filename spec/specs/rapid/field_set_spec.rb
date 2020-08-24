@@ -26,12 +26,15 @@ describe Rapid::FieldSet do
 
       field = Rapid::Definitions::Field.new(:age)
       field.type = :integer
-      field.condition = proc { false }
+      field.condition = proc { |value| value[:name] == 'Sarah' }
       field_set.add field
 
       hash = field_set.generate_hash(name: 'Michael', age: 123)
       expect(hash['name']).to eq 'Michael'
       expect(hash.keys).to_not include 'age'
+
+      hash = field_set.generate_hash(name: 'Sarah', age: 123)
+      expect(hash['age']).to eq 123
     end
 
     it 'should not include fields with a type that does not allow its inclusion' do
