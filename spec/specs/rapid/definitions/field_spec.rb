@@ -63,6 +63,20 @@ describe Rapid::Definitions::Field do
       field.condition = proc { false }
       expect(field.include?(123, nil)).to be false
     end
+
+    it 'should receive the value' do
+      field = Rapid::Definitions::Field.new(:id)
+      field.condition = proc { |value| value.to_i > 10 }
+      expect(field.include?(1, nil)).to be false
+      expect(field.include?(11, nil)).to be true
+    end
+
+    it 'should receive a request' do
+      field = Rapid::Definitions::Field.new(:id)
+      field.condition = proc { |value, request| request.to_i > 10 }
+      expect(field.include?(1, 1)).to be false
+      expect(field.include?(1, 11)).to be true
+    end
   end
 
   context '#raw_value_from_object' do
