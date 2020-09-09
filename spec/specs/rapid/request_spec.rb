@@ -51,17 +51,17 @@ describe Rapid::Request do
     it 'should return the value from params' do
       request = Rapid::Request.new(Rack::MockRequest.env_for('/', params: { fields: 'name,description' }))
       expect(request.field_spec).to be_a Rapid::FieldSpec
-      expect(request.field_spec.include?(:name)).to be true
-      expect(request.field_spec.include?(:description)).to be true
-      expect(request.field_spec.include?(:something_else)).to be false
+      expect(request.field_spec.include_field?('name')).to be true
+      expect(request.field_spec.include_field?('description')).to be true
+      expect(request.field_spec.include_field?('something_else')).to be false
     end
 
     it 'should return the value from JSON body' do
       request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => { fields: 'name,description' }.to_json))
       expect(request.field_spec).to be_a Rapid::FieldSpec
-      expect(request.field_spec.include?(:name)).to be true
-      expect(request.field_spec.include?(:description)).to be true
-      expect(request.field_spec.include?(:something_else)).to be false
+      expect(request.field_spec.include_field?('name')).to be true
+      expect(request.field_spec.include_field?('description')).to be true
+      expect(request.field_spec.include_field?('something_else')).to be false
     end
 
     it 'should return no field spec if we have a JSON body but no fields are provided' do
@@ -72,9 +72,9 @@ describe Rapid::Request do
     it 'should return the value from the X-Field-Spec header' do
       request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'HTTP_X_FIELD_SPEC' => 'name,description'))
       expect(request.field_spec).to be_a Rapid::FieldSpec
-      expect(request.field_spec.include?(:name)).to be true
-      expect(request.field_spec.include?(:description)).to be true
-      expect(request.field_spec.include?(:something_else)).to be false
+      expect(request.field_spec.include_field?('name')).to be true
+      expect(request.field_spec.include_field?('description')).to be true
+      expect(request.field_spec.include_field?('something_else')).to be false
     end
 
     it 'should return the endpoint default spec' do
@@ -85,9 +85,9 @@ describe Rapid::Request do
       end
       request = Rapid::Request.new(Rack::MockRequest.env_for('/'))
       request.endpoint = endpoint
-      expect(request.field_spec).to include :name
-      expect(request.field_spec).to include :hair_color
-      expect(request.field_spec).to_not include :age
+      expect(request.field_spec.include_field?('name')).to be true
+      expect(request.field_spec.include_field?('hair_color')).to be true
+      expect(request.field_spec.include_field?('age')).to be false
     end
 
     it 'should return nil if there is no spec' do

@@ -73,7 +73,7 @@ describe Rapid::Definitions::Field do
 
     it 'should receive a request' do
       field = Rapid::Definitions::Field.new(:id)
-      field.condition = proc { |value, request| request.to_i > 10 }
+      field.condition = proc { |_, request| request.to_i > 10 }
       expect(field.include?(1, 1)).to be false
       expect(field.include?(1, 11)).to be true
     end

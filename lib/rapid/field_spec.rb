@@ -5,36 +5,133 @@ require 'rapid/errors/field_spec_parse_error'
 module Rapid
   class FieldSpec
 
-    attr_reader :spec
+    attr_reader :paths
+    attr_reader :excludes
     attr_reader :parsed_string
 
-    def initialize(spec, parsed_string: nil)
-      @spec = spec
+    def initialize(paths, excludes: [], parsed_string: nil)
+      @paths = paths
+      @excludes = excludes
       @parsed_string = parsed_string
     end
 
-    def include?(*path)
-      !@spec.dig(*path.map(&:to_s)).nil?
-    end
-
     def include_field?(field_path)
-      path = field_path.map { |r| r.name.to_s }
+      if field_path.is_a?(String)
+        path = field_path.split('.')
+      else
+        path = field_path.map { |r| r.name.to_s }
+      end
 
-      path.size.times do |i|
-        parts = path[0, i + 1]
+      # If the field path matches exactly any item in the list of paths
+      # allowed, then allow this path.
+      return true if @paths.include?(path.join('.'))
 
-        # If the part is not permitted, then we can jsut return false now
-        if @spec.dig(*parts).nil?
-          return false
-        end
+      # If the field is purposely excluded, we'll check that and ensure that it
+      # isn't included.
+      return false if @excludes.include?(path.join('.'))
 
-        # Is this specfic part permitted?
-        if @spec.dig(*parts).is_a?(Hash) && (@spec.dig(*parts).empty? || i == path.size - 1)
+      # Check to see whether we're allowing a wildcard to be permitted at any
+      # point in the chain
+      (path.size - 1).times do |i|
+        parts = path[0, path.size - i - 1]
+
+        next unless @paths.include?((parts + ['*']).join('.'))
+
+        next_parts = path[0, path.size - i]
+        unless @paths.include?(next_parts.join('.'))
           return true
         end
       end
 
       false
+    end
+
+    class Parser
+
+      def initialize(string)
+        @string = string
+        @paths = Set.new
+        @excludes = Set.new
+        @type = :normal
+        @last_word = ''
+        @sections = []
+      end
+
+      def parse
+        @string.each_char do |character|
+          case character
+          when ','
+            next if @last_word.empty?
+
+            add_last_word
+
+          when '['
+            if @last_word.empty?
+              raise FieldSpecParseError, '[ requires a word before it'
+            end
+
+            @sections << @last_word
+            @paths << @sections.join('.')
+            @last_word = ''
+
+          when ']'
+            if @sections.last.nil?
+              raise FieldSpecParseError, 'unopened bracket closure'
+            end
+
+            add_last_word unless @last_word.empty?
+
+            @sections.pop
+
+          when /\s+/
+            # Ignore whitespace
+
+          when '-'
+            if @last_word.empty?
+              @type = :exclude
+            else
+              add_last_word
+            end
+
+          when 'a'..'z', '0'..'9', '_', '*'
+            @last_word += character
+
+          else
+            raise FieldSpecParseError, "invalid character #{character}"
+          end
+        end
+
+        unless @sections.empty?
+          raise FieldSpecParseError, 'unbalanced brackets'
+        end
+
+        add_last_word
+
+        FieldSpec.new(@paths, excludes: @excludes, parsed_string: @string)
+      end
+
+      private
+
+      def add_last_word
+        return if @last_word.empty?
+
+        case @type
+        when :exclude
+          destination = @excludes
+        else
+          destination = @paths
+        end
+
+        if @sections.empty?
+          destination << @last_word
+        else
+          destination << "#{@sections.join('.')}.#{@last_word}"
+        end
+
+        @last_word = ''
+        @type = :normal
+      end
+
     end
 
     class << self
@@ -45,63 +142,8 @@ module Rapid
       # data_center[-country]             # => Remove country from the default parameters (assuming it is part of them)
       # data_center[name,+country]        # => Pointless but should return name plus the default country params (same as name,country)
       def parse(string)
-        hash = {}
-
-        last_word = ''
-        sections = []
-        string.each_char do |character|
-          source = sections.last || hash
-          case character
-          when ','
-            next if last_word.empty?
-
-            source[last_word] = {}
-            last_word = ''
-
-          when '['
-            if last_word.empty?
-              raise FieldSpecParseError, '[ requires a word before it'
-            end
-
-            unless source[last_word].nil?
-              raise FieldSpecParseError, "Items can only be listed once at the same level (duplicate #{last_word})"
-            end
-
-            sections << source[last_word] = {}
-            last_word = ''
-
-          when ']'
-            if sections.last.nil?
-              raise FieldSpecParseError, 'unopened bracket closure'
-            end
-
-            unless last_word.empty?
-              sections.last[last_word] = {}
-            end
-
-            sections.pop
-            last_word = ''
-
-          when /\s+/
-            # Ignore whitespace
-
-          when 'a'..'z', '0'..'9', '_', '-'
-            last_word += character
-
-          else
-            raise FieldSpecParseError, "invalid character #{character}"
-          end
-        end
-
-        unless sections.empty?
-          raise FieldSpecParseError, 'unbalanced brackets'
-        end
-
-        unless last_word.empty?
-          hash[last_word] = {}
-        end
-
-        new(hash, parsed_string: string)
+        parser = Parser.new(string)
+        parser.parse
       end
 
     end

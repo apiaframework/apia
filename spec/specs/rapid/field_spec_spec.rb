@@ -5,25 +5,38 @@ require 'rapid/field_spec'
 describe Rapid::FieldSpec do
   context '.parse' do
     {
-      '' => {},
-      'example1' => { 'example1' => {} },
-      'example1,example2' => { 'example1' => {}, 'example2' => {} },
-      'example1[name,description],example2' => { 'example1' => { 'name' => {}, 'description' => {} }, 'example2' => {} },
-      'example1 [name, description], example2' => { 'example1' => { 'name' => {}, 'description' => {} }, 'example2' => {} },
-      'example1[name,country[id,name]],example2[country[id]]' => { 'example1' => { 'name' => {}, 'country' => { 'id' => {}, 'name' => {} } }, 'example2' => { 'country' => { 'id' => {} } } }
+      '' => [],
+      'example1' => ['example1'],
+      'example1,example2' => %w[example1 example2],
+      'example1[name,description],example2' => ['example1', 'example1.name', 'example1.description', 'example2'],
+      'example1 [name, description], example2' => ['example1', 'example1.name', 'example1.description', 'example2'],
+      'example1[name,country[id,name]],example2[country[id]]' => ['example1', 'example1.name', 'example1.country', 'example1.country.id', 'example1.country.name', 'example2', 'example2.country', 'example2.country.id']
     }.each do |string, expectation|
       it "it should work with strings like #{string}" do
         spec = described_class.parse(string)
-        expect(spec.spec).to eq expectation
+        expect(spec.paths.to_a.sort).to eq expectation.sort
       end
     end
 
-    it 'should error if duplicates exist with a block' do
-      expect do
-        described_class.parse('hello[name],hello[description]')
-      end.to raise_error(Rapid::FieldSpecParseError) do |e|
-        expect(e.message).to match(/listed once/)
-      end
+    it 'should work with additions' do
+      spec = described_class.parse('id,name,owner[*,hair_color,address[line1,post_code],-age],pets[name,colour[name]]')
+      expect(spec.include_field?('id')).to be true
+      expect(spec.include_field?('name')).to be true
+      expect(spec.include_field?('name.sub')).to be false
+      expect(spec.include_field?('owner')).to be true
+      expect(spec.include_field?('owner.hair_color')).to be true
+      expect(spec.include_field?('owner.hair_color.sub')).to be false
+      expect(spec.include_field?('owner.name')).to be true
+      expect(spec.include_field?('owner.name.sub')).to be true
+      expect(spec.include_field?('owner.age')).to be false
+      expect(spec.include_field?('owner.address.line1')).to be true
+      expect(spec.include_field?('owner.address.line2')).to be false
+      expect(spec.include_field?('owner.other.nested')).to be true
+      expect(spec.include_field?('pets.name')).to be true
+      expect(spec.include_field?('pets.age')).to be false
+      expect(spec.include_field?('pets.colour')).to be true
+      expect(spec.include_field?('pets.colour.name')).to be true
+      expect(spec.include_field?('pets.colour.hex_code')).to be false
     end
 
     it 'should error if the brackets are not all closed' do

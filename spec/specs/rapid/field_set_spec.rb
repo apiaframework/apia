@@ -211,7 +211,7 @@ describe Rapid::FieldSet do
       end
 
       it 'should not return items that are not included in the root of the hash' do
-        request = Rapid::Request.new(Rack::MockRequest.env_for('/', params: { 'fields' => 'user' }))
+        request = Rapid::Request.new(Rack::MockRequest.env_for('/', params: { 'fields' => 'user[*]' }))
         hash = field_set.generate_hash(@source, request: request)
         expect(hash['user']).to be_a Hash
         expect(hash['user']['pets']).to be_a Array
