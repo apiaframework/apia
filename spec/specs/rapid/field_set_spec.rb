@@ -131,6 +131,29 @@ describe Rapid::FieldSet do
       expect(hash['string_or_int']['value']).to eq 1234
     end
 
+    it 'should return polymorphs in an array' do
+      polymorph = Rapid::Polymorph.create('MyPolymorph') do
+        option :string, type: :string, matcher: proc { |s| s.is_a?(::String) }
+        option :integer, type: :integer, matcher: proc { |s| s.is_a?(::Integer) }
+      end
+
+      field = Rapid::Definitions::Field.new(:string_or_int)
+      field.type = polymorph
+      field.array = true
+      field_set.add field
+
+      hash = field_set.generate_hash(string_or_int: ['Adam', 1, 'Gavin', 2])
+      expect(hash['string_or_int']).to be_a Array
+      expect(hash['string_or_int'][0]['type']).to eq 'string'
+      expect(hash['string_or_int'][0]['value']).to eq 'Adam'
+      expect(hash['string_or_int'][1]['type']).to eq 'integer'
+      expect(hash['string_or_int'][1]['value']).to eq 1
+      expect(hash['string_or_int'][2]['type']).to eq 'string'
+      expect(hash['string_or_int'][2]['value']).to eq 'Gavin'
+      expect(hash['string_or_int'][3]['type']).to eq 'integer'
+      expect(hash['string_or_int'][3]['value']).to eq 2
+    end
+
     it 'should raise an error if a value cannot match any option' do
       polymorph = Rapid::Polymorph.create('MyPolymorph') do
         option :string, type: :string, matcher: proc { |s| s.is_a?(::String) }
