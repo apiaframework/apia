@@ -10,4 +10,4 @@ gem 'rspec-expectations'
 gem 'rspec-mocks'
 
 gem 'rake'
-gem 'rubocop'
+gem 'rubocop', '0.91.1'
