@@ -29,10 +29,8 @@ module Rapid
       # @param errors [Rapid::ManifestErrors]
       # @return [void]
       def validate(errors)
-        if @authenticator
-          unless @authenticator.respond_to?(:ancestors) && @authenticator.ancestors.include?(Rapid::Authenticator)
-            errors.add self, 'InvalidAuthenticator', 'The authenticator must be a class that inherits from Rapid::Authenticator'
-          end
+        if @authenticator && !(@authenticator.respond_to?(:ancestors) && @authenticator.ancestors.include?(Rapid::Authenticator))
+          errors.add self, 'InvalidAuthenticator', 'The authenticator must be a class that inherits from Rapid::Authenticator'
         end
 
         @controllers.each do |name, controller|

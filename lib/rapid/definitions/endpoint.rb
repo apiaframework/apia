@@ -61,10 +61,8 @@ module Rapid
           errors.add self, 'InvalidHTTPStatus', 'The HTTP status is not valid (must be an integer)'
         end
 
-        if @authenticator
-          unless @authenticator.respond_to?(:ancestors) && @authenticator.ancestors.include?(Rapid::Authenticator)
-            errors.add self, 'InvalidAuthenticator', 'The authenticator must be a class that inherits from Rapid::Authenticator'
-          end
+        if @authenticator && !(@authenticator.respond_to?(:ancestors) && @authenticator.ancestors.include?(Rapid::Authenticator))
+          errors.add self, 'InvalidAuthenticator', 'The authenticator must be a class that inherits from Rapid::Authenticator'
         end
 
         @fields.validate(errors, self)

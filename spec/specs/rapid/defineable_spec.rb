@@ -28,6 +28,7 @@ describe Rapid::Defineable do
       expect(api.definition.authenticator.definition.id).to eq 'ExampleAPI/MainAuthenticator'
     end
 
+    # rubocop:disable Lint/ConstantDefinitionInBlock:
     it 'should have an ID with the original class name if defined that way' do
       class ExampleAPI < Rapid::API
       end
@@ -41,5 +42,6 @@ describe Rapid::Defineable do
       end
       expect(SomeModule::ExampleAPIWithinModule.definition.id).to eq 'SomeModule/ExampleAPIWithinModule'
     end
+    # rubocop:enable Lint/ConstantDefinitionInBlock:
   end
 end
