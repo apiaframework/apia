@@ -24,6 +24,14 @@ describe Rapid::DSLs::Controller do
     end
   end
 
+  context '#helper' do
+    it 'should set a helper' do
+      dsl.helper(:example) { 1234 }
+      expect(controller.helpers[:example]).to be_a Proc
+      expect(controller.helpers[:example].call).to eq 1234
+    end
+  end
+
   context '#authenticator' do
     it 'should set the authenticator' do
       authenticator = Rapid::Authenticator.new
