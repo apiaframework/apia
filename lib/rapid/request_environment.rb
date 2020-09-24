@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rapid/environment_error_handling'
+require 'rapid/errors/invalid_helper_error'
 
 module Rapid
   class RequestEnvironment
@@ -21,6 +22,19 @@ module Rapid
       instance_exec(@request, @response, *args, &block)
     rescue StandardError => e
       raise_exception(e)
+    end
+
+    # Call a helper
+    #
+    # @param name [Symbol]
+    # @return [Object, nil]
+    def helper(name, *args)
+      helper = @request.controller.definition.helpers[name.to_sym]
+      if helper.nil?
+        raise InvalidHelperError, "No helper found with name #{name}"
+      end
+
+      helper.call(*args)
     end
 
     # Set appropriate pagination for the given set based on the configuration

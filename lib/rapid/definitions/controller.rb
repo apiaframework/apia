@@ -9,9 +9,11 @@ module Rapid
 
       attr_accessor :authenticator
       attr_reader :endpoints
+      attr_reader :helpers
 
       def setup
         @endpoints = {}
+        @helpers = {}
       end
 
       def dsl

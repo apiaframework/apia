@@ -12,6 +12,8 @@ describe Rapid::RequestEnvironment do
     request.endpoint = Rapid::Endpoint.create('ExampleEndpoint')
     request.controller = Rapid::Controller.create('ExampleController')
 
+    yield request if block_given?
+
     response = Rapid::Response.new(request, request.endpoint)
     described_class.new(request, response)
   end
@@ -56,6 +58,33 @@ describe Rapid::RequestEnvironment do
       expect do
         environment.call { raise(error_class, 'Example error string!') }
       end.to raise_error error_class, /example error string/i
+    end
+  end
+
+  context '#helper' do
+    it 'calls any helper defined on the controller' do
+      environment = setup_api do |req|
+        req.controller.helper :test_helper do
+          1234
+        end
+      end
+
+      expect(environment.helper(:test_helper)).to eq 1234
+    end
+
+    it 'passes arguments through' do
+      environment = setup_api do |req|
+        req.controller.helper :test_helper do |*args|
+          args
+        end
+      end
+
+      expect(environment.helper(:test_helper, 1, 2, 3, 4, 5)).to eq [1, 2, 3, 4, 5]
+    end
+
+    it 'raises an error if no helper has been registered' do
+      environment = setup_api
+      expect { environment.helper(:test_helper) }.to raise_error Rapid::InvalidHelperError
     end
   end
 

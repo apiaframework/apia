@@ -25,6 +25,10 @@ module Rapid
         @definition.endpoints[name.to_sym] = klass
       end
 
+      def helper(name, &block)
+        @definition.helpers[name] = block
+      end
+
     end
   end
 end
