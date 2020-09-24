@@ -1,3 +1,3 @@
 .rubocop-*
 Gemfile.lock
-
+.ruby-version
