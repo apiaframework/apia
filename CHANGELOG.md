@@ -1,4 +1,4 @@
-# CHANGELOG
+# Rapid CHANGELOG
 
 This file contains all the latest changes and updates to Rapid.
 
