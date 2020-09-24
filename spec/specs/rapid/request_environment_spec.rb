@@ -86,6 +86,18 @@ describe Rapid::RequestEnvironment do
       environment = setup_api
       expect { environment.helper(:test_helper) }.to raise_error Rapid::InvalidHelperError
     end
+
+    it 'has access to the request and respoinse' do
+      environment = setup_api do |req|
+        req.controller.helper :test_helper do
+          [request, response]
+        end
+      end
+
+      result = environment.helper(:test_helper)
+      expect(result[0]).to be_a Rapid::Request
+      expect(result[1]).to be_a Rapid::Response
+    end
   end
 
   context '#raise_error' do

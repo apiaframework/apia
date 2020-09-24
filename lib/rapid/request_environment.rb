@@ -34,7 +34,7 @@ module Rapid
         raise InvalidHelperError, "No helper found with name #{name}"
       end
 
-      helper.call(*args)
+      instance_exec(*args, &helper)
     end
 
     # Set appropriate pagination for the given set based on the configuration
