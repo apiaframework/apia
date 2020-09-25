@@ -17,6 +17,7 @@ module Rapid
     attr_accessor :namespace
     attr_accessor :route
     attr_accessor :api_path
+    attr_writer :field_spec
 
     def self.empty(options: {})
       new(options)

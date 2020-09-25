@@ -184,6 +184,23 @@ describe Rapid::FieldSet do
       expect(hash.keys).to_not include 'description'
     end
 
+    it 'should include all fields for an object if no specs are provided' do
+      user_type = Rapid::Object.create('UserType')
+      user_name_field = Rapid::Definitions::Field.new(:name)
+      user_name_field.type = :string
+      user_type.definition.fields.add user_name_field
+
+      field = Rapid::Definitions::Field.new(:user)
+      field.type = user_type
+      field_set.add field
+
+      request = Rapid::Request.new(Rack::MockRequest.env_for('/'))
+      request.field_spec = field_set.spec
+
+      hash = field_set.generate_hash({ user: { name: 'Adam' } }, request: request)
+      expect(hash['user']['name']).to eq 'Adam'
+    end
+
     context 'nested' do
       before(:each) do
         pet = Rapid::Object.create('Pet') do

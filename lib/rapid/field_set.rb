@@ -61,6 +61,8 @@ module Rapid
 
           if field.include.is_a?(::String)
             array << "#{key}[#{field.include}]"
+          elsif field.type.object?
+            array << "#{key}[*]"
           else
             array << key
           end

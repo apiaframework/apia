@@ -8,6 +8,7 @@ describe Rapid::FieldSpec do
       '' => [],
       'example1' => ['example1'],
       'example1,example2' => %w[example1 example2],
+      'example1[*]' => %w[example1 example1.*],
       'example1[name,description],example2' => ['example1', 'example1.name', 'example1.description', 'example2'],
       'example1 [name, description], example2' => ['example1', 'example1.name', 'example1.description', 'example2'],
       'example1[name,country[id,name]],example2[country[id]]' => ['example1', 'example1.name', 'example1.country', 'example1.country.id', 'example1.country.name', 'example2', 'example2.country', 'example2.country.id']
