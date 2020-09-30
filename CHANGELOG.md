@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Rapid.
 
+## 1.0.2
+
+### Bug Fixes
+
+- return all fields for polymorphs by default ([8262a0](https://github.com/krystal/rapid/commit/8262a0eba7d3c75fa3c7c5efdb061c04b72a7434))
+
 ## 1.0.1
 
 ### Bug Fixes
