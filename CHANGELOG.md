@@ -2,6 +2,8 @@
 
 This file contains all the latest changes and updates to Rapid.
 
+## 1.0.3
+
 ## 1.0.2
 
 ### Bug Fixes
