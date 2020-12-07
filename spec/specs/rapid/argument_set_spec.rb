@@ -342,6 +342,41 @@ describe Rapid::ArgumentSet do
     end
   end
 
+  context '#has?' do
+    it 'returns false when the argument has not been provided' do
+      as = Rapid::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :string
+      end
+      instance = as.new({})
+      expect(instance.has?(:name)).to be false
+    end
+
+    it 'returns false for values that are provided but are not valid' do
+      as = Rapid::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :string
+      end
+      instance = as.new({ age: 10 })
+      expect(instance.has?(:age)).to be false
+    end
+
+    it 'returns true when the argument has been provided but is nil' do
+      as = Rapid::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :string
+      end
+      instance = as.new({ name: nil })
+      expect(instance.has?(:name)).to be true
+    end
+
+    it 'returns true when the argument has been provided' do
+      as = Rapid::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :string
+      end
+      instance = as.new({ name: 'Dave' })
+      expect(instance.has?(:name)).to be true
+      expect(instance.has?('name')).to be true
+    end
+  end
+
   context '#to_hash' do
     it 'should return a hash of the values' do
       as = Rapid::ArgumentSet.create('ExampleSet') do

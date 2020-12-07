@@ -109,6 +109,14 @@ module Rapid
       end
     end
 
+    # Return whether an argument has been provided or not?
+    #
+    # @param name [Symbol]
+    # @return [Boolean]
+    def has?(key)
+      @source.key?(key.to_sym)
+    end
+
     # Validate an argument set and return any errors as appropriate
     #
     # @param argument [Rapid::Argument]
