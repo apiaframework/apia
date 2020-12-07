@@ -347,11 +347,14 @@ describe Rapid::ArgumentSet do
       as = Rapid::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string
         argument :age, type: :integer
+        argument :favourite_color, type: :string
       end
-      instance = as.new({ name: 'Dave', age: 40, invalid: '999' })
+      instance = as.new({ name: 'Dave', age: 40, invalid: '999', favourite_color: nil })
       expect(instance.to_hash).to be_a Hash
       expect(instance.to_hash[:name]).to eq 'Dave'
       expect(instance.to_hash[:age]).to eq 40
+      expect(instance.to_hash[:favourite_color]).to be nil
+      expect(instance.to_hash.keys).to include :favourite_color
       expect(instance.to_hash.keys).to_not include :invalid
     end
 

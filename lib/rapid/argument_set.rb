@@ -9,6 +9,16 @@ require 'rapid/helpers'
 module Rapid
   class ArgumentSet
 
+    # This is a constant that represents a missing value where `nil` means
+    # the user actually wanted to send null/nil.
+    class MissingValue
+
+      def self.singleton
+        @singleton ||= new
+      end
+
+    end
+
     extend Defineable
 
     class << self
@@ -57,11 +67,12 @@ module Rapid
       @source = self.class.definition.arguments.each_with_object({}) do |(arg_key, argument), source|
         given_value = lookup_value(hash, arg_key, argument, request)
 
-        next if given_value.nil? && !argument.required?
-
-        if given_value.nil?
+        if argument.required? && (given_value.nil? || given_value.is_a?(MissingValue))
           raise MissingArgumentError.new(argument, path: @path + [argument])
         end
+
+        # If the given value is missing, we'll just skip adding this to the hash
+        next if given_value.is_a?(MissingValue)
 
         given_value = parse_value(argument, given_value)
         validation_errors = argument.validate_value(given_value)
@@ -112,12 +123,19 @@ module Rapid
       elsif hash.key?(key.to_sym)
         hash[key.to_sym]
       else
-        value_from_route(argument, request) || argument.default
+        route_value = value_from_route(argument, request)
+        return route_value unless route_value.is_a?(MissingValue)
+        return argument.default unless argument.default.nil?
+
+        MissingValue.singleton
       end
     end
 
     def parse_value(argument, value, index: nil, in_array: false)
-      if argument.array? && value.is_a?(Array)
+      if value.nil?
+        nil
+
+      elsif argument.array? && value.is_a?(Array)
         value.each_with_index.map do |v, i|
           parse_value(argument, v, index: i, in_array: true)
         end
@@ -167,12 +185,15 @@ module Rapid
     end
 
     def value_from_route(argument, request)
-      return if request.nil?
-      return if request.route.nil?
+      return MissingValue.singleton if request.nil?
+      return MissingValue.singleton if request.route.nil?
 
       route_args = request.route.extract_arguments(request.api_path)
-      value_for_arg = route_args[argument.name.to_s]
+      unless route_args.key?(argument.name.to_s)
+        return MissingValue.singleton
+      end
 
+      value_for_arg = route_args[argument.name.to_s]
       return nil if value_for_arg.nil?
 
       if argument.type.argument_set?
