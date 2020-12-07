@@ -11,27 +11,27 @@
 # Include: **/*.gemspec
 Gemspec/RequiredRubyVersion:
   Exclude:
-    - 'rapid.gemspec'
+    - "rapid.gemspec"
 
 # Offense count: 11
 Lint/MissingSuper:
   Exclude:
-    - 'lib/rapid/definitions/argument.rb'
-    - 'lib/rapid/definitions/field.rb'
-    - 'lib/rapid/errors/error_exception_error.rb'
-    - 'lib/rapid/errors/invalid_argument_error.rb'
-    - 'lib/rapid/errors/invalid_enum_option_error.rb'
-    - 'lib/rapid/errors/invalid_polymorph_value_error.rb'
-    - 'lib/rapid/errors/invalid_scalar_value_error.rb'
-    - 'lib/rapid/errors/manifest_error.rb'
-    - 'lib/rapid/errors/missing_argument_error.rb'
-    - 'lib/rapid/errors/null_field_value_error.rb'
-    - 'lib/rapid/rack_error.rb'
+    - "lib/rapid/definitions/argument.rb"
+    - "lib/rapid/definitions/field.rb"
+    - "lib/rapid/errors/error_exception_error.rb"
+    - "lib/rapid/errors/invalid_argument_error.rb"
+    - "lib/rapid/errors/invalid_enum_option_error.rb"
+    - "lib/rapid/errors/invalid_polymorph_value_error.rb"
+    - "lib/rapid/errors/invalid_scalar_value_error.rb"
+    - "lib/rapid/errors/manifest_error.rb"
+    - "lib/rapid/errors/missing_argument_error.rb"
+    - "lib/rapid/errors/null_field_value_error.rb"
+    - "lib/rapid/rack_error.rb"
 
 # Offense count: 14
 # Configuration parameters: IgnoredMethods.
 Metrics/AbcSize:
-  Max: 48
+  Max: 50
 
 # Offense count: 1
 # Configuration parameters: CountComments, CountAsOne, ExcludedMethods.
@@ -52,12 +52,12 @@ Metrics/MethodLength:
 # Offense count: 1
 Style/OptionalBooleanParameter:
   Exclude:
-    - 'lib/rapid/defineable.rb'
+    - "lib/rapid/defineable.rb"
 
 # Offense count: 3
 # Cop supports --auto-correct.
 Style/StringConcatenation:
   Exclude:
-    - 'lib/rapid/dsls/controller.rb'
-    - 'lib/rapid/environment_error_handling.rb'
-    - 'lib/rapid/rack.rb'
+    - "lib/rapid/dsls/controller.rb"
+    - "lib/rapid/environment_error_handling.rb"
+    - "lib/rapid/rack.rb"
