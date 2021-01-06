@@ -51,7 +51,7 @@ module Rapid
           request.authenticator&.execute(environment)
 
           # Determine if we're permitted to run the action based on the endpoint's scopes
-          if request.authenticator && !request.authenticator.authorized_scope?(definition.scopes)
+          if request.authenticator && !request.authenticator.authorized_scope?(environment, definition.scopes)
             environment.raise_error Rapid::ScopeNotGrantedError, scopes: definition.scopes
           end
 

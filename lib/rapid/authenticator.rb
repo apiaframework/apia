@@ -31,7 +31,7 @@ module Rapid
 
       # Execute this authenticator within the given environment
       #
-      # @param environment [Rapid::Environment]
+      # @param environment [Rapid::RequestEnvironment]
       # @return [void]
       def execute(environment)
         return if definition.action.nil?
@@ -41,13 +41,14 @@ module Rapid
 
       # If any of the given scopes are valid
       #
+      # @param environment [Rapid::RequestEnvironment]
       # @param scope [String]
       # @return [Boolean]
-      def authorized_scope?(scopes)
+      def authorized_scope?(environment, scopes)
         return true if definition.scope_validator.nil?
         return true if scopes.empty?
 
-        scopes.any? { |s| definition.scope_validator.call(s) }
+        scopes.any? { |s| environment.call(s, &definition.scope_validator) }
       end
 
     end
