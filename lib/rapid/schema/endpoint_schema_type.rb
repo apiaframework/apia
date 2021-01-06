@@ -28,6 +28,7 @@ module Rapid
       field :potential_errors, type: [:string] do
         backend { |a| a.potential_errors.map { |e| e.definition.id } }
       end
+      field :scopes, type: [:string]
 
     end
   end

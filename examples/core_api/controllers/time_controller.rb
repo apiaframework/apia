@@ -13,6 +13,7 @@ module CoreAPI
       endpoint :now do
         description 'Returns the current time'
         field :time, type: Objects::Time, include: 'unix,day_of_week'
+        scope 'time'
         action do |_request, response|
           time = Time.now
           response.add_field :time, time

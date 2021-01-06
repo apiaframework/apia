@@ -90,6 +90,31 @@ describe Rapid::Endpoint do
         response = request.endpoint.execute(request)
         expect(response.headers['x-auth']).to eq 'api'
       end
+
+      it 'checks the scopes are valid' do
+        request = Rapid::Request.new(Rack::MockRequest.env_for('/', input: ''))
+
+        api_auth = Rapid::Authenticator.create('ExampleAPIAuthenticator') do
+          scope_validator { |e| e == 'not-example' }
+        end
+
+        request.api = Rapid::API.create('ExampleAPI') do
+          authenticator api_auth
+        end
+
+        request.controller = Rapid::Controller.create('Controller')
+        request.endpoint = Rapid::Endpoint.create('Endpoint') do
+          scope 'example'
+        end
+        expect(request.api.definition.authenticator).to eq api_auth
+        response = request.endpoint.execute(request)
+
+        expect(response.status).to eq 403
+        expect(response.body[:error]).to be_a Hash
+        expect(response.body[:error][:code]).to eq :scope_not_granted
+        expect(response.body[:error][:description]).to eq 'The scope required for this endpoint has not been granted to the authenticating identity'
+        expect(response.body[:error][:detail]['scopes']).to eq ['example']
+      end
     end
 
     context 'arguments' do

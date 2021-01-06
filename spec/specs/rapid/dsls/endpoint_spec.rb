@@ -124,4 +124,24 @@ describe Rapid::DSLs::Endpoint do
       end
     end
   end
+
+  context '#scope' do
+    it 'should add a scope' do
+      dsl.scope 'example:read'
+      expect(endpoint.scopes).to eq ['example:read']
+    end
+
+    it 'should not add the same scope twice' do
+      dsl.scope 'example:read'
+      dsl.scope 'example:read'
+      expect(endpoint.scopes).to eq ['example:read']
+    end
+  end
+
+  context '#scopes' do
+    it 'should add multiple scopes' do
+      dsl.scopes 'example:read', 'example:write'
+      expect(endpoint.scopes).to eq ['example:read', 'example:write']
+    end
+  end
 end

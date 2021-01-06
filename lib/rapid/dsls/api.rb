@@ -2,6 +2,7 @@
 
 require 'rapid/dsl'
 require 'rapid/helpers'
+require 'rapid/dsls/scope_descriptions'
 
 module Rapid
   module DSLs
@@ -22,6 +23,13 @@ module Rapid
 
       def routes(&block)
         @definition.route_set.dsl.instance_eval(&block) if block_given?
+      end
+
+      def scopes(&block)
+        return unless block_given?
+
+        dsl = DSLs::ScopeDescriptions.new(@definition)
+        dsl.instance_eval(&block)
       end
 
     end

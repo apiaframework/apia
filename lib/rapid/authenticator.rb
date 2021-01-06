@@ -39,6 +39,17 @@ module Rapid
         environment.call(&definition.action)
       end
 
+      # If any of the given scopes are valid
+      #
+      # @param scope [String]
+      # @return [Boolean]
+      def authorized_scope?(scopes)
+        return true if definition.scope_validator.nil?
+        return true if scopes.empty?
+
+        scopes.any? { |s| definition.scope_validator.call(s) }
+      end
+
     end
 
   end

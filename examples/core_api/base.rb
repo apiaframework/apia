@@ -8,6 +8,10 @@ module CoreAPI
 
     authenticator MainAuthenticator
 
+    scopes do
+      add 'time', 'Allows time telling functions'
+    end
+
     routes do
       schema
 

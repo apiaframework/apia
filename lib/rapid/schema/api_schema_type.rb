@@ -5,6 +5,7 @@ require 'rapid/schema/authenticator_schema_type'
 require 'rapid/schema/api_controller_schema_type'
 require 'rapid/schema/object_schema_polymorph'
 require 'rapid/schema/route_set_schema_type'
+require 'rapid/schema/scope_type'
 
 module Rapid
   module Schema
@@ -31,6 +32,11 @@ module Rapid
       end
 
       field :route_set, type: RouteSetSchemaType
+      field :scopes, type: [ScopeType] do
+        backend do |api|
+          api.scopes.map { |k, v| v.merge(name: k) }
+        end
+      end
 
     end
   end

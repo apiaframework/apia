@@ -2,6 +2,7 @@
 
 require 'rapid/dsl'
 require 'rapid/helpers'
+require 'rapid/errors/scope_not_granted_error'
 
 module Rapid
   module DSLs
@@ -22,6 +23,14 @@ module Rapid
 
       def action(&block)
         @definition.action = block
+      end
+
+      def scope_validator(&block)
+        unless @definition.potential_errors.include?(Rapid::ScopeNotGrantedError)
+          potential_error Rapid::ScopeNotGrantedError
+        end
+
+        @definition.scope_validator = block
       end
 
     end

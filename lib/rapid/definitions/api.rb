@@ -13,11 +13,13 @@ module Rapid
       attr_reader :controllers
       attr_reader :route_set
       attr_reader :exception_handlers
+      attr_reader :scopes
 
       def setup
         @route_set = RouteSet.new
         @controllers = {}
         @exception_handlers = HookSet.new
+        @scopes = {}
       end
 
       def dsl

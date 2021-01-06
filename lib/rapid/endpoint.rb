@@ -4,6 +4,7 @@ require 'rapid/helpers'
 require 'rapid/defineable'
 require 'rapid/definitions/endpoint'
 require 'rapid/request_environment'
+require 'rapid/errors/scope_not_granted_error'
 
 module Rapid
   class Endpoint
@@ -48,6 +49,11 @@ module Rapid
           # Determine an authenticator and execute it before the request happens
           request.authenticator = definition.authenticator || request.controller&.definition&.authenticator || request.api&.definition&.authenticator
           request.authenticator&.execute(environment)
+
+          # Determine if we're permitted to run the action based on the endpoint's scopes
+          if request.authenticator && !request.authenticator.authorized_scope?(definition.scopes)
+            environment.raise_error Rapid::ScopeNotGrantedError, scopes: definition.scopes
+          end
 
           # Process arguments into the request. This happens after the authentication
           # stage because a) authenticators shouldn't be using endpoint specific args

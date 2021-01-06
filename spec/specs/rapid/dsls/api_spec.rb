@@ -68,4 +68,14 @@ describe Rapid::DSLs::API do
       expect(api.route_set.find(:get, 'virtual_machines').first).to be_a Rapid::Route
     end
   end
+
+  context '#scopes' do
+    it 'allows for scopes to be defined' do
+      dsl.scopes do
+        add 'widgets', 'Full access to widgets'
+        add 'widgets:read', 'Read-only access to widgets'
+      end
+      expect(api.scopes).to eq({ 'widgets' => { description: 'Full access to widgets' }, 'widgets:read' => { description: 'Read-only access to widgets' } })
+    end
+  end
 end

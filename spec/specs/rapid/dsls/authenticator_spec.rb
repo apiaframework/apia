@@ -54,4 +54,16 @@ describe Rapid::DSLs::Authenticator do
       expect(authenticator.action.call).to eq 10
     end
   end
+
+  context '#scope_validator' do
+    it 'allows a block to be defined' do
+      dsl.scope_validator { 1234 }
+      expect(authenticator.scope_validator.call).to eq 1234
+    end
+
+    it 'adds the scope not granted potential error' do
+      dsl.scope_validator { 1234 }
+      expect(authenticator.potential_errors).to include Rapid::ScopeNotGrantedError
+    end
+  end
 end

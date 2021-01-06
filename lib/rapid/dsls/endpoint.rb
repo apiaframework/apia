@@ -64,6 +64,16 @@ module Rapid
         super(name, *args, type: type, **options, &block)
       end
 
+      def scopes(*names)
+        names.each { |name| scope(name) }
+      end
+
+      def scope(name)
+        return if @definition.scopes.include?(name.to_s)
+
+        @definition.scopes << name.to_s
+      end
+
     end
   end
 end

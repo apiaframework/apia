@@ -41,4 +41,32 @@ describe Rapid::Authenticator do
       expect(response.headers['x-executed']).to eq '123'
     end
   end
+
+  context '.authorized_scope?' do
+    it 'returns true if any of the scopes are valid' do
+      auth = Rapid::Authenticator.create('ExampleAuthenticator') do
+        scope_validator { |s| s == 'example' }
+      end
+      expect(auth.authorized_scope?(%w[example another])).to be true
+    end
+
+    it 'returns true if no scopes are provided' do
+      auth = Rapid::Authenticator.create('ExampleAuthenticator') do
+        scope_validator { |s| s == 'example' }
+      end
+      expect(auth.authorized_scope?([])).to be true
+    end
+
+    it 'returns true if there is no scope validator for the authenticator' do
+      auth = Rapid::Authenticator.create('ExampleAuthenticator')
+      expect(auth.authorized_scope?(['example'])).to be true
+    end
+
+    it 'returns false if none of the scopes are valid' do
+      auth = Rapid::Authenticator.create('ExampleAuthenticator') do
+        scope_validator { |s| s == 'example' }
+      end
+      expect(auth.authorized_scope?(['another'])).to be false
+    end
+  end
 end

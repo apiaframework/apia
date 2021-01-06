@@ -16,10 +16,12 @@ module Rapid
       attr_accessor :http_status
       attr_accessor :paginated_field
       attr_reader :fields
+      attr_reader :scopes
 
       def setup
         @fields = FieldSet.new
         @http_status = 200
+        @scopes = []
       end
 
       def argument_set

@@ -11,6 +11,7 @@ module Rapid
 
       attr_accessor :type
       attr_accessor :action
+      attr_accessor :scope_validator
       attr_reader :potential_errors
 
       def setup
