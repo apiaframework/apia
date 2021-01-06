@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Rapid.
 
+## 1.1.1
+
+### Bug Fixes
+
+- execute the scope_validation within the request environment ([0e0842](https://github.com/krystal/rapid/commit/0e08423efd74845a88ed69d22ee23d920fba06d5))
+
 ## 1.1.0
 
 ### Features
