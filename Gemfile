@@ -9,5 +9,7 @@ gem 'rspec-core'
 gem 'rspec-expectations'
 gem 'rspec-mocks'
 
+gem 'solargraph'
+
 gem 'rake'
 gem 'rubocop', '0.91.1'
