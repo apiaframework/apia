@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Rapid.
 
+## 1.1.0
+
+### Features
+
+- scopes ([0016e5](https://github.com/krystal/rapid/commit/0016e5ef6d1f2ca30a2a83526444a19b5b577822))
+
 ## 1.0.4
 
 ### Features
