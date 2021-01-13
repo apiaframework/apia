@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Rapid.
 
+## 1.1.2
+
+### Bug Fixes
+
+- don't include routes for endpoints that have schema disabled ([637105](https://github.com/krystal/rapid/commit/6371059dde8a4677cbb347043a27e9df9123c025))
+
 ## 1.1.1
 
 ### Bug Fixes
