@@ -8,7 +8,11 @@ module Rapid
 
       no_schema
 
-      field :routes, [RouteSchemaType]
+      field :routes, [RouteSchemaType] do
+        backend do |o|
+          o.routes.select { |r| r.endpoint&.definition&.schema? }
+        end
+      end
       field :groups, [RouteGroupSchemaType]
 
     end
