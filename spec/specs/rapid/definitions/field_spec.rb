@@ -135,7 +135,7 @@ describe Rapid::Definitions::Field do
       field = Rapid::Definitions::Field.new(:id)
       field.type = :integer
       expect do
-        field.value(id: '444')
+        field.value({ id: '444' })
       end.to raise_error(Rapid::InvalidScalarValueError)
     end
 
@@ -143,7 +143,7 @@ describe Rapid::Definitions::Field do
       field = Rapid::Definitions::Field.new(:names)
       field.type = :string
       field.array = true
-      value = field.value(names: %w[Adam Michael])
+      value = field.value({ names: %w[Adam Michael] })
       expect(value).to be_a Array
       expect(value[0]).to eq 'Adam'
       expect(value[1]).to eq 'Michael'
@@ -158,10 +158,10 @@ describe Rapid::Definitions::Field do
       field = Rapid::Definitions::Field.new(:users)
       field.type = type
       field.array = true
-      value = field.value(users: [
+      value = field.value({ users: [
                             { name: 'Adam', age: 20 },
                             { name: 'Michael', age: 25 }
-                          ])
+                          ] })
       expect(value).to be_a Array
       expect(value[0]).to be_a Hash
 

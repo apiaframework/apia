@@ -40,9 +40,9 @@ module Rapid
 
     # Passes all other values through to the DSL for the definition if
     # the DSL supoprts it.
-    def method_missing(name, *args, &block)
+    def method_missing(name, *args, **kwargs, &block)
       if definition.dsl.respond_to?(name)
-        definition.dsl.send(name, *args, &block)
+        definition.dsl.send(name, *args, **kwargs, &block)
       else
         super
       end

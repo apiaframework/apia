@@ -95,7 +95,7 @@ describe Rapid::ArgumentSet do
         argument :name, type: :string
         argument :age, type: :integer
       end
-      as_instance = as.new(name: 'Adam', age: 1234)
+      as_instance = as.new({ name: 'Adam', age: 1234 })
       expect(as_instance[:name]).to eq 'Adam'
       expect(as_instance['name']).to eq 'Adam'
       expect(as_instance[:age]).to eq 1234
@@ -108,7 +108,7 @@ describe Rapid::ArgumentSet do
         argument :age, type: :integer, required: true
       end
       expect do
-        as.new(name: 'Adam')
+        as.new({ name: 'Adam' })
       end.to raise_error Rapid::MissingArgumentError
     end
 
@@ -125,7 +125,7 @@ describe Rapid::ArgumentSet do
         argument :name, type: :string
       end
       expect do
-        as.new(name: 1234)
+        as.new({ name: 1234 })
       end.to raise_error Rapid::InvalidArgumentError do |e|
         expect(e.issue).to eq :invalid_scalar
       end
@@ -136,7 +136,7 @@ describe Rapid::ArgumentSet do
         argument :name, type: :date
       end
       expect do
-        as.new(name: '2029-22-34')
+        as.new({ name: '2029-22-34' })
       end.to raise_error Rapid::InvalidArgumentError do |e|
         expect(e.issue).to eq :parse_error
       end
@@ -151,7 +151,7 @@ describe Rapid::ArgumentSet do
         end
       end
       expect do
-        as.new(name: 'Not Dave')
+        as.new({ name: 'Not Dave' })
       end.to raise_error Rapid::InvalidArgumentError do |e|
         expect(e.argument.name).to eq :name
         expect(e.issue).to eq :validation_errors
@@ -163,7 +163,7 @@ describe Rapid::ArgumentSet do
       as = Rapid::ArgumentSet.create('ExampleSet') do
         argument :names, type: [:string]
       end
-      as_instance = as.new(names: %w[Adam Charlie])
+      as_instance = as.new({ names: %w[Adam Charlie] })
       expect(as_instance[:names]).to be_a Array
       expect(as_instance[:names]).to include 'Adam'
       expect(as_instance[:names]).to include 'Charlie'
@@ -174,7 +174,7 @@ describe Rapid::ArgumentSet do
         argument :names, type: [:string]
       end
       expect do
-        as.new(names: ['Adam', 1323])
+        as.new({ names: ['Adam', 1323] })
       end.to raise_error Rapid::InvalidArgumentError do |e|
         expect(e.argument.name).to eq :names
         expect(e.issue).to eq :invalid_scalar
@@ -190,7 +190,7 @@ describe Rapid::ArgumentSet do
         argument :title, type: :string
         argument :user, type: as1
       end
-      instance = as2.new(title: 'My title', user: { name: 'Michael' })
+      instance = as2.new({ title: 'My title', user: { name: 'Michael' } })
       expect(instance[:title]).to eq 'My title'
       expect(instance[:user]).to be_a Rapid::ArgumentSet
       expect(instance[:user][:name]).to eq 'Michael'
@@ -204,7 +204,7 @@ describe Rapid::ArgumentSet do
         argument :title, type: :string
         argument :user, type: as1
       end
-      instance = as2.new(title: 'My title')
+      instance = as2.new({ title: 'My title' })
       expect(instance[:user]).to be nil
     end
 
@@ -215,7 +215,7 @@ describe Rapid::ArgumentSet do
         argument :premium, :boolean
         argument :in_debt, :boolean
       end
-      instance = as.new(active: true, premium: false)
+      instance = as.new({ active: true, premium: false })
       expect(instance[:admin]).to eq false
       expect(instance[:active]).to eq true
       expect(instance[:premium]).to eq false
@@ -235,7 +235,7 @@ describe Rapid::ArgumentSet do
         argument :book, type: as2
       end
       expect do
-        as3.new(age: 12, book: { title: 'Book', user: { name: 1234 } })
+        as3.new({ age: 12, book: { title: 'Book', user: { name: 1234 } } })
       end.to raise_error Rapid::InvalidArgumentError do |e|
         expect(e.index).to be nil
         expect(e.argument.name).to eq :name

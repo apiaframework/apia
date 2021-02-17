@@ -28,8 +28,8 @@ module Rapid
         @definition.potential_errors << klass
       end
 
-      def argument(*args, &block)
-        @definition.argument_set.argument(*args, &block)
+      def argument(*args, **kwargs, &block)
+        @definition.argument_set.argument(*args, **kwargs, &block)
       end
 
       def action(&block)

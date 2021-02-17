@@ -15,7 +15,7 @@ describe Rapid::FieldSet do
       field.null = true
       field_set.add field
 
-      hash = field_set.generate_hash(name: nil)
+      hash = field_set.generate_hash({ name: nil })
       expect(hash['name']).to eq nil
     end
 
@@ -29,11 +29,11 @@ describe Rapid::FieldSet do
       field.condition = proc { |value| value[:name] == 'Sarah' }
       field_set.add field
 
-      hash = field_set.generate_hash(name: 'Michael', age: 123)
+      hash = field_set.generate_hash({ name: 'Michael', age: 123 })
       expect(hash['name']).to eq 'Michael'
       expect(hash.keys).to_not include 'age'
 
-      hash = field_set.generate_hash(name: 'Sarah', age: 123)
+      hash = field_set.generate_hash({ name: 'Sarah', age: 123 })
       expect(hash['age']).to eq 123
     end
 
@@ -51,7 +51,7 @@ describe Rapid::FieldSet do
       field.type = :integer
       field_set.add field
 
-      hash = field_set.generate_hash(number: 99, thing: { name: 'John' })
+      hash = field_set.generate_hash({ number: 99, thing: { name: 'John' } })
       expect(hash['number']).to eq 99
       expect(hash.keys).to_not include 'thing'
     end
@@ -65,7 +65,7 @@ describe Rapid::FieldSet do
       field.type = type
       field_set.add field
 
-      hash = field_set.generate_hash(user: { name: 'John' })
+      hash = field_set.generate_hash({ user: { name: 'John' } })
       expect(hash['user']['name']).to eq 'John'
     end
 
@@ -74,7 +74,7 @@ describe Rapid::FieldSet do
       field.type = :string
       field_set.add field
 
-      hash = field_set.generate_hash(name: :John)
+      hash = field_set.generate_hash({ name: :John })
       expect(hash['name']).to eq 'John'
     end
 
@@ -84,7 +84,7 @@ describe Rapid::FieldSet do
       field.array = true
       field_set.add field
 
-      hash = field_set.generate_hash(names: %w[Matthew Mark Michael])
+      hash = field_set.generate_hash({ names: %w[Matthew Mark Michael] })
       expect(hash['names']).to be_a Array
       expect(hash['names'].size).to eq 3
       expect(hash['names']).to include 'Matthew'
@@ -102,7 +102,7 @@ describe Rapid::FieldSet do
       field.array = true
       field_set.add field
 
-      hash = field_set.generate_hash(users: [{ name: 'Matthew' }, { name: 'Mark' }, { name: 'Michael' }])
+      hash = field_set.generate_hash({ users: [{ name: 'Matthew' }, { name: 'Mark' }, { name: 'Michael' }] })
       expect(hash['users']).to be_a Array
       expect(hash['users'].size).to eq 3
       expect(hash['users'][0]['name']).to include 'Matthew'
@@ -120,12 +120,12 @@ describe Rapid::FieldSet do
       field.type = polymorph
       field_set.add field
 
-      hash = field_set.generate_hash(string_or_int: 'Adam')
+      hash = field_set.generate_hash({ string_or_int: 'Adam' })
       expect(hash['string_or_int']).to be_a Hash
       expect(hash['string_or_int']['type']).to eq 'string'
       expect(hash['string_or_int']['value']).to eq 'Adam'
 
-      hash = field_set.generate_hash(string_or_int: 1234)
+      hash = field_set.generate_hash({ string_or_int: 1234 })
       expect(hash['string_or_int']).to be_a Hash
       expect(hash['string_or_int']['type']).to eq 'integer'
       expect(hash['string_or_int']['value']).to eq 1234
@@ -142,7 +142,7 @@ describe Rapid::FieldSet do
       field.array = true
       field_set.add field
 
-      hash = field_set.generate_hash(string_or_int: ['Adam', 1, 'Gavin', 2])
+      hash = field_set.generate_hash({ string_or_int: ['Adam', 1, 'Gavin', 2] })
       expect(hash['string_or_int']).to be_a Array
       expect(hash['string_or_int'][0]['type']).to eq 'string'
       expect(hash['string_or_int'][0]['value']).to eq 'Adam'
@@ -164,7 +164,7 @@ describe Rapid::FieldSet do
       field_set.add field
 
       expect do
-        field_set.generate_hash(value: 1234)
+        field_set.generate_hash({ value: 1234 })
       end.to raise_error Rapid::InvalidPolymorphValueError do |e|
         expect(e.polymorph.definition.id).to eq 'MyPolymorph'
       end
