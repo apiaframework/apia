@@ -2,6 +2,15 @@
 
 This file contains all the latest changes and updates to Rapid.
 
+## 1.1.3
+
+### Bug Fixes
+
+- refer to top level Set ([180557](https://github.com/krystal/rapid/commit/180557f96b0ba917ede14004e6ca258239185247))
+- require set, too ([dfb027](https://github.com/krystal/rapid/commit/dfb027ca5e32a5e2687e17715bbe0efc08eefb7d))
+- ruby 2.x compat ([3a8682](https://github.com/krystal/rapid/commit/3a8682f5db07df5a750b9be6ae8907403cbcad52))
+- ruby 3.0 compat ([a03c6c](https://github.com/krystal/rapid/commit/a03c6c5ff34f1725465800b5e4b80854cffda0fb))
+
 ## 1.1.2
 
 ### Bug Fixes
