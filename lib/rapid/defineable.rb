@@ -42,7 +42,11 @@ module Rapid
     # the DSL supoprts it.
     def method_missing(name, *args, **kwargs, &block)
       if definition.dsl.respond_to?(name)
-        definition.dsl.send(name, *args, **kwargs, &block)
+        if kwargs.empty?
+          definition.dsl.send(name, *args, &block)
+        else
+          definition.dsl.send(name, *args, **kwargs, &block)
+        end
       else
         super
       end
