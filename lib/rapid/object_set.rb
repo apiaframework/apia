@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Rapid
-  class ObjectSet < Set
+  class ObjectSet < ::Set
 
     def add_object(object)
       return self if include?(object)
