@@ -2,15 +2,13 @@
 
 Rapid is an API framework for building a self-documenting HTTP API in any Ruby application (including Rails).
 
-🚧 This is still under construction. 🚧
-
 ## Getting started
 
 To begin, you just need to install the gem into the application.
 
 ```ruby
-source 'https://github.pkg.github.com/krystal' do
-  gem 'rapid', '~> 1.0'
+source 'https://rubygems.pkg.github.com/krystal' do
+  gem 'rapid', '~> 1.1'
 end
 ```
 
