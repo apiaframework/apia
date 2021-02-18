@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Rapid.
 
+## 1.2.0
+
+### Features
+
+- add API.test to support testing endpoints ([410fd9](https://github.com/krystal/rapid/commit/410fd9cbfd63de266cb99a4ddccded67cf61be3a))
+
 ## 1.1.3
 
 ### Bug Fixes
