@@ -20,7 +20,7 @@ module Rapid
       return unless block_given?
 
       instance_exec(@request, @response, *args, &block)
-    rescue StandardError => e
+    rescue ::StandardError => e
       raise_exception(e)
     end
 

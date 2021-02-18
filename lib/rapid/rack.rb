@@ -93,7 +93,7 @@ module Rapid
 
       response = request.endpoint.execute(request)
       response.rack_triplet
-    rescue StandardError => e
+    rescue ::StandardError => e
       if e.is_a?(RackError) || e.is_a?(Rapid::ManifestError)
         return e.triplet
       end

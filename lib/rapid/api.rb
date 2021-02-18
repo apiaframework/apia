@@ -5,6 +5,8 @@ require 'rapid/definitions/api'
 require 'rapid/helpers'
 require 'rapid/manifest_errors'
 require 'rapid/object_set'
+require 'rapid/errors/standard_error'
+require 'rapid/mock_request'
 
 module Rapid
   class API
@@ -65,6 +67,30 @@ module Rapid
           api: definition.id,
           objects: objects.map(&:definition).select(&:schema?)
         })
+      end
+
+      # Execute a request for a given controller & endpoint
+      #
+      # @param controller [Rapid::Controller]
+      # @param endpoint_name [Symbol]
+      # @return [Rapid::Response]
+      def test_endpoint(controller, endpoint)
+        if endpoint.is_a?(Symbol) || endpoint.is_a?(String)
+          endpoint_name = endpoint
+          endpoint = controller.definition.endpoints[endpoint.to_sym]
+          if endpoint.nil?
+            raise Rapid::StandardError, "Invalid endpoint name '#{endpoint_name}' for '#{controller.name}'"
+          end
+        end
+
+        request = Rapid::MockRequest.empty
+        request.api = self
+        request.controller = controller
+        request.endpoint = endpoint
+
+        yield request if block_given?
+
+        endpoint.execute(request)
       end
 
     end

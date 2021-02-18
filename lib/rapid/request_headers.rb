@@ -15,6 +15,10 @@ module Rapid
       fetch(key)
     end
 
+    def []=(key, value)
+      @headers[self.class.make_key(key)] = value
+    end
+
     class << self
 
       def make_key(key)

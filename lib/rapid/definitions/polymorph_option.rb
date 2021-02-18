@@ -29,8 +29,8 @@ module Rapid
 
       def cast(value, request: nil, path: [])
         {
-          'type' => @name.to_s,
-          'value' => type.cast(value, request: request, path: path)
+          type: @name.to_s,
+          value: type.cast(value, request: request, path: path)
         }
       end
 

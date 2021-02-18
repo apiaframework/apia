@@ -67,10 +67,62 @@ describe Rapid::API do
     it 'should return the schema' do
       api = Rapid::API.create('ExampleAPI')
       schema = api.schema(host: 'api.example.com', namespace: 'v1')
-      expect(schema['host']).to eq 'api.example.com'
-      expect(schema['namespace']).to eq 'v1'
-      expect(schema['objects']).to be_a Array
-      expect(schema['api']).to eq 'ExampleAPI'
+      expect(schema[:host]).to eq 'api.example.com'
+      expect(schema[:namespace]).to eq 'v1'
+      expect(schema[:objects]).to be_a Array
+      expect(schema[:api]).to eq 'ExampleAPI'
+    end
+  end
+
+  context '.test_endpoint' do
+    it 'returns an error if the endpoint name is incorrect' do
+      api = Rapid::API.create('ExampleAPI')
+      controller = Rapid::Controller.create('ExampleController')
+      expect { api.test_endpoint(controller, :invalid) }.to raise_error(Rapid::StandardError, /invalid endpoint name/i)
+    end
+
+    it 'executes the endpoint' do
+      api = Rapid::API.create('ExampleAPI')
+      controller = Rapid::Controller.create('ExampleController') do
+        endpoint :info do
+          field :name, :string
+          action do
+            response.add_field :name, 'Peter'
+          end
+        end
+      end
+      response = api.test_endpoint(controller, :info)
+      expect(response.status).to eq 200
+      expect(response.body[:name]).to eq 'Peter'
+    end
+
+    it 'executes the endpoint through the authenticator' do
+      api = Rapid::API.create('ExampleAPI') do
+        authenticator do
+          potential_error 'AccessDenied' do
+            http_status 403
+            code :access_denied
+          end
+          action do
+            if request.headers['Authorization'] == 'Bearer test'
+              request.identity = true
+            else
+              raise_error 'AccessDenied'
+            end
+          end
+        end
+      end
+      controller = Rapid::Controller.create('ExampleController') do
+        endpoint :info do
+          field :name, :string
+          action do
+            response.add_field :name, 'Peter'
+          end
+        end
+      end
+      response = api.test_endpoint(controller, :info)
+      expect(response.status).to eq 403
+      expect(response.body[:error][:code]).to eq :access_denied
     end
   end
 end

@@ -46,7 +46,7 @@ module Rapid
         value = field.value(source, request: request, path: field_path)
         next if value == :skip
 
-        hash[field.name.to_s] = value
+        hash[field.name.to_sym] = value
       end
     end
 

@@ -18,8 +18,8 @@ describe Rapid::Response do
       response.add_field :name, 'Adam'
       response.add_field :age, 123
       hash = response.hash
-      expect(hash['name']).to eq 'Adam'
-      expect(hash['age']).to eq 123
+      expect(hash[:name]).to eq 'Adam'
+      expect(hash[:age]).to eq 123
     end
 
     it 'should raise an error if a field is missing that is required' do

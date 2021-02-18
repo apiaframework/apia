@@ -93,8 +93,8 @@ describe Rapid::Object do
       type_instance = type.new(id: 'hello', number: 1234)
       hash = type_instance.hash
       expect(hash).to be_a(Hash)
-      expect(hash['id']).to eq 'hello'
-      expect(hash['number']).to eq 1234
+      expect(hash[:id]).to eq 'hello'
+      expect(hash[:number]).to eq 1234
     end
 
     it 'should raise a parse error if a field is invalid' do
@@ -118,7 +118,7 @@ describe Rapid::Object do
       end
       type_instance = type.new(id: 1234, name: 'Adam')
       hash = type_instance.hash
-      expect(hash['id']).to eq 1234
+      expect(hash[:id]).to eq 1234
       expect(hash.keys).to_not include 'name'
     end
 
@@ -136,8 +136,8 @@ describe Rapid::Object do
       book_instance = book.new(title: 'My Book', author: { id: 777 })
       hash = book_instance.hash
 
-      expect(hash['title']).to eq 'My Book'
-      expect(hash.keys).to_not include 'author'
+      expect(hash[:title]).to eq 'My Book'
+      expect(hash.keys).to_not include :author
     end
 
     it 'should raise an error if a field is missing but is required' do
@@ -158,8 +158,8 @@ describe Rapid::Object do
         type_instance.hash
       end.to_not raise_error
       hash = type_instance.hash
-      expect(hash.keys).to include 'age'
-      expect(hash['age']).to be nil
+      expect(hash.keys).to include :age
+      expect(hash[:age]).to be nil
     end
 
     it 'should be able to include enums' do
@@ -172,7 +172,7 @@ describe Rapid::Object do
       end
       instance = type.new(status: 'active')
       hash = instance.hash
-      expect(hash['status']).to eq 'active'
+      expect(hash[:status]).to eq 'active'
     end
   end
 end

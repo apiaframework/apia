@@ -113,7 +113,7 @@ describe Rapid::Endpoint do
         expect(response.body[:error]).to be_a Hash
         expect(response.body[:error][:code]).to eq :scope_not_granted
         expect(response.body[:error][:description]).to eq 'The scope required for this endpoint has not been granted to the authenticating identity'
-        expect(response.body[:error][:detail]['scopes']).to eq ['example']
+        expect(response.body[:error][:detail][:scopes]).to eq ['example']
       end
     end
 
