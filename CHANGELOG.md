@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Rapid.
 
+## 1.2.1
+
+### Bug Fixes
+
+- allow uppercase characters in argument names ([5299bc](https://github.com/krystal/rapid/commit/5299bc4e4478086ebf1efadbb24513270a404863))
+
 ## 1.2.0
 
 ### Features
