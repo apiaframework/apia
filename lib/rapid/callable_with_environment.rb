@@ -12,7 +12,7 @@ module Rapid
     end
 
     def respond_to_missing?(name, _include_private = false)
-      @environment.respond_to?(name)
+      @environment.respond_to?(name) || super
     end
 
     def method_missing(name, *args, **kwargs, &block)
