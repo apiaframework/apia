@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Rapid.
 
+## 1.2.2
+
+### Bug Fixes
+
+- improve handling of wildcards in field specs ([a26ffc](https://github.com/krystal/rapid/commit/a26ffc297563ace3d7b82d5363a1ccb76422e02e))
+
 ## 1.2.1
 
 ### Bug Fixes
