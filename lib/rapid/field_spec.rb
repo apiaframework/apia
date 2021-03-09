@@ -30,6 +30,9 @@ module Rapid
       # isn't included.
       return false if @excludes.include?(path.join('.'))
 
+      # If there's a wildcard at the root we can allow it at this point
+      return true if @paths.include?('*')
+
       # Check to see whether we're allowing a wildcard to be permitted at any
       # point in the chain
       (path.size - 1).times do |i|

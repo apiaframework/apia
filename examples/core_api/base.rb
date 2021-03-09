@@ -15,12 +15,14 @@ module CoreAPI
     routes do
       schema
 
+      get 'example/format', controller: Controllers::TimeController, endpoint: :format
+      post 'example/format', controller: Controllers::TimeController, endpoint: :format
+
       group :time do
         name 'Time functions'
         description 'Everything related to time elements'
         controller Controllers::TimeController
         get 'time/now', endpoint: :now
-        get 'time/format', endpoint: :format
 
         group :formatting do
           name 'Formatting'

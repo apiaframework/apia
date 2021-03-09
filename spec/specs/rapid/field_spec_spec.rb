@@ -40,6 +40,21 @@ describe Rapid::FieldSpec do
       expect(spec.include_field?('pets.colour.hex_code')).to be false
     end
 
+    it 'works with root level wildcards' do
+      spec = described_class.parse('*,-picture')
+      expect(spec.include_field?('id')).to be true
+      expect(spec.include_field?('other')).to be true
+      expect(spec.include_field?('picture')).to be false
+    end
+
+    it 'works with secondary wildcards' do
+      spec = described_class.parse('*,user[*,-picture]')
+      expect(spec.include_field?('id')).to be true
+      expect(spec.include_field?('pet.name')).to be true
+      expect(spec.include_field?('user.name')).to be true
+      expect(spec.include_field?('user.picture')).to be false
+    end
+
     it 'should error if the brackets are not all closed' do
       expect do
         described_class.parse('hello[name[something]')
