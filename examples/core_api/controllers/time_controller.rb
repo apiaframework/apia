@@ -2,6 +2,7 @@
 
 require 'core_api/objects/time'
 require 'core_api/argument_sets/time_lookup_argument_set'
+require 'core_api/endpoints/time_now_endpoint'
 
 module CoreAPI
   module Controllers
@@ -10,15 +11,7 @@ module CoreAPI
       name 'Time API'
       description 'Returns the current time in varying ways'
 
-      endpoint :now do
-        description 'Returns the current time'
-        field :time, type: Objects::Time, include: 'unix,day_of_week'
-        scope 'time'
-        action do |_request, response|
-          time = Time.now
-          response.add_field :time, time
-        end
-      end
+      endpoint :now, Endpoints::TimeNowEndpoint
 
       endpoint :format do
         description 'Format the given time'

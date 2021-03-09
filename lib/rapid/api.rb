@@ -37,6 +37,10 @@ module Rapid
           set.add_object(con)
         end
 
+        definition.route_set.endpoints.each do |endpoint|
+          set.add_object(endpoint)
+        end
+
         set
       end
 

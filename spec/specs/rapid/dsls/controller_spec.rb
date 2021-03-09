@@ -34,7 +34,7 @@ describe Rapid::DSLs::Controller do
 
   context '#authenticator' do
     it 'should set the authenticator' do
-      authenticator = Rapid::Authenticator.new
+      authenticator = Rapid::Authenticator
       dsl.authenticator authenticator
       expect(controller.authenticator).to eq authenticator
     end

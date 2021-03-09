@@ -49,9 +49,7 @@ module Rapid
       end
 
       def validate(errors)
-        if @action.nil?
-          errors.add self, 'MissingAction', 'An action must be defined for endpoints'
-        elsif !@action.is_a?(Proc)
+        if @action && !@action.is_a?(Proc)
           errors.add self, 'InvalidAction', 'The action provided must be a Proc'
         end
 

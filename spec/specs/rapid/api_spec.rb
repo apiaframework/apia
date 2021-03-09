@@ -37,29 +37,26 @@ describe Rapid::API do
     end
 
     it 'should find errors on any objects that may exist' do
-      controller = Rapid::Controller.create('Controller') do
-        endpoint :test do
-          # missing action
-        end
+      endpoint = Rapid::Endpoint.create('SomeEndpoint') do
+        http_status 123
       end
       api = Rapid::API.create('ExampleAPI') do
         authenticator do
-          type :bearer
-          # missing action
+          type :invalid
         end
-        routes { get('test', controller: controller, endpoint: :test) }
+        routes { get('test', endpoint: endpoint) }
       end
       errors = api.validate_all
       expect(errors).to be_a Rapid::ManifestErrors
 
       authenticator_errors = errors.for(api.definition.authenticator.definition)
       expect(authenticator_errors).to_not be_empty
-      expect(authenticator_errors).to include 'MissingAction'
+      expect(authenticator_errors).to include 'InvalidType'
 
       endpoint = api.definition.route_set.find(:get, 'test').first.endpoint
       endpoint_errors = errors.for(endpoint.definition)
       expect(endpoint_errors).to_not be_empty
-      expect(endpoint_errors).to include 'MissingAction'
+      expect(endpoint_errors).to include 'InvalidHTTPStatus'
     end
   end
 

@@ -30,13 +30,6 @@ describe Rapid::Definitions::Authenticator do
       expect(errors.for(auth)).to include 'InvalidType'
     end
 
-    it 'should add an error if the action is missing' do
-      auth = described_class.new('MyAuthenticator')
-      errors = Rapid::ManifestErrors.new
-      auth.validate(errors)
-      expect(errors.for(auth)).to include 'MissingAction'
-    end
-
     it 'should add an error if the action is not a proc' do
       auth = described_class.new('MyAuthenticator')
       auth.action = 'potato'

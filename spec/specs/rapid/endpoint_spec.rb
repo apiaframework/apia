@@ -103,6 +103,7 @@ describe Rapid::Endpoint do
         end
 
         request.controller = Rapid::Controller.create('Controller')
+
         request.endpoint = Rapid::Endpoint.create('Endpoint') do
           scope 'example'
         end

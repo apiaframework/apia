@@ -64,13 +64,6 @@ describe Rapid::Definitions::Endpoint do
       expect(errors.for(endpoint)).to include 'InvalidAuthenticator'
     end
 
-    it 'should add errors if the action is missing' do
-      endpoint = described_class.new('Endpoint')
-      errors = Rapid::ManifestErrors.new
-      endpoint.validate(errors)
-      expect(errors.for(endpoint)).to include 'MissingAction'
-    end
-
     it 'should add errors if the action is not a proc' do
       endpoint = described_class.new('Endpoint')
       endpoint.action = 'hello'

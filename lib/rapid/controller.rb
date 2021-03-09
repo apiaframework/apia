@@ -24,9 +24,6 @@ module Rapid
       # @param set [Rapid::ObjectSet]
       # @return [void]
       def collate_objects(set)
-        definition.endpoints.each_value do |endpoint|
-          set.add_object(endpoint)
-        end
       end
 
     end
