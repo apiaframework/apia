@@ -23,6 +23,7 @@ describe Rapid::FieldSpec do
       spec = described_class.parse('id,name,owner[*,hair_color,address[line1,post_code],-age],pets[name,colour[name]]')
       expect(spec.include_field?('id')).to be true
       expect(spec.include_field?('name')).to be true
+      expect(spec.include_field?('missing')).to be false
       expect(spec.include_field?('name.sub')).to be false
       expect(spec.include_field?('owner')).to be true
       expect(spec.include_field?('owner.hair_color')).to be true
@@ -47,12 +48,20 @@ describe Rapid::FieldSpec do
       expect(spec.include_field?('picture')).to be false
     end
 
-    it 'works with secondary wildcards' do
+    it 'works with secondary wildcards and negatives' do
       spec = described_class.parse('*,user[*,-picture]')
       expect(spec.include_field?('id')).to be true
       expect(spec.include_field?('pet.name')).to be true
       expect(spec.include_field?('user.name')).to be true
       expect(spec.include_field?('user.picture')).to be false
+    end
+
+    it 'works with wildcards with non-wildcards later in the chain' do
+      spec = described_class.parse('*,user[id,name]')
+      expect(spec.include_field?('id')).to be true
+      expect(spec.include_field?('blah')).to be true
+      expect(spec.include_field?('user.name')).to be true
+      expect(spec.include_field?('user.something')).to be false
     end
 
     it 'should error if the brackets are not all closed' do
