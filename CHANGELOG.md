@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Rapid.
 
+## 1.2.3
+
+### Bug Fixes
+
+- further fix for field specs with root-level wildcards ([a0100a](https://github.com/krystal/rapid/commit/a0100aabb9573a315deb3d532a6aa3fcb22c965c))
+
 ## 1.2.2
 
 ### Bug Fixes
