@@ -93,6 +93,12 @@ module Rapid
         end
       end
 
+      # Should a given field be included
+      #
+      def include_field?(*args)
+        definition.fields.spec.include_field?(*args)
+      end
+
       # Allow an endpoint to be executed with a mocked request.
       #
       def test
