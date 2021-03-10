@@ -49,40 +49,23 @@ end
 
 The key thing to note here is that the `CoreAPI::Base` reference is provided as a string rather than the constant itself. You can provide the constant here but using a string will ensure that API can be reloaded in development when classes are unloaded.
 
-### Creating a controller and endpoint
+### Creating an endpoint
 
-A controller is a collection of actions (or endpoints) that will perform actions and return data as appropriate. An API can have as many controllers as you need and a controller can have as many endpoints as needed.
-
-Begin by creating a new `controllers` directory in your `app/apis/core_api` directory. Within that, add a file for your first controller. In this example, we'll make a controller for managing products and thus we'll call it the `Products` controller. This controller should inherit from `Rapid::Controller`.
+An endpoint is an action that can be invoked by your consumers. It might return a list, create an resource or anything that takes your fancy. Begin by creating a new `endpoints` director in your `app/apis/core_api` directory. We'll begin by making an endpoint that will simply return a list of products that we sell. Make a file called `product_list_endpoint.rb` in your new `endpoints` directory.
 
 ```ruby
 module CoreAPI
-  module Controllers
-    module Products < Rapid::Controller
+  module Endpints
+    class ProductListEndpoint < Rapid::Endpoint
 
-      name 'Products'
-      description 'Allows you to list & manages products in the product database'
+      name 'List products'
+      description 'Returns a list of all product names in our catalogue'
 
-    end
-  end
-end
-```
+      field :product_names, [:string]
 
-As with the API, this is a very basic implementation of a controller. A controller isn't much use without an endpoint through so we can add an endpoint here.
-
-```ruby
-module CoreAPI
-  module Controllers
-    module Products < Rapid::Controller
-
-      endpoint :list do
-        name 'List products'
-        description 'Returns a full list of products'
-        field :products, [:string]
-        action do
-          product_names = Products.all.map(&:name)
-          response.add_field :products, product_names
-        end
+      def call
+        product_names = Product.order(:name).pluck(:name)
+        response.add_field :product_names, product_names
       end
 
     end
@@ -92,19 +75,17 @@ end
 
 This is a very simple endpoint. Walking through each section...
 
-- Firstly, we define the name of the endpoint which, in this case, is `list`. This will be addressed as `products/list` when requests are made to it.
-
-- Then we define the name and description for it. This will appear in the schema & documentation.
+- We begin by defining the name and description for it. This will appear in the schema & documentation.
 
 - Then we add a field which we will expect to be returned when this action is invoked. In this case, we're creating a field called `products` and specifying that it will be an array of strings that will be returned.
 
-- Then we define an action which will actually be executed when this endpoint is executed. This action has access to the request and the response. The `request` object contains information about the request being made and the `response` object allows you to influence what is returned to the consumer.
+- Then we define the `call` method which will actually be executed when this endpoint is called. In here, you have access to the request and the response. The `request` object contains information about the request being made and the `response` object allows you to influence what is returned to the consumer.
 
-- Finally, we use `response.add_field` to add data for the `products` field that we defined earlier. In this case, an array of product names.
+- Finally, we use `response.add_field` to add data for the `product_names` field that we defined earlier. In this case, an array of product names.
 
 #### A note about types
 
-When you define a field (or an argument) you must define a `type`. A type is what type of object that the consumer can expect to receive (or the server will expect to receive in the case of arguments). A type can be provided as a symbol to reference a scalar or a class that inherits from `Rapid::Scalar` (for scalars), `Rapid::Object` (for objects), `Rapid::Enum` (for enums) or `Rapid::Polymorph` (for polymorphs).
+When you define a field (or an argument) you must define a `type`. A type is what type of object that the consumer can expect to receive (or is expected to send in the case of arguments). A type can be provided as a symbol to reference a known scaler, or a class that inherits from `Rapid::Scalar` (for scalars), `Rapid::Object` (for objects), `Rapid::Enum` (for enums) or `Rapid::Polymorph` (for polymorphs).
 
 The following scalars are built-in:
 
@@ -125,7 +106,7 @@ module CoreAPI
   class Base < Rapid::API
 
     routes do
-      get 'products', controller: Controllers::Products, endpoint: :list
+      get 'products', endpoint: Endpoints::ListProductsEndpoint
     end
 
   end
@@ -176,11 +157,17 @@ By default, Rapid will try to find a value for your fields by calling a method n
 Once you have created your object class, you will need to update your endpoint to reference the object.
 
 ```ruby
-endpoint :list do
+class ProductListEndpoint < Rapid::Endpoint
+
+  # ...
+
   field :products, [Objects::Product]
-  action do |request, response|
-    response.add_field :products, Products.all.to_a
+
+  def call
+    products = Product.order(:name)
+    response.add_field :products, products.to_a
   end
+
 end
 ```
 
@@ -188,4 +175,4 @@ If you make the request now, you should receive an array of objects (hashes) rat
 
 ## Further reading
 
-Take a look through the docs folder
+Take a look through the docs folder.
