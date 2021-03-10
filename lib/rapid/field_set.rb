@@ -4,6 +4,7 @@ require 'rapid/helpers'
 require 'rapid/scalar'
 require 'rapid/object'
 require 'rapid/enum'
+require 'rapid/field_spec'
 
 module Rapid
   class FieldSet < Hash
