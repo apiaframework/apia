@@ -9,6 +9,19 @@ require 'rapid/authenticator'
 require 'rack/mock'
 
 describe Rapid::Endpoint do
+  context '.test' do
+    it 'can execute the request' do
+      endpoint = Rapid::Endpoint.create('ExampleEndpoint') do
+        field :name, :string
+        action do
+          response.add_field :name, 'Alan'
+        end
+      end
+      response = endpoint.test
+      expect(response.hash[:name]).to eq 'Alan'
+    end
+  end
+
   context '.execute' do
     context 'authenticators' do
       it 'should call the endpoint authenticator if one has been set' do

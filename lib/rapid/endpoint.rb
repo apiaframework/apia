@@ -93,6 +93,15 @@ module Rapid
         end
       end
 
+      # Allow an endpoint to be executed with a mocked request.
+      #
+      def test
+        request = Rapid::MockRequest.empty
+        request.endpoint = self
+        yield request if block_given?
+        execute(request)
+      end
+
     end
 
   end

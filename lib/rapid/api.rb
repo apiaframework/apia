@@ -78,8 +78,8 @@ module Rapid
       # @param controller [Rapid::Controller]
       # @param endpoint_name [Symbol]
       # @return [Rapid::Response]
-      def test_endpoint(controller, endpoint)
-        if endpoint.is_a?(Symbol) || endpoint.is_a?(String)
+      def test_endpoint(endpoint, controller: nil)
+        if controller && endpoint.is_a?(Symbol) || endpoint.is_a?(String)
           endpoint_name = endpoint
           endpoint = controller.definition.endpoints[endpoint.to_sym]
           if endpoint.nil?
@@ -87,14 +87,11 @@ module Rapid
           end
         end
 
-        request = Rapid::MockRequest.empty
-        request.api = self
-        request.controller = controller
-        request.endpoint = endpoint
-
-        yield request if block_given?
-
-        endpoint.execute(request)
+        endpoint.test do |r|
+          r.api = self
+          r.controller = controller
+          yield r if block_given?
+        end
       end
 
     end
