@@ -29,7 +29,7 @@ describe Rapid::DSLs::Endpoint do
 
   context '#authenticator' do
     it 'should set the authenticator' do
-      authenticator = Rapid::Authenticator.new
+      authenticator = Rapid::Authenticator
       dsl.authenticator authenticator
       expect(endpoint.authenticator).to eq authenticator
     end

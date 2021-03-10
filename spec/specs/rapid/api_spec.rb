@@ -37,29 +37,26 @@ describe Rapid::API do
     end
 
     it 'should find errors on any objects that may exist' do
-      controller = Rapid::Controller.create('Controller') do
-        endpoint :test do
-          # missing action
-        end
+      endpoint = Rapid::Endpoint.create('SomeEndpoint') do
+        http_status 123
       end
       api = Rapid::API.create('ExampleAPI') do
         authenticator do
-          type :bearer
-          # missing action
+          type :invalid
         end
-        routes { get('test', controller: controller, endpoint: :test) }
+        routes { get('test', endpoint: endpoint) }
       end
       errors = api.validate_all
       expect(errors).to be_a Rapid::ManifestErrors
 
       authenticator_errors = errors.for(api.definition.authenticator.definition)
       expect(authenticator_errors).to_not be_empty
-      expect(authenticator_errors).to include 'MissingAction'
+      expect(authenticator_errors).to include 'InvalidType'
 
       endpoint = api.definition.route_set.find(:get, 'test').first.endpoint
       endpoint_errors = errors.for(endpoint.definition)
       expect(endpoint_errors).to_not be_empty
-      expect(endpoint_errors).to include 'MissingAction'
+      expect(endpoint_errors).to include 'InvalidHTTPStatus'
     end
   end
 
@@ -75,54 +72,56 @@ describe Rapid::API do
   end
 
   context '.test_endpoint' do
-    it 'returns an error if the endpoint name is incorrect' do
-      api = Rapid::API.create('ExampleAPI')
-      controller = Rapid::Controller.create('ExampleController')
-      expect { api.test_endpoint(controller, :invalid) }.to raise_error(Rapid::StandardError, /invalid endpoint name/i)
-    end
-
-    it 'executes the endpoint' do
-      api = Rapid::API.create('ExampleAPI')
-      controller = Rapid::Controller.create('ExampleController') do
-        endpoint :info do
-          field :name, :string
-          action do
-            response.add_field :name, 'Peter'
-          end
-        end
+    describe 'when passing an endpoint name with controller' do
+      it 'returns an error if the endpoint name is incorrect' do
+        api = Rapid::API.create('ExampleAPI')
+        controller = Rapid::Controller.create('ExampleController')
+        expect { api.test_endpoint(:invalid, controller: controller) }.to raise_error(Rapid::StandardError, /invalid endpoint name/i)
       end
-      response = api.test_endpoint(controller, :info)
-      expect(response.status).to eq 200
-      expect(response.body[:name]).to eq 'Peter'
-    end
 
-    it 'executes the endpoint through the authenticator' do
-      api = Rapid::API.create('ExampleAPI') do
-        authenticator do
-          potential_error 'AccessDenied' do
-            http_status 403
-            code :access_denied
-          end
-          action do
-            if request.headers['Authorization'] == 'Bearer test'
-              request.identity = true
-            else
-              raise_error 'AccessDenied'
+      it 'executes the endpoint' do
+        api = Rapid::API.create('ExampleAPI')
+        controller = Rapid::Controller.create('ExampleController') do
+          endpoint :info do
+            field :name, :string
+            action do
+              response.add_field :name, 'Peter'
             end
           end
         end
+        response = api.test_endpoint(:info, controller: controller)
+        expect(response.status).to eq 200
+        expect(response.body[:name]).to eq 'Peter'
       end
-      controller = Rapid::Controller.create('ExampleController') do
-        endpoint :info do
-          field :name, :string
-          action do
-            response.add_field :name, 'Peter'
+
+      it 'executes the endpoint through the authenticator' do
+        api = Rapid::API.create('ExampleAPI') do
+          authenticator do
+            potential_error 'AccessDenied' do
+              http_status 403
+              code :access_denied
+            end
+            action do
+              if request.headers['Authorization'] == 'Bearer test'
+                request.identity = true
+              else
+                raise_error 'AccessDenied'
+              end
+            end
           end
         end
+        controller = Rapid::Controller.create('ExampleController') do
+          endpoint :info do
+            field :name, :string
+            action do
+              response.add_field :name, 'Peter'
+            end
+          end
+        end
+        response = api.test_endpoint(:info, controller: controller)
+        expect(response.status).to eq 403
+        expect(response.body[:error][:code]).to eq :access_denied
       end
-      response = api.test_endpoint(controller, :info)
-      expect(response.status).to eq 403
-      expect(response.body[:error][:code]).to eq :access_denied
     end
   end
 end

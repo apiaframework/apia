@@ -24,7 +24,7 @@ module CoreAPI
       field :given_token, :string
     end
 
-    action do
+    def call
       given_token_string = request.headers['Authorization'].sub(/\ABearer /, '')
       token = APIToken.authenticate(given_token_string)
       if token.nil?
@@ -43,7 +43,7 @@ Let's take a look through this line by line:
 - Firstly, we define the name & description for the authenticator. This is used for documentation.
 - Next, we choose the type of authenticator. Rapid only currently supports `:bearer`. This is only used for documentation purposes as well.
 - Then, we define a potential error that this authenticator might raise. In this case, the API token provided may be invalid and we'll raise that error.
-- Finally, we define an action which will be invoked. This is responsible for setting the `request.identity` property or raising an error if authentication has failed. You don't **have** to set a `request.identity` if you don't wish (anonymous access?) but unless you raise an error in here the endpoint execution will continue.
+- Finally, we define the `call` method which will be invoked when the authenticator is used. This is responsible for setting the `request.identity` property or raising an error if authentication has failed. You don't **have** to set a `request.identity` if you don't wish (anonymous access?) but unless you raise an error in here the endpoint execution will continue.
 
 ## Applying to the API
 
@@ -55,7 +55,7 @@ module CoreAPI
 
     authenticator Authenticator
 
-    # ... other API bits like controllers
+    # ... routes, scopes etc...
 
   end
 end

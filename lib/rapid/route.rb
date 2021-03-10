@@ -28,7 +28,7 @@ module Rapid
     #
     # @return [Rapid::Endpoint]
     def endpoint
-      if @endpoint.is_a?(Symbol)
+      if @endpoint.is_a?(Symbol) && controller
         return controller.definition.endpoints[@endpoint]
       end
 

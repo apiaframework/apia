@@ -103,6 +103,7 @@ describe Rapid::Endpoint do
         end
 
         request.controller = Rapid::Controller.create('Controller')
+
         request.endpoint = Rapid::Endpoint.create('Endpoint') do
           scope 'example'
         end
@@ -182,7 +183,19 @@ describe Rapid::Endpoint do
       expect(response.body[:error][:detail][:class]).to eq 'Rapid::RuntimeError'
     end
 
-    it 'should run the endpoint action' do
+    it 'should call the call method if no action is specified' do
+      endpoint = Rapid::Endpoint.create('Test')
+      endpoint.define_method(:call) do
+        response.body = { hello: 'world' }
+      end
+
+      request = Rapid::Request.new(Rack::MockRequest.env_for('/'))
+      request.endpoint = endpoint
+      response = request.endpoint.execute(request)
+      expect(response.body[:hello]).to eq 'world'
+    end
+
+    it 'should run the endpoint action if one is defined' do
       request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"Phillip"}'))
       request.endpoint = Rapid::Endpoint.create('Test') do
         action do |_req, res|
@@ -191,6 +204,19 @@ describe Rapid::Endpoint do
       end
       response = request.endpoint.execute(request)
       expect(response.body[:hello]).to eq 'world'
+    end
+  end
+
+  context '.test' do
+    it 'can execute the request' do
+      endpoint = Rapid::Endpoint.create('ExampleEndpoint') do
+        field :name, :string
+        action do
+          response.add_field :name, 'Alan'
+        end
+      end
+      response = endpoint.test
+      expect(response.hash[:name]).to eq 'Alan'
     end
   end
 end

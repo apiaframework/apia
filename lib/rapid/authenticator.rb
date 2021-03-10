@@ -3,11 +3,13 @@
 require 'rapid/defineable'
 require 'rapid/definitions/authenticator'
 require 'rapid/helpers'
+require 'rapid/callable_with_environment'
 
 module Rapid
   class Authenticator
 
     extend Defineable
+    include CallableWithEnvironment
 
     class << self
 
@@ -34,7 +36,10 @@ module Rapid
       # @param environment [Rapid::RequestEnvironment]
       # @return [void]
       def execute(environment)
-        return if definition.action.nil?
+        if definition.action.nil?
+          auth_instance = new(environment)
+          return auth_instance.call
+        end
 
         environment.call(&definition.action)
       end

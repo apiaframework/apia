@@ -154,7 +154,7 @@ describe Rapid::FieldSet do
       expect(hash[:string_or_int][3][:value]).to eq 2
     end
 
-    it 'should raise an error if a value cannot match any option' do
+    it 'raises an error if a value cannot match any option' do
       polymorph = Rapid::Polymorph.create('MyPolymorph') do
         option :string, type: :string, matcher: proc { |s| s.is_a?(::String) }
       end
@@ -170,38 +170,24 @@ describe Rapid::FieldSet do
       end
     end
 
-    it 'should only include fields in a requests field spec if one is provided' do
-      [:name, :description].each do |name|
-        field = Rapid::Definitions::Field.new(name)
-        field.type = :string
-        field_set.add field
-      end
-
-      request = Rapid::Request.new(Rack::MockRequest.env_for('/', params: { 'fields' => 'name' }))
-
-      hash = field_set.generate_hash({ name: 'Adam', description: 'Human' }, request: request)
-      expect(hash[:name]).to eq 'Adam'
-      expect(hash.keys).to_not include :description
-    end
-
-    it 'should include all fields for an object if no specs are provided' do
+    it 'includes all fields for an object if no specs are provided on the endpoint' do
       user_type = Rapid::Object.create('UserType')
       user_name_field = Rapid::Definitions::Field.new(:name)
       user_name_field.type = :string
       user_type.definition.fields.add user_name_field
 
-      field = Rapid::Definitions::Field.new(:user)
-      field.type = user_type
-      field_set.add field
+      endpoint = Rapid::Endpoint.create('Endpoint') do
+        field :user, user_type
+      end
 
       request = Rapid::Request.new(Rack::MockRequest.env_for('/'))
-      request.field_spec = field_set.spec
+      request.endpoint = endpoint
 
-      hash = field_set.generate_hash({ user: { name: 'Adam' } }, request: request)
-      expect(hash[:user][:name]).to eq 'Adam'
+      hash = endpoint.definition.fields.generate_hash({ user: { name: 'Adam' } }, request: request)
+      expect(hash).to eq({ user: { name: 'Adam' } })
     end
 
-    it 'should include all fields for a polymorph if no specs are provided' do
+    it 'includes all fields for a polymorph if no specs are provided' do
       user_type = Rapid::Object.create('UserType')
       user_name_field = Rapid::Definitions::Field.new(:name)
       user_name_field.type = :string
@@ -210,64 +196,57 @@ describe Rapid::FieldSet do
       polymorph = Rapid::Polymorph.create('OwnerPolymorph')
       polymorph.option(:example, type: user_type, matcher: proc { true })
 
-      field = Rapid::Definitions::Field.new(:owner)
-      field.type = polymorph
-      field_set.add field
+      endpoint = Rapid::Endpoint.create('Endpoint') do
+        field :owner, polymorph
+      end
 
       request = Rapid::Request.new(Rack::MockRequest.env_for('/'))
-      request.field_spec = field_set.spec
+      request.endpoint = endpoint
 
-      hash = field_set.generate_hash({ owner: { name: 'Adam' } }, request: request)
-      expect(hash[:owner][:type]).to eq 'example'
-      expect(hash[:owner][:value][:name]).to eq 'Adam'
+      hash = endpoint.definition.fields.generate_hash({ owner: { name: 'Adam' } }, request: request)
+      expect(hash).to eq({ owner: { type: 'example', value: { name: 'Adam' } } })
     end
 
-    context 'nested' do
-      before(:each) do
-        pet = Rapid::Object.create('Pet') do
-          field :name, type: :string
-          field :type, type: :string
-        end
+    it "does not include fields that are excluded by an endpoint's field spec" do
+      pet = Rapid::Object.create('Pet') do
+        field :name, :string
+        field :species, :string
+      end
 
-        user = Rapid::Object.create('User') do
-          field :name, type: :string
-          field :pets, type: [pet]
-        end
+      user = Rapid::Object.create('User') do
+        field :name, :string
+        field :age, :integer
+        field :pets, [pet]
+      end
 
-        field = Rapid::Definitions::Field.new(:user)
-        field.type = user
-        field_set.add field
+      endpoint = Rapid::Endpoint.create('ExampleEndpoint') do
+        field :user, user, include: 'name,pets[name]'
+      end
 
-        field = Rapid::Definitions::Field.new(:age)
-        field.type = :integer
-        field_set.add field
-
-        @source = {
-          user: { name: 'Adam', pets: [{ name: 'Fido', type: 'Dog' }, { name: 'Fifi', type: 'Cat' }] },
-          age: 10
+      source = {
+        user: {
+          name: 'Adam',
+          age: 39,
+          pets: [
+            { name: 'Fido', species: 'Dog' },
+            { name: 'Blue', species: 'Cat' }
+          ]
         }
-      end
+      }
 
-      it 'should not return items that are not included in the root of the hash' do
-        request = Rapid::Request.new(Rack::MockRequest.env_for('/', params: { 'fields' => 'user[*]' }))
-        hash = field_set.generate_hash(@source, request: request)
-        expect(hash[:user]).to be_a Hash
-        expect(hash[:user][:pets]).to be_a Array
-        expect(hash[:user][:pets][0][:name]).to eq 'Fido'
-        expect(hash[:user][:pets][0][:type]).to eq 'Dog'
-        expect(hash[:age]).to be_nil
-      end
+      request = Rapid::Request.new(Rack::MockRequest.env_for('/'))
+      request.endpoint = endpoint
 
-      it 'should limit items on nested items' do
-        request = Rapid::Request.new(Rack::MockRequest.env_for('/', params: { 'fields' => 'user[pets[name]],age' }))
-        hash = field_set.generate_hash(@source, request: request)
-        expect(hash[:user]).to be_a Hash
-        expect(hash[:user].keys).to_not include :name
-        expect(hash[:user][:pets]).to be_a Array
-        expect(hash[:user][:pets][0][:name]).to eq 'Fido'
-        expect(hash[:user][:pets].map(&:keys).flatten).to_not include :type
-        expect(hash[:age]).to eq 10
-      end
+      result = endpoint.definition.fields.generate_hash(source, request: request)
+      expect(result).to eq({
+        user: {
+          name: 'Adam',
+          pets: [
+            { name: 'Fido' },
+            { name: 'Blue' }
+          ]
+        }
+      })
     end
   end
 end

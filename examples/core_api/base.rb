@@ -21,8 +21,7 @@ module CoreAPI
       group :time do
         name 'Time functions'
         description 'Everything related to time elements'
-        controller Controllers::TimeController
-        get 'time/now', endpoint: :now
+        get 'time/now', endpoint: Endpoints::TimeNowEndpoint
 
         group :formatting do
           name 'Formatting'

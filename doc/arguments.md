@@ -7,10 +7,12 @@ Arguments are the name given to any input that is being provided by the consumer
 At the most basic an argument will likely be a scalar value (a string, integer, boolean etc...) and will be defined as so on an endpoint:
 
 ```ruby
-endpoint :create do
+class MyEndpoint < Rapid::Endpoint
+
   argument :name, :string, required: true
   argument :age, :integer, required: true
   argument :superhuman, :boolean
+
 end
 ```
 
@@ -29,11 +31,14 @@ The consumer will provide arguments in one of two ways usually - they'll be prov
 Arguments are available on the `request` object within the `action` block of an action. For example:
 
 ```ruby
-endpoint :create do
+class MyEndpoint < Rapid::Endpoint
+
   argument :name, :string, required: true
-  action do
+
+  def call
     request.arguments[:name] # => 'Adam'
   end
+
 end
 ```
 
@@ -42,11 +47,14 @@ end
 If you wish to receive an array of items from a consumer, you can specify that an argument is an array rather than a flat object.
 
 ```ruby
-endpoint :create do
+class MyEndpoint < Rapid::Endpoint
+
   argument :names, [:string]
+
   action do
     request.arguments[:names] # => ['Adam', 'Dave', 'Charlie']
   end
+
 end
 ```
 
@@ -56,22 +64,25 @@ Argument sets provide you with an option to define a set of multiple arguments t
 
 ```ruby
 class UserProperties < Rapid::ArgumentSet
+
   argument :name, :string, required: true
   argument :date_of_birth, :date
   argument :hair_color, :string
   argument :favourite_color, :string
   argument :favourite_number, :integer
+
 end
 
-class Users < Rapid::Controller
-  endpoint :create do
-    argument :user, UserProperties, required: true
-    action do
-      request.arguments[:user][:name]
-      # or...
-      request.arguments.dig(:user, :name)
-    end
+class MyEndpoint < Rapid::Endpoint
+
+  argument :user, UserProperties, required: true
+
+  action do
+    request.arguments[:user][:name]
+    # or...
+    request.arguments.dig(:user, :name)
   end
+
 end
 ```
 
@@ -123,18 +134,19 @@ class UserLookup < Rapid::LookupArgumentSet
 
 end
 
-class Users < Rapid::Controller
-  endpoint :info do
-    argument :user, UserLookup, required: true
-    action do
-      # This will return the plain set as a normal argument set would.
-      user_set = request.arguments[:user]
+class InfoEndpoint < Rapid::Endpoint
 
-      # Calling `resolve` on this will actually resolve the user to
-      # the object as defined by the resolver.
-      user = request.arguments[:user].resolve
-    end
+  argument :user, UserLookup, required: true
+
+  def call
+    # This will return the plain set as a normal argument set would.
+    user_set = request.arguments[:user]
+
+    # Calling `resolve` on this will actually resolve the user to
+    # the object as defined by the resolver.
+    user = request.arguments[:user].resolve
   end
+
 end
 ```
 

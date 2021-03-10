@@ -27,12 +27,23 @@ describe Rapid::Authenticator do
       expect(auth.execute(environment)).to be_nil
     end
 
-    it 'should call the action providing the request & response' do
+    it 'should call the action if one is provided' do
       auth = Rapid::Authenticator.create('ExampleAuthenticator') do
-        action do |_req, res|
-          res.add_header 'x-executed', 123
+        action do
+          response.add_header 'x-executed', 123
         end
       end
+      endpoint = Rapid::Endpoint.create('ExampleEndpoint')
+      request = Rapid::Request.empty
+      response = Rapid::Response.new(request, endpoint)
+      environment = Rapid::RequestEnvironment.new(request, response)
+      auth.execute(environment)
+      expect(response.headers['x-executed']).to eq '123'
+    end
+
+    it 'calls the call method if no action is provided' do
+      auth = Rapid::Authenticator.create('ExampleAuthenticator')
+      auth.define_method(:call) { response.add_header 'x-executed', 123 }
       endpoint = Rapid::Endpoint.create('ExampleEndpoint')
       request = Rapid::Request.empty
       response = Rapid::Response.new(request, endpoint)

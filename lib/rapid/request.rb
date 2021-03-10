@@ -3,7 +3,6 @@
 require 'rack/request'
 require 'rapid/request_headers'
 require 'rapid/errors/invalid_json_error'
-require 'rapid/field_spec'
 
 module Rapid
   class Request < Rack::Request
@@ -17,7 +16,6 @@ module Rapid
     attr_accessor :namespace
     attr_accessor :route
     attr_accessor :api_path
-    attr_writer :field_spec
 
     def self.empty(options: {})
       new(options)
@@ -39,22 +37,6 @@ module Rapid
 
     def body?
       has_header?('rack.input')
-    end
-
-    def field_spec
-      return @field_spec if instance_variable_defined?('@field_spec')
-
-      @field_spec = begin
-        if json_body && string = json_body['fields']
-          FieldSpec.parse(string)
-        elsif body? && string = params['fields']
-          FieldSpec.parse(string)
-        elsif string = headers['x-field-spec']
-          FieldSpec.parse(string)
-        elsif @endpoint
-          @endpoint.definition.fields.spec
-        end
-      end
     end
 
     private

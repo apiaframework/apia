@@ -16,7 +16,8 @@ Endpoints are the main core of the framework and this is where the majority of t
 This is an example endpoint for reference purposes.
 
 ```ruby
-endpoint :update do
+class UpdateEndpoint < Rapid::Endpoint
+
   # Defines some details about this endpoint for documentation
   name 'Update user details'
   description 'Updates a user details with the new information'
@@ -41,10 +42,11 @@ endpoint :update do
   potential_error Errors::ValidationError
 
   # Defines the action that will run
-  action do
+  def call
     user = request.arguments[:user].resolve
     user.update!(request.arguments[:details].to_hash)
     response.add_field :user, user
   end
+
 end
 ```

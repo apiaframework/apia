@@ -30,9 +30,7 @@ module Rapid
           errors.add self, 'InvalidType', "The type must be one of #{TYPES.join(', ')} (was: #{@type.inspect})"
         end
 
-        if @action.nil?
-          errors.add self, 'MissingAction', 'An action must be defined for authenticators'
-        elsif !@action.is_a?(Proc)
+        if @action && !@action.is_a?(Proc)
           errors.add self, 'InvalidAction', 'The action provided must be a Proc'
         end
 

@@ -20,7 +20,7 @@ Adding `paginate` does a few things by default:
 You will then be responsible for adding fields for the field and the `pagination` field. But wait... there's a helper for this that will work with Kaminari.
 
 ```ruby
-action do |request, response|
+def call
   # This will handle everything needed to add the appropriate fields assuming that the scope
   # responds to `to_a`, `total_pages`, `current_page`, as well as `page()` and `per()`. This
   # is the same as Kaminari provides out of the box so this will work witht hat.

@@ -13,7 +13,7 @@ module CoreAPI
       field :given_token, type: :string
     end
 
-    action do |request, _response|
+    def call
       given_token = request.headers['authorization']&.sub(/\ABearer /, '')
       case given_token
       when 'example'
@@ -22,6 +22,16 @@ module CoreAPI
         raise_error 'CoreAPI/MainAuthenticator/InvalidToken', given_token: given_token.to_s
       end
     end
+
+    # action do |request, _response|
+    #   # given_token = request.headers['authorization']&.sub(/\ABearer /, '')
+    #   # case given_token
+    #   # when 'example'
+    #   #   request.identity = { name: 'Example User', id: 1234 }
+    #   # else
+    #   #   raise_error 'CoreAPI/MainAuthenticator/InvalidToken', given_token: given_token.to_s
+    #   # end
+    # end
 
   end
 end

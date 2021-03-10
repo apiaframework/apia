@@ -5,11 +5,13 @@ require 'rapid/defineable'
 require 'rapid/definitions/endpoint'
 require 'rapid/request_environment'
 require 'rapid/errors/scope_not_granted_error'
+require 'rapid/callable_with_environment'
 
 module Rapid
   class Endpoint
 
     extend Defineable
+    include CallableWithEnvironment
 
     class << self
 
@@ -60,7 +62,13 @@ module Rapid
           # and b) the argument conditions may need to know the identity.
           request.arguments = definition.argument_set.create_from_request(request)
 
-          environment.call(&definition.action)
+          # Call the action for the endpoint
+          if definition.action.nil?
+            endpoint_instance = new(environment)
+            endpoint_instance.call
+          else
+            environment.call(&definition.action)
+          end
 
           # We're going to call this here because we want to cache the actual values of
           # the output within the catch_errors block.
@@ -83,6 +91,21 @@ module Rapid
           response.status = e.http_status
           response.headers['x-api-schema'] = 'json-error'
         end
+      end
+
+      # Should a given field be included
+      #
+      def include_field?(*args)
+        definition.fields.spec.include_field?(*args)
+      end
+
+      # Allow an endpoint to be executed with a mocked request.
+      #
+      def test
+        request = Rapid::MockRequest.empty
+        request.endpoint = self
+        yield request if block_given?
+        execute(request)
       end
 
     end

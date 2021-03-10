@@ -41,7 +41,7 @@ module Rapid
         next unless field.include?(source, request)
 
         field_path = path + [field]
-        next if request&.field_spec && !request.field_spec.include_field?(field_path)
+        next if request&.endpoint && !request&.endpoint&.include_field?(field_path)
 
         value = field.value(source, request: request, path: field_path)
         next if value == :skip

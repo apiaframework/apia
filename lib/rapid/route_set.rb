@@ -8,12 +8,14 @@ module Rapid
     attr_reader :map
     attr_reader :routes
     attr_reader :controllers
+    attr_reader :endpoints
     attr_reader :groups
 
     def initialize
       @map = {}
       @routes = []
       @controllers = []
+      @endpoints = []
       @groups = []
     end
 
@@ -27,7 +29,13 @@ module Rapid
     # @return [Moonstone::Route]
     def add(route)
       @routes << route
-      @controllers << route.controller unless @controllers.include?(route.controller)
+      if route.controller && !@controllers.include?(route.controller)
+        @controllers << route.controller
+      end
+
+      if route.endpoint && !@controllers.include?(route.endpoint)
+        @endpoints << route.endpoint
+      end
 
       parts = self.class.split_path(route.path).map { |p| p =~ /\A:/ ? '?' : p }
       parts.size.times do |i|
