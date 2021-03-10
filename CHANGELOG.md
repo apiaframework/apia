@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Rapid.
 
+## 2.0.0-alpha.1
+
+### Bug Fixes
+
+- ensure field_spec is required ([173f30](https://github.com/krystal/rapid/commit/173f30857ffa870bfbc7bd610d3bc7ec84e7bfd7))
+
 ## 2.0.0-alpha.0
 
 ### Features
