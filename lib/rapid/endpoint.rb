@@ -63,12 +63,8 @@ module Rapid
           request.arguments = definition.argument_set.create_from_request(request)
 
           # Call the action for the endpoint
-          if definition.action.nil?
-            endpoint_instance = new(environment)
-            endpoint_instance.call
-          else
-            environment.call(&definition.action)
-          end
+          endpoint_instance = new(environment)
+          endpoint_instance.call_with_error_handling
 
           # We're going to call this here because we want to cache the actual values of
           # the output within the catch_errors block.

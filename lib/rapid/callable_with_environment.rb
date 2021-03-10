@@ -3,13 +3,25 @@
 module Rapid
   module CallableWithEnvironment
 
-    def initialize(environment)
+    def initialize(environment, action_name: :action)
       @environment = environment
+      @action_name = action_name
     end
 
     def call
-      # Override me
+      action = self.class.definition.send(@action_name)
+      return if action.nil?
+
+      instance_exec(@environment.request, @environment.response, &action)
     end
+
+    # rubcop:disable Lint/RescueException
+    def call_with_error_handling
+      call
+    rescue Exception => e
+      raise_exception(e)
+    end
+    # rubcop:enable Lint/RescueException
 
     def respond_to_missing?(name, _include_private = false)
       @environment.respond_to?(name) || super

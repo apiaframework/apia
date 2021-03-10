@@ -25,7 +25,7 @@ module Rapid
         field :namespace, type: :string
         field :api, type: :string
         field :objects, type: [ObjectSchemaPolymorph]
-        action do |request, response|
+        action do
           response.add_field :schema_version, 1
           response.add_field :objects, request.api.objects.map(&:definition).select(&:schema?)
           response.add_field :api, request.api.definition.id

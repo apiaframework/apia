@@ -195,11 +195,27 @@ describe Rapid::Endpoint do
       expect(response.body[:hello]).to eq 'world'
     end
 
+    it 'should be able to raise errors from the call method' do
+      endpoint = Rapid::Endpoint.create('Test') do
+        potential_error 'ZeroDivisionError' do
+          code :zero_div_error
+          http_status 409
+          catch_exception ZeroDivisionError
+        end
+      end
+      endpoint.define_method(:call) do
+        1 / 0
+      end
+
+      response = endpoint.test
+      expect(response.body).to eq({ error: { code: :zero_div_error, description: nil, detail: {} } })
+    end
+
     it 'should run the endpoint action if one is defined' do
       request = Rapid::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"Phillip"}'))
       request.endpoint = Rapid::Endpoint.create('Test') do
-        action do |_req, res|
-          res.body = { hello: 'world' }
+        action do
+          response.body = { hello: 'world' }
         end
       end
       response = request.endpoint.execute(request)

@@ -245,7 +245,7 @@ describe Rapid::Rack do
     it 'should not validate the whole API when not in development' do
       controller = Rapid::Controller.create('Controller') do
         endpoint :test do
-          action { |_req, res| res.add_header 'x-demo', 'test' }
+          action { response.add_header 'x-demo', 'test' }
         end
       end
       api = Rapid::API.create('MyAPI') do

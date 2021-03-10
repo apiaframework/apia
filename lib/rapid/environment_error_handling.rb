@@ -36,6 +36,15 @@ module Rapid
       nil
     end
 
+    def raise_exception(exception)
+      error = error_for_exception(exception.class)
+      raise exception if error.nil?
+
+      fields = {}
+      error[:block]&.call(fields, exception)
+      raise error[:error].exception(fields)
+    end
+
     private
 
     def find_error_by_name(error_name)
@@ -59,15 +68,6 @@ module Rapid
       source.definition.potential_errors.find do |error|
         error.definition.id == name
       end
-    end
-
-    def raise_exception(exception)
-      error = error_for_exception(exception.class)
-      raise exception if error.nil?
-
-      fields = {}
-      error[:block]&.call(fields, exception)
-      raise error[:error].exception(fields)
     end
 
   end

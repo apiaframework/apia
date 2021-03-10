@@ -36,12 +36,7 @@ module Rapid
       # @param environment [Rapid::RequestEnvironment]
       # @return [void]
       def execute(environment)
-        if definition.action.nil?
-          auth_instance = new(environment)
-          return auth_instance.call
-        end
-
-        environment.call(&definition.action)
+        new(environment).call
       end
 
       # If any of the given scopes are valid
