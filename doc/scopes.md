@@ -7,7 +7,7 @@ Scopes are used to restrict access to endpoints. You can, optionally, assign sco
 You should add a list of supported scopes to each endpoint. If an endpoint doesn't specify any scopes it will always be permitted. If you specify multiple scopes, possession of any of scopes will allow the endpoint to be executed.
 
 ```ruby
-endpoint :list do
+class UpdateEndpoint < Rapid::Endpoint
   name 'List all widgets'
   scopes 'widgets', 'widgets:read'
   # ... rest of the method

@@ -34,27 +34,34 @@ Errors can be raised by calling `raise_error` and providing either the name of t
 This example shows how to raise a class-defined error. You should also provide any fields that are required for the error as shown below with `errors`.
 
 ```ruby
-endpoint :create do
+class ExampleEndpoint < Rapid::Endpoint
+
   potential_error Errors::ValidationError
-  action do
+
+  def call
+    # ...
     unless user.save
       raise_error Errors::ValidationError, errors: user.errors.full_messages
     end
   end
+
 end
 ```
 
 This example shows how to raise an inline error.
 
 ```ruby
-endpoint :example do
+class ExampleEndpoint < Rapid::Endpoint
+
   potential_error 'NotPermitted' do
     code :not_permitted
     http_status 406
   end
-  action do
+
+  def call
     raise_error 'NotPermitted'
   end
+
 end
 ```
 
@@ -64,6 +71,7 @@ If any exception occurs during your application lifecycle, it will be returned t
 
 ```ruby
 class ValidationError < Rapid::Error
+
   # We can define things as normal for the error...
   code :validation_error
   http_status 416
@@ -83,15 +91,20 @@ end
 This will only be caught if the `ValidationError` error has been specified as a potential error for the endpoint where the exception is raised. So, you need to make sure to specify these if you want exceptions to be caught automatically. An endpoint might look this like:
 
 ```ruby
-endpoint :create do
+class ExampleEndpoint < Rapid::Endpoint
+
   argument :user_id, :integer, required: true
   argument :properties, ArgumentSets::UserProperties, required: true
+
   field :user, Objects::User
+
   potential_error ValidationError
-  action do
+
+  def call
     user = User.find(request.arguments[:user_id])
     user.update!(request.arguments[:properties]) # Might raise the error here but will be caught
     response.add_field :user, user
   end
+
 end
 ```

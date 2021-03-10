@@ -4,7 +4,7 @@ This document outlines the conventions used for consuming APIs built with Rapid.
 
 ## Requests
 
-The address of each API endpoint is made up from two parts - a controller name and an endpoint name. For example, a list of users would have a controller name of `users` and an endpoint name of `list`. This is sent to the API in the URL of the request. For example:
+Consumers can make requests to any resource provided by the API (and listed as a route).
 
 ```
 /api/v1/users/list
