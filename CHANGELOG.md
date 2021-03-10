@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Rapid.
 
+## 2.0.0-alpha.0
+
+### Features
+
+- add `call` to endpoint & authenticators ([9aa0b5](https://github.com/krystal/rapid/commit/9aa0b55ff9b470eeb7a0bd4d80b58f343ce123b1))
+
 ## 1.2.3
 
 ### Bug Fixes
