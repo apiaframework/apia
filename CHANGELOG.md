@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Rapid.
 
+## 2.0.0-alpha.2
+
+### Bug Fixes
+
+- fixes errors in endpoints, improve call consistency ([f95bad](https://github.com/krystal/rapid/commit/f95bad7e34ec01b809adaaaa985ebbe1df82b1b4))
+
 ## 2.0.0-alpha.1
 
 ### Bug Fixes
