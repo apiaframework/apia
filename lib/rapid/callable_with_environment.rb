@@ -15,13 +15,13 @@ module Rapid
       instance_exec(@environment.request, @environment.response, &action)
     end
 
-    # rubcop:disable Lint/RescueException
+    # rubocop:disable Lint/RescueException
     def call_with_error_handling
       call
     rescue Exception => e
       raise_exception(e)
     end
-    # rubcop:enable Lint/RescueException
+    # rubocop:enable Lint/RescueException
 
     def respond_to_missing?(name, _include_private = false)
       @environment.respond_to?(name) || super
