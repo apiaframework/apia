@@ -128,6 +128,16 @@ describe Rapid::Endpoint do
         expect(request.arguments).to be_a Rapid::ArgumentSet
         expect(request.arguments['name']).to eq 'Phillip'
       end
+
+      it 'should create an argument set from standard HTTP query string parameters' do
+        request = Rapid::Request.new(Rack::MockRequest.env_for('/?name=Adam'))
+        request.endpoint = Rapid::Endpoint.create('Endpoint') do
+          argument :name, type: :string
+        end
+        request.endpoint.execute(request)
+        expect(request.arguments).to be_a Rapid::ArgumentSet
+        expect(request.arguments['name']).to eq 'Adam'
+      end
     end
 
     it 'should catch runtime errors in the authenticator' do
