@@ -4,7 +4,7 @@ require 'core_api/objects/day'
 
 module CoreAPI
   module Objects
-    class Time < Rapid::Object
+    class Time < Apia::Object
 
       description 'Represents a time'
 

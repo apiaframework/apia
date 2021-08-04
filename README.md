@@ -1,6 +1,6 @@
-# Rapid 🚅
+![Welcome](https://share.adam.ac/21/Artboard-2MDkIo4op8Zmv5h278.png)
 
-Rapid is an API framework for building a self-documenting HTTP API in any Ruby application (including Rails).
+Apia is an API framework for building a self-documenting HTTP API in any Ruby application (including Rails).
 
 ## Getting started
 
@@ -8,7 +8,7 @@ To begin, you just need to install the gem into the application.
 
 ```ruby
 source 'https://rubygems.pkg.github.com/krystal' do
-  gem 'rapid', '~> 1.1'
+  gem 'apia', '~> 1.1'
 end
 ```
 
@@ -16,11 +16,11 @@ Once installed, you need to decide where to store your API (or APIs). If you are
 
 ### Creating your API
 
-To begin, you need to create a class which is the top-level of your API. This should be a class that inherits from `Rapid::API`. This is the main entry point to your application. All configuration for your API will start here.
+To begin, you need to create a class which is the top-level of your API. This should be a class that inherits from `Apia::API`. This is the main entry point to your application. All configuration for your API will start here.
 
 ```ruby
 module CoreAPI
-  class Base < Rapid::API
+  class Base < Apia::API
 
     name 'Core API'
     description 'Some description to describe this API which will be displayed in the schema & documentation'
@@ -33,7 +33,7 @@ At the most basic, you will define a name and description for your API. We'll be
 
 ### Routing requests to your API
 
-Rapid provides a Rack middleware that will handle all requests for your API and pass any non-matching requesst through the stack to your application. You can define this in your `config.ru` or, if you're using a Rails application, it can go into `config/application.rb`.
+Apia provides a Rack middleware that will handle all requests for your API and pass any non-matching requesst through the stack to your application. You can define this in your `config.ru` or, if you're using a Rails application, it can go into `config/application.rb`.
 
 ```ruby
 module MyApp
@@ -41,7 +41,7 @@ module MyApp
 
     # ... other configuration for your application will also be in this file.
 
-    config.middleware.use Rapid::Rack, 'CoreAPI::Base', '/api/core/v1', development: Rails.env.development?
+    config.middleware.use Apia::Rack, 'CoreAPI::Base', '/api/core/v1', development: Rails.env.development?
 
   end
 end
@@ -56,7 +56,7 @@ An endpoint is an action that can be invoked by your consumers. It might return 
 ```ruby
 module CoreAPI
   module Endpints
-    class ProductListEndpoint < Rapid::Endpoint
+    class ProductListEndpoint < Apia::Endpoint
 
       name 'List products'
       description 'Returns a list of all product names in our catalogue'
@@ -85,7 +85,7 @@ This is a very simple endpoint. Walking through each section...
 
 #### A note about types
 
-When you define a field (or an argument) you must define a `type`. A type is what type of object that the consumer can expect to receive (or is expected to send in the case of arguments). A type can be provided as a symbol to reference a known scaler, or a class that inherits from `Rapid::Scalar` (for scalars), `Rapid::Object` (for objects), `Rapid::Enum` (for enums) or `Rapid::Polymorph` (for polymorphs).
+When you define a field (or an argument) you must define a `type`. A type is what type of object that the consumer can expect to receive (or is expected to send in the case of arguments). A type can be provided as a symbol to reference a known scaler, or a class that inherits from `Apia::Scalar` (for scalars), `Apia::Object` (for objects), `Apia::Enum` (for enums) or `Apia::Polymorph` (for polymorphs).
 
 The following scalars are built-in:
 
@@ -103,7 +103,7 @@ Once you have added your controller, you need to add it to your API. Open up `ap
 
 ```ruby
 module CoreAPI
-  class Base < Rapid::API
+  class Base < Apia::API
 
     routes do
       get 'products', endpoint: Endpoints::ListProductsEndpoint
@@ -119,12 +119,12 @@ We can now test that works by making a GET request to `products`.
 
 ### Returning objects
 
-In the product example above, we returned an array of strings. In reality, we'll need to be able to return objects containing multiple properties. To do this, you need to create a `Rapid::Object` class which defines the fields available on each object. This is an example object for our ficticious product class.
+In the product example above, we returned an array of strings. In reality, we'll need to be able to return objects containing multiple properties. To do this, you need to create a `Apia::Object` class which defines the fields available on each object. This is an example object for our ficticious product class.
 
 ```ruby
 module CoreAPI
   module Objects
-    class Product < Rapid::Object
+    class Product < Apia::Object
 
       # Define a couple of string fields that must always be required.
       field :id, :string
@@ -139,7 +139,7 @@ module CoreAPI
       # You can reference other objects too
       field :owner, Objects::User
 
-      # By default, Rapid will try to find a value for a field by calling
+      # By default, Apia will try to find a value for a field by calling
       # a method named the same as field on the source object (or looking
       # for a string or symbol by the same name in a Hash object). If
       # needed, you can override this behaviour by providing a backend.
@@ -152,12 +152,12 @@ module CoreAPI
 end
 ```
 
-By default, Rapid will try to find a value for your fields by calling a method named the same as the field
+By default, Apia will try to find a value for your fields by calling a method named the same as the field
 
 Once you have created your object class, you will need to update your endpoint to reference the object.
 
 ```ruby
-class ProductListEndpoint < Rapid::Endpoint
+class ProductListEndpoint < Apia::Endpoint
 
   # ...
 

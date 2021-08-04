@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module CoreAPI
-  class MainAuthenticator < Rapid::Authenticator
+  class MainAuthenticator < Apia::Authenticator
 
     type :bearer
 

@@ -11,22 +11,22 @@
 # Include: **/*.gemspec
 Gemspec/RequiredRubyVersion:
   Exclude:
-    - "rapid.gemspec"
+    - "apia.gemspec"
 
 # Offense count: 11
 Lint/MissingSuper:
   Exclude:
-    - "lib/rapid/definitions/argument.rb"
-    - "lib/rapid/definitions/field.rb"
-    - "lib/rapid/errors/error_exception_error.rb"
-    - "lib/rapid/errors/invalid_argument_error.rb"
-    - "lib/rapid/errors/invalid_enum_option_error.rb"
-    - "lib/rapid/errors/invalid_polymorph_value_error.rb"
-    - "lib/rapid/errors/invalid_scalar_value_error.rb"
-    - "lib/rapid/errors/manifest_error.rb"
-    - "lib/rapid/errors/missing_argument_error.rb"
-    - "lib/rapid/errors/null_field_value_error.rb"
-    - "lib/rapid/rack_error.rb"
+    - "lib/apia/definitions/argument.rb"
+    - "lib/apia/definitions/field.rb"
+    - "lib/apia/errors/error_exception_error.rb"
+    - "lib/apia/errors/invalid_argument_error.rb"
+    - "lib/apia/errors/invalid_enum_option_error.rb"
+    - "lib/apia/errors/invalid_polymorph_value_error.rb"
+    - "lib/apia/errors/invalid_scalar_value_error.rb"
+    - "lib/apia/errors/manifest_error.rb"
+    - "lib/apia/errors/missing_argument_error.rb"
+    - "lib/apia/errors/null_field_value_error.rb"
+    - "lib/apia/rack_error.rb"
 
 # Offense count: 14
 # Configuration parameters: IgnoredMethods.
@@ -52,12 +52,12 @@ Metrics/MethodLength:
 # Offense count: 1
 Style/OptionalBooleanParameter:
   Exclude:
-    - "lib/rapid/defineable.rb"
+    - "lib/apia/defineable.rb"
 
 # Offense count: 3
 # Cop supports --auto-correct.
 Style/StringConcatenation:
   Exclude:
-    - "lib/rapid/dsls/controller.rb"
-    - "lib/rapid/environment_error_handling.rb"
-    - "lib/rapid/rack.rb"
+    - "lib/apia/dsls/controller.rb"
+    - "lib/apia/environment_error_handling.rb"
+    - "lib/apia/rack.rb"

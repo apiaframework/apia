@@ -5,22 +5,22 @@ shared_examples 'has fields dsl' do
     it 'should add a field' do
       dsl.field :name, type: :string
 
-      expect(definition.fields[:name]).to be_a Rapid::Definitions::Field
-      expect(definition.fields[:name].type.klass).to eq Rapid::Scalars::String
+      expect(definition.fields[:name]).to be_a Apia::Definitions::Field
+      expect(definition.fields[:name].type.klass).to eq Apia::Scalars::String
       expect(definition.fields[:name].array?).to be false
       expect(definition.fields[:name].null?).to eq false
     end
 
     it 'should be able to define the type as the second argument' do
       dsl.field :name, :string
-      expect(definition.fields[:name]).to be_a Rapid::Definitions::Field
-      expect(definition.fields[:name].type.klass).to eq Rapid::Scalars::String
+      expect(definition.fields[:name]).to be_a Apia::Definitions::Field
+      expect(definition.fields[:name].type.klass).to eq Apia::Scalars::String
       expect(definition.fields[:name].array?).to be false
     end
 
     it 'should be able to add a field with an array' do
       dsl.field :names, type: [:string]
-      expect(definition.fields[:names].type.klass).to eq Rapid::Scalars::String
+      expect(definition.fields[:names].type.klass).to eq Apia::Scalars::String
       expect(definition.fields[:names].array?).to be true
     end
 
@@ -45,7 +45,7 @@ shared_examples 'has fields dsl' do
         condition { 1234 }
         null true
       end
-      expect(definition.fields[:name].type.klass).to eq Rapid::Scalars::String
+      expect(definition.fields[:name].type.klass).to eq Apia::Scalars::String
       expect(definition.fields[:name].null?).to eq true
       expect(definition.fields[:name].condition.call).to eq 1234
     end

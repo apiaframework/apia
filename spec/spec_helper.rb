@@ -2,7 +2,7 @@
 
 SPEC_ROOT = __dir__
 $LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
-require 'rapid'
+require 'apia'
 
 Dir[File.join(SPEC_ROOT, 'specs', 'support', '**', '*.rb')].sort.each { |path| require path }
 

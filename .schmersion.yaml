@@ -14,8 +14,8 @@ exports:
   - name: CHANGELOG.md
     formatter: markdown
     options:
-      title: Rapid CHANGELOG
-      description: This file contains all the latest changes and updates to Rapid.
+      title: Apia CHANGELOG
+      description: This file contains all the latest changes and updates to Apia.
       sections:
         - title: Features
           types: [feat]

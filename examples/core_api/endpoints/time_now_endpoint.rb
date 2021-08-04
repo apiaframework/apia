@@ -2,7 +2,7 @@
 
 module CoreAPI
   module Endpoints
-    class TimeNowEndpoint < Rapid::Endpoint
+    class TimeNowEndpoint < Apia::Endpoint
 
       description 'Returns the current time'
       field :time, type: Objects::Time, include: 'unix,day_of_week'

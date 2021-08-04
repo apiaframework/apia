@@ -7,7 +7,7 @@ Scopes are used to restrict access to endpoints. You can, optionally, assign sco
 You should add a list of supported scopes to each endpoint. If an endpoint doesn't specify any scopes it will always be permitted. If you specify multiple scopes, possession of any of scopes will allow the endpoint to be executed.
 
 ```ruby
-class UpdateEndpoint < Rapid::Endpoint
+class UpdateEndpoint < Apia::Endpoint
   name 'List all widgets'
   scopes 'widgets', 'widgets:read'
   # ... rest of the method
@@ -20,7 +20,7 @@ The authenticator is responsible for determining whether or not an authenticated
 
 ```ruby
 module CoreAPI
-  class Authenticator < Rapid::Authenticator
+  class Authenticator < Apia::Authenticator
 
     # ...
 
@@ -38,7 +38,7 @@ The schema will contain a list of all scopes that are available within the API. 
 
 ```ruby
 module CoreAPI
-  class Base < Rapid::API
+  class Base < Apia::API
 
     # ...
 

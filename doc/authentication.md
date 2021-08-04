@@ -1,6 +1,6 @@
 # Authentication
 
-Rapid provides a framework for handling authentication through _Authenticators_. An authenticator is similar in so much as it allows you to define a block of code to excute before each endpoint.
+Apia provides a framework for handling authentication through _Authenticators_. An authenticator is similar in so much as it allows you to define a block of code to excute before each endpoint.
 
 Authenticators can apply to the whole API, to all endpoints in a controller or just to a specific endpoint.
 
@@ -10,7 +10,7 @@ Begin by creating your authenticator. Below shows a simple example:
 
 ```ruby
 module CoreAPI
-  class Authenticator < Rapid::Authenticator
+  class Authenticator < Apia::Authenticator
 
     name 'Main authenticator'
     description 'Allows authentication using an API token provided in an Authorization header'
@@ -41,7 +41,7 @@ end
 Let's take a look through this line by line:
 
 - Firstly, we define the name & description for the authenticator. This is used for documentation.
-- Next, we choose the type of authenticator. Rapid only currently supports `:bearer`. This is only used for documentation purposes as well.
+- Next, we choose the type of authenticator. Apia only currently supports `:bearer`. This is only used for documentation purposes as well.
 - Then, we define a potential error that this authenticator might raise. In this case, the API token provided may be invalid and we'll raise that error.
 - Finally, we define the `call` method which will be invoked when the authenticator is used. This is responsible for setting the `request.identity` property or raising an error if authentication has failed. You don't **have** to set a `request.identity` if you don't wish (anonymous access?) but unless you raise an error in here the endpoint execution will continue.
 
@@ -51,7 +51,7 @@ You most likely will want to make this authenticator apply to everything in the 
 
 ```ruby
 module CoreAPI
-  class Base < Rapid::API
+  class Base < Apia::API
 
     authenticator Authenticator
 

@@ -7,7 +7,7 @@ Arguments are the name given to any input that is being provided by the consumer
 At the most basic an argument will likely be a scalar value (a string, integer, boolean etc...) and will be defined as so on an endpoint:
 
 ```ruby
-class MyEndpoint < Rapid::Endpoint
+class MyEndpoint < Apia::Endpoint
 
   argument :name, :string, required: true
   argument :age, :integer, required: true
@@ -31,7 +31,7 @@ The consumer will provide arguments in one of two ways usually - they'll be prov
 Arguments are available on the `request` object within the `action` block of an action. For example:
 
 ```ruby
-class MyEndpoint < Rapid::Endpoint
+class MyEndpoint < Apia::Endpoint
 
   argument :name, :string, required: true
 
@@ -47,7 +47,7 @@ end
 If you wish to receive an array of items from a consumer, you can specify that an argument is an array rather than a flat object.
 
 ```ruby
-class MyEndpoint < Rapid::Endpoint
+class MyEndpoint < Apia::Endpoint
 
   argument :names, [:string]
 
@@ -63,7 +63,7 @@ end
 Argument sets provide you with an option to define a set of multiple arguments that should be provided. It's probably easiest to explain in code...
 
 ```ruby
-class UserProperties < Rapid::ArgumentSet
+class UserProperties < Apia::ArgumentSet
 
   argument :name, :string, required: true
   argument :date_of_birth, :date
@@ -73,7 +73,7 @@ class UserProperties < Rapid::ArgumentSet
 
 end
 
-class MyEndpoint < Rapid::Endpoint
+class MyEndpoint < Apia::Endpoint
 
   argument :user, UserProperties, required: true
 
@@ -90,10 +90,10 @@ In this situation, you will specify that the `user` argument must be an object c
 
 ## Lookup argument sets
 
-Rapid implements a standard method for allowing objects to be looked up from your backend database. These are called lookup argument sets. Also, demonstrated below with some code.
+Apia implements a standard method for allowing objects to be looked up from your backend database. These are called lookup argument sets. Also, demonstrated below with some code.
 
 ```ruby
-class UserLookup < Rapid::LookupArgumentSet
+class UserLookup < Apia::LookupArgumentSet
 
   # Define the different fields that users can be looked up by
   argument :id, :integer
@@ -134,7 +134,7 @@ class UserLookup < Rapid::LookupArgumentSet
 
 end
 
-class InfoEndpoint < Rapid::Endpoint
+class InfoEndpoint < Apia::Endpoint
 
   argument :user, UserLookup, required: true
 
