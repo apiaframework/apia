@@ -43,6 +43,14 @@ jobs:
 
       - name: Run tests
         run: bundle exec rake test
+        env:
+          COVERAGE: "1"
+
+      - name: Code Climate
+        if: matrix.ruby_version == '3.0'
+        uses: paambaati/codeclimate-action@v2.7.5
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
   release:
     runs-on: ubuntu-latest
