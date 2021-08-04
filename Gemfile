@@ -13,3 +13,5 @@ gem 'solargraph'
 
 gem 'rake'
 gem 'rubocop', '0.91.1'
+gem 'simplecov', '~> 0.21'
+gem 'simplecov-console', '~> 0.9'
