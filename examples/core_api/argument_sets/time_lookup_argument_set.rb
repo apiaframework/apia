@@ -2,7 +2,7 @@
 
 module CoreAPI
   module ArgumentSets
-    class TimeLookupArgumentSet < Rapid::LookupArgumentSet
+    class TimeLookupArgumentSet < Apia::LookupArgumentSet
 
       argument :unix, type: :string
       argument :string, type: :string

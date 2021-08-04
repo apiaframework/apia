@@ -6,7 +6,7 @@ require 'core_api/endpoints/time_now_endpoint'
 
 module CoreAPI
   module Controllers
-    class TimeController < Rapid::Controller
+    class TimeController < Apia::Controller
 
       name 'Time API'
       description 'Returns the current time in varying ways'

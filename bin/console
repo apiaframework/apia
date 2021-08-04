@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-require 'rapid'
+require 'apia'
 
 example_root = File.expand_path('../examples', __dir__)
 $LOAD_PATH.unshift(example_root)

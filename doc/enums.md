@@ -5,7 +5,7 @@ Enums allow you to define a list options that might be returned for a field or p
 ## Defining enums
 
 ```ruby
-class ExampleEnum < Rapid::Enum
+class ExampleEnum < Apia::Enum
 
   name 'Example enum'
   description 'Something to describe what this enum actually is'

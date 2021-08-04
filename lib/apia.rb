@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+require 'apia/api'
+require 'apia/argument_set'
+require 'apia/authenticator'
+require 'apia/controller'
+require 'apia/endpoint'
+require 'apia/enum'
+require 'apia/error'
+require 'apia/lookup_argument_set'
+require 'apia/scalar'
+require 'apia/object'
+require 'apia/polymorph'
+
+require 'apia/scalars/string'
+require 'apia/scalars/integer'
+require 'apia/scalars/boolean'
+require 'apia/scalars/date'
+require 'apia/scalars/unix_time'
+require 'apia/scalars/decimal'
+require 'apia/scalars/base64'

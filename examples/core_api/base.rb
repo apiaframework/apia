@@ -4,7 +4,7 @@ require 'core_api/main_authenticator'
 require 'core_api/controllers/time_controller'
 
 module CoreAPI
-  class Base < Rapid::API
+  class Base < Apia::API
 
     authenticator MainAuthenticator
 

@@ -2,7 +2,7 @@
 
 module CoreAPI
   module Objects
-    class Day < Rapid::Enum
+    class Day < Apia::Enum
 
       value 'Sunday'
       value 'Monday'

@@ -5,7 +5,7 @@ Field specs allow the API consumer to vary the data that will be returned to the
 Let's say we have the following object:
 
 ```ruby
-class UserObject < Rapid::Object
+class UserObject < Apia::Object
 
   field :id, :integer
   field :name, :string
@@ -21,7 +21,7 @@ If this object is defined as the type for a field, by default, all the fields de
 Field specs allow endpoints to determine exactly which fields they want to return from an object. For example, if you don't want to include everything or you want to exclude certain attributes, you can do so. For example, the user list should probably not include ALL user data within it by default. To do this, we can provide an `include` option for the field with the field spec options for that field.
 
 ```ruby
-class ExampleEndpoint < Rapid::Endpoint
+class ExampleEndpoint < Apia::Endpoint
 
   field :users, [UserObject], include: 'id,name'
 

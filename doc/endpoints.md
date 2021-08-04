@@ -16,7 +16,7 @@ Endpoints are the main core of the framework and this is where the majority of t
 This is an example endpoint for reference purposes.
 
 ```ruby
-class UpdateEndpoint < Rapid::Endpoint
+class UpdateEndpoint < Apia::Endpoint
 
   # Defines some details about this endpoint for documentation
   name 'Update user details'
