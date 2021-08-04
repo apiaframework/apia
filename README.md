@@ -1,5 +1,7 @@
 ![Welcome](https://share.adam.ac/21/Artboard-2MDkIo4op8Zmv5h278.png)
 
+[![Gem Version](https://badge.fury.io/rb/apia.svg)](https://badge.fury.io/rb/apia) [![CI](https://github.com/krystal/apia/actions/workflows/ci.yml/badge.svg)](https://github.com/krystal/apia/actions/workflows/ci.yml)
+
 Apia is an API framework for building a self-documenting HTTP API in any Ruby application (including Rails).
 
 ## Getting started
@@ -7,9 +9,7 @@ Apia is an API framework for building a self-documenting HTTP API in any Ruby ap
 To begin, you just need to install the gem into the application.
 
 ```ruby
-source 'https://rubygems.pkg.github.com/krystal' do
-  gem 'apia', '~> 1.1'
-end
+gem 'apia', '~> 3.0'
 ```
 
 Once installed, you need to decide where to store your API (or APIs). If you are working with a Rails application, it is recommended to put your API into an `app/apis` directory. Within this, you can create a directory for each API you wish to create (or you can put each API in different locations). For this example, we'll create an API called `CoreAPI` which will live in `app/apis/core_api`.
