@@ -2,6 +2,8 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## 3.0.0
+
 ## 2.0.0
 
 ## 2.0.0-alpha.3
