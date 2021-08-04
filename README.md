@@ -1,6 +1,27 @@
 ![Welcome](https://share.adam.ac/21/Artboard-2MDkIo4op8Zmv5h278.png)
 
-[![Gem Version](https://badge.fury.io/rb/apia.svg)](https://badge.fury.io/rb/apia) [![CI](https://github.com/krystal/apia/actions/workflows/ci.yml/badge.svg)](https://github.com/krystal/apia/actions/workflows/ci.yml)
+<p align="center">
+  <a href="https://rubygems.org/gems/apia">
+    <img src="https://img.shields.io/gem/v/apia.svg?label=rubygems&logo=rubygems&color=%23E9573F" alt="RubyGems">
+  </a>
+  <a href="https://github.com/krystal/apia/actions">
+    <img src="https://img.shields.io/github/workflow/status/krystal/apia/CI.svg?logo=github" alt="Actions Status">
+  </a>
+  <a href="https://github.com/krystal/apia/commits/main">
+    <img src="https://img.shields.io/github/last-commit/krystal/apia.svg?style=flat&logo=github&logoColor=white"
+alt="GitHub last commit">
+  </a>
+  <a href="https://github.com/krystal/apia/issues">
+    <img src="https://img.shields.io/github/issues-raw/krystal/apia.svg?style=flat&logo=github&logoColor=white"
+alt="GitHub issues">
+  </a>
+  <a href="https://github.com/krystal/apia/pulls">
+    <img src="https://img.shields.io/github/issues-pr-raw/krystal/apia.svg?style=flat&logo=github&logoColor=white" alt="GitHub pull requests">
+  </a>
+  <a href="https://github.com/krystal/apia/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/krystal/apia.svg?style=flat" alt="License Status">
+  </a>
+</p>
 
 Apia is an API framework for building a self-documenting HTTP API in any Ruby application (including Rails).
 
