@@ -1,4 +1,4 @@
-# Apia 🚅
+![Welcome](https://share.adam.ac/21/Artboard-2MDkIo4op8Zmv5h278.png)
 
 Apia is an API framework for building a self-documenting HTTP API in any Ruby application (including Rails).
 
