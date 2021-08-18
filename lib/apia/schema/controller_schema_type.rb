@@ -18,8 +18,10 @@ module Apia
       end
       field :endpoints, type: [ControllerEndpointSchemaType] do
         backend do |c|
-          c.endpoints.map do |key, endpoint|
-            {
+          c.endpoints.each_with_object([]) do |(key, endpoint), array|
+            next unless endpoint.definition.schema?
+
+            array << {
               name: key.to_s,
               endpoint: endpoint.definition.id
             }

@@ -10,10 +10,15 @@ module Apia
 
       field :routes, [RouteSchemaType] do
         backend do |o|
-          o.routes.select { |r| r.endpoint&.definition&.schema? }
+          o.routes.select { |r| r.group&.schema? && r.endpoint&.definition&.schema? }
         end
       end
-      field :groups, [RouteGroupSchemaType]
+
+      field :groups, [RouteGroupSchemaType] do
+        backend do |o|
+          o.groups.select { |g| g.schema? }
+        end
+      end
 
     end
   end

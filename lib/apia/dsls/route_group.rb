@@ -34,6 +34,10 @@ module Apia
         @group.description = description
       end
 
+      def no_schema
+        @group.schema = false
+      end
+
       def controller(controller)
         @group.default_controller = controller
       end
