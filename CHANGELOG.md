@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## 3.0.1
+
+### Features
+
+- allow route groups to be excluded from the schema ([9df32d](https://github.com/krystal/apia/commit/9df32d02704378f50f7e294a7616de24ce65fdcb))
+
 ## 3.0.0
 
 ## 2.0.0
