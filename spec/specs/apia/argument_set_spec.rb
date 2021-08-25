@@ -49,6 +49,45 @@ describe Apia::ArgumentSet do
       expect(as_instance['name']).to eq 'michael'
     end
 
+    it 'merges params from the JSON body with those from params' do
+      env = Rack::MockRequest.env_for('/?age=32', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"john"}')
+      request = Apia::Request.new(env)
+      as = Apia::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :string
+        argument :age, type: :string
+      end
+      as_instance = as.create_from_request(request)
+      expect(as_instance['name']).to eq 'john'
+      expect(as_instance['age']).to eq '32'
+    end
+
+    it 'merges nested params from the JSON body with those from params' do
+      env = Rack::MockRequest.env_for('/?user[name]=dave', 'CONTENT_TYPE' => 'application/json', :input => '{"user":{"age":"33"}}')
+      request = Apia::Request.new(env)
+      as2 = Apia::ArgumentSet.create('ExampleSet2') do
+        argument :name, type: :string
+        argument :age, type: :string
+      end
+      as = Apia::ArgumentSet.create('ExampleSet') do
+        argument :user, type: as2
+      end
+      as_instance = as.create_from_request(request)
+      expect(as_instance['user']['name']).to eq 'dave'
+      expect(as_instance['user']['age']).to eq '33'
+    end
+
+    it 'prefers json parameters when merging with URL params' do
+      env = Rack::MockRequest.env_for('/?name=adam&age=33', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"john"}')
+      request = Apia::Request.new(env)
+      as = Apia::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :string
+        argument :age, type: :string
+      end
+      as_instance = as.create_from_request(request)
+      expect(as_instance['name']).to eq 'john'
+      expect(as_instance['age']).to eq '33'
+    end
+
     it 'should create a new empty set if nothing provided' do
       env = Rack::MockRequest.env_for('/')
       request = Apia::Request.new(env)

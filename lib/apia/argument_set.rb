@@ -5,6 +5,7 @@ require 'apia/definitions/argument_set'
 require 'apia/errors/invalid_argument_error'
 require 'apia/errors/missing_argument_error'
 require 'apia/helpers'
+require 'apia/deep_merge'
 
 module Apia
   class ArgumentSet
@@ -46,7 +47,11 @@ module Apia
       # @param request [Apia::Request]
       # @return [Apia::ArgumentSet]
       def create_from_request(request)
-        new(request.json_body || request.params || {}, request: request)
+        json_body = request.json_body || {}
+        params = request.params || {}
+        merged_params = DeepMerge.merge(params, json_body)
+
+        new(merged_params, request: request)
       end
 
     end
