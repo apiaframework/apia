@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## 3.0.3
+
+### Features
+
+- allow both URL params and JSON at the same time ([fb1b36](https://github.com/krystal/apia/commit/fb1b36d2b1388d43c1360b0be413611dc0adce5a))
+
 ## 3.0.2
 
 ## 3.0.1
