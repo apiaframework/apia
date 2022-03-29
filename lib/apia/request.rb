@@ -50,7 +50,9 @@ module Apia
     def parse_json_from_string(body)
       return {} if body.empty?
 
-      JSON.parse(body)
+      response = JSON.parse(body)
+      response = {} unless response.is_a?(Hash)
+      response
     rescue JSON::ParserError => e
       raise InvalidJSONError, e.message
     end

@@ -45,5 +45,29 @@ describe Apia::Request do
       expect(request.json_body).to be_a Hash
       expect(request.json_body['name']).to eq 'Jamie'
     end
+
+    it 'returns an empty hash if the input is an array' do
+      request = Apia::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json; charset=utf8', :input => '[]'))
+      expect(request.json_body).to be_a Hash
+      expect(request.json_body).to be_empty
+    end
+
+    it 'returns an empty hash if the input is an integer' do
+      request = Apia::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json; charset=utf8', :input => '1234'))
+      expect(request.json_body).to be_a Hash
+      expect(request.json_body).to be_empty
+    end
+
+    it 'returns an empty hash if the input is a decimal' do
+      request = Apia::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json; charset=utf8', :input => '12.34'))
+      expect(request.json_body).to be_a Hash
+      expect(request.json_body).to be_empty
+    end
+
+    it 'returns an empty hash if the input is a string' do
+      request = Apia::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json; charset=utf8', :input => '"string"'))
+      expect(request.json_body).to be_a Hash
+      expect(request.json_body).to be_empty
+    end
   end
 end
