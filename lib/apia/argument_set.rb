@@ -122,6 +122,13 @@ module Apia
       @source.key?(key.to_sym)
     end
 
+    # Return whether the argument set has no arguments within?
+    #
+    # @return [Boolean]
+    def empty?
+      @source.empty?
+    end
+
     # Validate an argument set and return any errors as appropriate
     #
     # @param argument [Apia::Argument]

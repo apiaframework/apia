@@ -416,6 +416,24 @@ describe Apia::ArgumentSet do
     end
   end
 
+  context '#empty' do
+    it 'is true if there are no arguments' do
+      as = Apia::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :string
+      end
+      instance = as.new({})
+      expect(instance.empty?).to be true
+    end
+
+    it 'is false if there are arguments' do
+      as = Apia::ArgumentSet.create('ExampleSet') do
+        argument :name, type: :string
+      end
+      instance = as.new({ name: 'Dave' })
+      expect(instance.empty?).to be false
+    end
+  end
+
   context '#to_hash' do
     it 'should return a hash of the values' do
       as = Apia::ArgumentSet.create('ExampleSet') do
