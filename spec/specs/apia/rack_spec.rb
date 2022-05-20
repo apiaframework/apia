@@ -168,6 +168,24 @@ describe Apia::Rack do
       expect(result[1]['x-demo']).to eq 'hello'
     end
 
+    it 'should notify on all requests' do
+      controller = Apia::Controller.create('Controller') do
+        endpoint :test do
+          action do
+            response.add_header 'x-demo', 'hello'
+          end
+        end
+      end
+      api = Apia::API.create('MyAPI') do
+        routes do
+          get 'test', controller: controller, endpoint: :test
+        end
+      end
+      expect(Apia::Notifications).to receive(:notify).with(:request, { request: Apia::Request, response: Apia::Response, time: Float })
+      rack = described_class.new(app, api, 'api/v1')
+      rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
+    end
+
     it 'should catch rack errors and return an error triplet' do
       api = Apia::API.create('MyAPI')
       rack = described_class.new(app, api, 'api/v1', development: true)
@@ -191,6 +209,20 @@ describe Apia::Rack do
       expect(result).to be_a Array
       expect(result[0]).to eq 500
       expect(result[2][0]).to include '{"class":"ZeroDivisionError"'
+    end
+
+    it 'should notify on errors' do
+      controller = Apia::Controller.create('Controller') do
+        endpoint :test do
+          action { 1 / 0 }
+        end
+      end
+      api = Apia::API.create('MyAPI') do
+        routes { get('test', controller: controller, endpoint: :test) }
+      end
+      expect(Apia::Notifications).to receive(:notify).with(:request_error, hash_including({ env: Hash, request: Apia::Request, exception: ZeroDivisionError }))
+      rack = described_class.new(app, api, 'api/v1', development: true)
+      rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
     end
 
     it 'should catch other errors and return a basic error triplet in non-development mode' do

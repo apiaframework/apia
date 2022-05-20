@@ -4,6 +4,7 @@ require 'json'
 require 'apia/rack_error'
 require 'apia/request'
 require 'apia/response'
+require 'apia/notifications'
 
 module Apia
   class Rack
@@ -91,18 +92,27 @@ module Apia
       request.endpoint = route.endpoint
       request.route = route
 
+      start_time = Time.now
       response = request.endpoint.execute(request)
+      end_time = Time.now
+
+      Apia::Notifications.notify(:request, { request: request, response: response, time: (end_time - start_time).to_f })
+
       response.rack_triplet
     rescue ::StandardError => e
       if e.is_a?(RackError) || e.is_a?(Apia::ManifestError)
         return e.triplet
       end
 
+      request_or_nil = defined?(request) ? request : nil
+
       api.definition.exception_handlers.call(e, {
         env: env,
         api: api,
-        request: defined?(request) ? request : nil
+        request: request_or_nil
       })
+
+      Apia::Notifications.notify(:request_error, { exception: e, request: request_or_nil, api: api, env: env })
 
       if development?
         return triplet_for_exception(e)
