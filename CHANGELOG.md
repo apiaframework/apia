@@ -2,6 +2,17 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## 3.1.0
+
+### Features
+
+- add ArgumentSet#empty? ([7ecb02](https://github.com/krystal/apia/commit/7ecb0252571250620070f8355904725a344b9959))
+- add notifications ([af932d](https://github.com/krystal/apia/commit/af932dc452d002bcabd4b8afa58f1eded9551c5a))
+
+### Bug Fixes
+
+- ensure non-hash JSON bodies are converted to empty hashes ([1c7efc](https://github.com/krystal/apia/commit/1c7efcdcd11379e9bdfabc853eed20feee90743a))
+
 ## 3.0.3
 
 ### Features
