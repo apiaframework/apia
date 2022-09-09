@@ -89,6 +89,13 @@ describe Apia::DSLs::Endpoint do
   end
 
   context '#field' do
+    context 'when an existing fieldset has been provided' do
+      it 'raises an error if another field is defined' do
+        dsl.fields Apia::FieldSet.new
+        expect { dsl.field :name, type: :string }.to raise_error Apia::StandardError
+      end
+    end
+
     context 'when paginated' do
       it 'should add a `page` argument' do
         dsl.field :widgets, type: [:string], paginate: true
@@ -122,6 +129,19 @@ describe Apia::DSLs::Endpoint do
           dsl.field :potatos, type: [:string], paginate: true
         end.to raise_error Apia::RuntimeError, /cannot define more than one paginated field/i
       end
+    end
+  end
+
+  context '#fields' do
+    it 'sets the endpoints fieldset to the given field set' do
+      fieldset = Apia::FieldSet.new
+      dsl.fields fieldset
+      expect(endpoint.fields).to eq fieldset
+    end
+
+    it 'raises an error if fields have already been defined' do
+      dsl.field :example, :string
+      expect { dsl.fields Apia::FieldSet.new }.to raise_error Apia::StandardError
     end
   end
 

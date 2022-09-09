@@ -36,6 +36,19 @@ module Apia
         @potential_errors ||= Apia::ErrorSet.new
       end
 
+      def fields=(fieldset)
+        unless @fields.empty?
+          raise Apia::StandardError, 'Cannot set the fieldset on an endpoint that already has fields defined'
+        end
+
+        @fields = fieldset
+        @fields_overriden = true
+      end
+
+      def fields_overriden?
+        @fields_overriden == true
+      end
+
       def dsl
         @dsl ||= DSLs::Endpoint.new(self)
       end

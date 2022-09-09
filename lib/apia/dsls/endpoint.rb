@@ -41,6 +41,10 @@ module Apia
       end
 
       def field(name, *args, type: nil, **options, &block)
+        if @definition.fields_overriden?
+          raise Apia::StandardError, 'Cannot add fields to an endpoint that has a separate fieldset'
+        end
+
         if pagination_options = options.delete(:paginate)
 
           unless @definition.paginated_field.nil?
@@ -62,6 +66,10 @@ module Apia
           field :pagination, type: PaginationObject
         end
         super(name, *args, type: type, **options, &block)
+      end
+
+      def fields(fieldset)
+        @definition.fields = fieldset
       end
 
       def scopes(*names)
