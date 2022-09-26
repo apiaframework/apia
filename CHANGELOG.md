@@ -2,6 +2,12 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## 3.2.0
+
+### Features
+
+- allow using objects as top level fieldsets ([93a4ac](https://github.com/krystal/apia/commit/93a4ac774940f10716ed676de6e2d55aa7ec3db6))
+
 ## 3.1.0
 
 ### Features
