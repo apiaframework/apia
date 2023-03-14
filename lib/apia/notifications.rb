@@ -15,8 +15,9 @@ module Apia
         end
       end
 
-      def add_handler(&block)
-        handlers.push(block)
+      def add_handler(handler = nil, &block)
+        handlers.push(block) if block
+        handlers.push(handler) if handler
       end
 
       def clear_handlers

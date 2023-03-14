@@ -9,10 +9,24 @@ RSpec.describe Apia::Notifications do
   end
 
   describe '.add_handler' do
-    it 'adds a handler' do
+    it 'adds a handler by providing a block' do
       handler = proc {}
       described_class.add_handler(&handler)
       expect(described_class.handlers).to include handler
+    end
+
+    it 'adds a handler if given a handler' do
+      handler = Class.new
+      described_class.add_handler(handler)
+      expect(described_class.handlers).to include handler
+    end
+
+    it 'can add a handler and a block in one call (eww)' do
+      handler1 = proc {}
+      handler2 = Class.new
+      described_class.add_handler(handler2, &handler1)
+      expect(described_class.handlers).to include handler1
+      expect(described_class.handlers).to include handler2
     end
   end
 
