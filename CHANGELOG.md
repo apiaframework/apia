@@ -2,6 +2,13 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## 3.3.0
+
+### Features
+
+- add additional notification hooks into request lifecycle ([8197f1](https://github.com/krystal/apia/commit/8197f16253bb5e1e55c6704c8a21fe6a9f290785))
+- support for adding handler classes rather than just procs ([ebbd9e](https://github.com/krystal/apia/commit/ebbd9e9f1f1a0b30bff7872ac32dfeca6b4b5ab9))
+
 ## 3.2.0
 
 ### Features
