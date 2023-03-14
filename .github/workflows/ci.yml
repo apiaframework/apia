@@ -35,6 +35,7 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby_version }}
+          bundler-cache: true
 
       - name: Configure Bundler
         run: bundle config set rubygems.pkg.github.com "${{ secrets.KRYSTAL_GITHUB_PACKAGE_READ_KEY }}"
@@ -53,9 +54,9 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Set up Ruby
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: 3.1
 
       - name: Export version from tag name
         run: echo ${GITHUB_REF/refs\/tags\//} > VERSION
