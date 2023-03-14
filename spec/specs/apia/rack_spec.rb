@@ -181,9 +181,13 @@ describe Apia::Rack do
           get 'test', controller: controller, endpoint: :test
         end
       end
-      expect(Apia::Notifications).to receive(:notify).with(:request, { request: Apia::Request, response: Apia::Response, time: Float })
+      allow(Apia::Notifications).to receive(:notify)
+
       rack = described_class.new(app, api, 'api/v1')
       rack.call(Rack::MockRequest.env_for('/api/v1/test'))
+      expect(Apia::Notifications).to have_received(:notify).with(:request_start, hash_including(path: 'test', method: 'GET', env: kind_of(Hash))).once
+      expect(Apia::Notifications).to have_received(:notify).with(:request, hash_including(path: 'test', request: kind_of(Apia::Request), response: kind_of(Apia::Response))).once
+      expect(Apia::Notifications).to have_received(:notify).with(:request_end, hash_including(path: 'test', method: 'GET', env: kind_of(Hash))).once
     end
 
     it 'should catch rack errors and return an error triplet' do
@@ -220,9 +224,12 @@ describe Apia::Rack do
       api = Apia::API.create('MyAPI') do
         routes { get('test', controller: controller, endpoint: :test) }
       end
-      expect(Apia::Notifications).to receive(:notify).with(:request_error, hash_including({ env: Hash, request: Apia::Request, exception: ZeroDivisionError }))
+      allow(Apia::Notifications).to receive(:notify)
       rack = described_class.new(app, api, 'api/v1', development: true)
       rack.call(Rack::MockRequest.env_for('/api/v1/test'))
+      expect(Apia::Notifications).to have_received(:notify).with(:request_start, hash_including(path: 'test', method: 'GET', env: kind_of(Hash))).once
+      expect(Apia::Notifications).to have_received(:notify).with(:request_error, hash_including(path: 'test', exception: kind_of(StandardError))).once
+      expect(Apia::Notifications).to have_received(:notify).with(:request_end, hash_including(path: 'test', method: 'GET', env: kind_of(Hash))).once
     end
 
     it 'should catch other errors and return a basic error triplet in non-development mode' do

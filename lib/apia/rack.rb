@@ -73,15 +73,21 @@ module Apia
     private
 
     def handle_request(env, api_path)
-      if env['REQUEST_METHOD'].upcase == 'OPTIONS'
+      request_method = env['REQUEST_METHOD'].upcase
+      notify_hash = { api: api, env: env, path: api_path, method: request_method }
+
+      if request_method.upcase == 'OPTIONS'
         return [204, {}, ['']]
       end
 
+      Apia::Notifications.notify(:request_start, notify_hash)
+
       validate_api if development?
 
-      route = find_route(env['REQUEST_METHOD'], api_path)
+      route = find_route(request_method, api_path)
       if route.nil?
-        raise RackError.new(404, 'route_not_found', "No route matches '#{api_path}' for #{env['REQUEST_METHOD']}")
+        Apia::Notifications.notify(:request_route_not_found, notify_hash)
+        raise RackError.new(404, 'route_not_found', "No route matches '#{api_path}' for #{request_method}")
       end
 
       request = Apia::Request.new(env)
@@ -92,19 +98,24 @@ module Apia
       request.endpoint = route.endpoint
       request.route = route
 
+      Apia::Notifications.notify(:request_before_execution, notify_hash.merge(request: request))
+
       start_time = Time.now
       response = request.endpoint.execute(request)
       end_time = Time.now
+      time = end_time - start_time
 
-      Apia::Notifications.notify(:request, { request: request, response: response, time: (end_time - start_time).to_f })
+      Apia::Notifications.notify(:request, notify_hash.merge(request: request, response: response, time: time))
 
       response.rack_triplet
     rescue ::StandardError => e
+      request_or_nil = defined?(request) ? request : nil
+      notify_hash = { api: api, env: env, path: api_path, method: request_method, exception: e }
+
       if e.is_a?(RackError) || e.is_a?(Apia::ManifestError)
+        Apia::Notifications.notify(:request_manifest_error, notify_hash)
         return e.triplet
       end
-
-      request_or_nil = defined?(request) ? request : nil
 
       api.definition.exception_handlers.call(e, {
         env: env,
@@ -112,13 +123,15 @@ module Apia
         request: request_or_nil
       })
 
-      Apia::Notifications.notify(:request_error, { exception: e, request: request_or_nil, api: api, env: env })
+      Apia::Notifications.notify(:request_error, notify_hash)
 
       if development?
         return triplet_for_exception(e)
       end
 
       self.class.error_triplet('unhandled_exception', status: 500)
+    ensure
+      Apia::Notifications.notify(:request_end, notify_hash)
     end
 
     def validate_api
