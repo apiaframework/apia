@@ -73,6 +73,7 @@ module Apia
     private
 
     def handle_request(env, api_path)
+      request = nil
       request_method = env['REQUEST_METHOD'].upcase
       notify_hash = { api: api, env: env, path: api_path, method: request_method }
 
@@ -109,29 +110,32 @@ module Apia
 
       response.rack_triplet
     rescue ::StandardError => e
-      request_or_nil = defined?(request) ? request : nil
-      notify_hash = { api: api, env: env, path: api_path, method: request_method, exception: e }
+      handle_error(e, env, request, request_method)
+    ensure
+      Apia::Notifications.notify(:request_end, notify_hash)
+    end
 
-      if e.is_a?(RackError) || e.is_a?(Apia::ManifestError)
+    def handle_error(exception, env, request, request_method)
+      notify_hash = { api: api, env: env, path: request&.api_path, request: request, method: request_method, exception: exception }
+
+      if exception.is_a?(RackError) || exception.is_a?(Apia::ManifestError)
         Apia::Notifications.notify(:request_manifest_error, notify_hash)
-        return e.triplet
+        return exception.triplet
       end
 
-      api.definition.exception_handlers.call(e, {
+      api.definition.exception_handlers.call(exception, {
         env: env,
         api: api,
-        request: request_or_nil
+        request: request
       })
 
       Apia::Notifications.notify(:request_error, notify_hash)
 
       if development?
-        return triplet_for_exception(e)
+        return triplet_for_exception(exception)
       end
 
       self.class.error_triplet('unhandled_exception', status: 500)
-    ensure
-      Apia::Notifications.notify(:request_end, notify_hash)
     end
 
     def validate_api
