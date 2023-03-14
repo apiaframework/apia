@@ -79,7 +79,7 @@ module Apia
       # @param endpoint_name [Symbol]
       # @return [Apia::Response]
       def test_endpoint(endpoint, controller: nil)
-        if controller && endpoint.is_a?(Symbol) || endpoint.is_a?(String)
+        if controller && (endpoint.is_a?(Symbol) || endpoint.is_a?(String))
           endpoint_name = endpoint
           endpoint = controller.definition.endpoints[endpoint.to_sym]
           if endpoint.nil?

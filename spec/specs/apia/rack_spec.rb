@@ -76,7 +76,7 @@ describe Apia::Rack do
       api = Apia::API.create('MyAPI')
       rack = described_class.new(app, api, 'api/v1')
       ['invalid', 'api', 'api/v2'].each do |path|
-        env = ::Rack::MockRequest.env_for(path)
+        env = Rack::MockRequest.env_for(path)
         result = rack.call(env)
         expect(result).to be_a Array
         expect(result[2][0]).to eq 'Hello world!'
@@ -87,7 +87,7 @@ describe Apia::Rack do
       api = Apia::API.create('MyAPI')
       rack = described_class.new(app, api, 'api/v1', hosts: ['api.example.com'])
       ['blah.com', 'example.com', 'api.something.com'].each do |host|
-        env = ::Rack::MockRequest.env_for('/api/v1', 'HTTP_HOST' => host)
+        env = Rack::MockRequest.env_for('/api/v1', 'HTTP_HOST' => host)
         result = rack.call(env)
         expect(result).to be_a Array
         expect(result[2][0]).to eq 'Hello world!'
@@ -98,7 +98,7 @@ describe Apia::Rack do
       it 'should return no content with CORS headers in response to all options requests' do
         api = Apia::API.create('MyAPI')
         rack = described_class.new(app, api, 'api/v1')
-        env = ::Rack::MockRequest.env_for('/api/v1/test', method: 'OPTIONS')
+        env = Rack::MockRequest.env_for('/api/v1/test', method: 'OPTIONS')
         result = rack.call(env)
         expect(result).to be_a Array
         expect(result[0]).to eq 204
@@ -121,7 +121,7 @@ describe Apia::Rack do
           end
         end
         rack = described_class.new(app, api, 'api/v1')
-        env = ::Rack::MockRequest.env_for('/api/v1/test')
+        env = Rack::MockRequest.env_for('/api/v1/test')
         result = rack.call(env)
         expect(result).to be_a Array
         expect(result[0]).to eq 200
@@ -144,7 +144,7 @@ describe Apia::Rack do
         end
       end
       rack = described_class.new(app, api, 'api/v1', hosts: ['api.example.com'])
-      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test', 'HTTP_HOST' => 'api.example.com'))
+      result = rack.call(Rack::MockRequest.env_for('/api/v1/test', 'HTTP_HOST' => 'api.example.com'))
       expect(result).to be_a Array
       expect(result[1]['x-demo']).to eq 'hello'
     end
@@ -163,7 +163,7 @@ describe Apia::Rack do
         end
       end
       rack = described_class.new(app, api, 'api/v1')
-      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
+      result = rack.call(Rack::MockRequest.env_for('/api/v1/test'))
       expect(result).to be_a Array
       expect(result[1]['x-demo']).to eq 'hello'
     end
@@ -183,13 +183,13 @@ describe Apia::Rack do
       end
       expect(Apia::Notifications).to receive(:notify).with(:request, { request: Apia::Request, response: Apia::Response, time: Float })
       rack = described_class.new(app, api, 'api/v1')
-      rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
+      rack.call(Rack::MockRequest.env_for('/api/v1/test'))
     end
 
     it 'should catch rack errors and return an error triplet' do
       api = Apia::API.create('MyAPI')
       rack = described_class.new(app, api, 'api/v1', development: true)
-      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
+      result = rack.call(Rack::MockRequest.env_for('/api/v1/test'))
       expect(result).to be_a Array
       expect(result[0]).to eq 404
       expect(result[2][0]).to include 'route_not_found'
@@ -205,7 +205,7 @@ describe Apia::Rack do
         routes { get('test', controller: controller, endpoint: :test) }
       end
       rack = described_class.new(app, api, 'api/v1', development: true)
-      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
+      result = rack.call(Rack::MockRequest.env_for('/api/v1/test'))
       expect(result).to be_a Array
       expect(result[0]).to eq 500
       expect(result[2][0]).to include '{"class":"ZeroDivisionError"'
@@ -222,7 +222,7 @@ describe Apia::Rack do
       end
       expect(Apia::Notifications).to receive(:notify).with(:request_error, hash_including({ env: Hash, request: Apia::Request, exception: ZeroDivisionError }))
       rack = described_class.new(app, api, 'api/v1', development: true)
-      rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
+      rack.call(Rack::MockRequest.env_for('/api/v1/test'))
     end
 
     it 'should catch other errors and return a basic error triplet in non-development mode' do
@@ -235,7 +235,7 @@ describe Apia::Rack do
         routes { get('test', controller: controller, endpoint: :test) }
       end
       rack = described_class.new(app, api, 'api/v1')
-      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
+      result = rack.call(Rack::MockRequest.env_for('/api/v1/test'))
       expect(result).to be_a Array
       expect(result[0]).to eq 500
       expect(result[2][0]).to_not include '{"class":"ZeroDivisionError"'
@@ -256,7 +256,7 @@ describe Apia::Rack do
         routes { get('test', controller: controller, endpoint: :test) }
       end
       rack = described_class.new(app, api, 'api/v1')
-      rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
+      rack.call(Rack::MockRequest.env_for('/api/v1/test'))
       expect(handler_artifacts[:exception]).to be_a ZeroDivisionError
       expect(handler_artifacts[:options][:request]).to be_a Apia::Request
       expect(handler_artifacts[:options][:env]).to be_a Hash
@@ -268,7 +268,7 @@ describe Apia::Rack do
         authenticator {}
       end
       rack = described_class.new(app, api, 'api/v1', development: true)
-      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test/test'))
+      result = rack.call(Rack::MockRequest.env_for('/api/v1/test/test'))
       expect(result).to be_a Array
       expect(result[0]).to eq 500
       expect(result[2][0]).to include '{"code":"manifest_error"'
@@ -285,7 +285,7 @@ describe Apia::Rack do
         routes { get('test', controller: controller, endpoint: :test) }
       end
       rack = described_class.new(app, api, 'api/v1')
-      result = rack.call(::Rack::MockRequest.env_for('/api/v1/test'))
+      result = rack.call(Rack::MockRequest.env_for('/api/v1/test'))
       expect(result).to be_a Array
       expect(result[0]).to eq 200
       expect(result[1]['x-demo']).to eq 'test'

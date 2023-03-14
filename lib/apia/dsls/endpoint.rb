@@ -60,7 +60,7 @@ module Apia
 
           argument :per_page, type: Scalars::Integer, default: 30 do
             validation(:greater_than_zero) { |o| o.positive? }
-            validation(:less_than_or_equal_to_100) { |o| o <= (pagination_options[:maximum_per_page]&.to_i || 200) }
+            validation(:less_than_or_equal_to_one_hundred) { |o| o <= (pagination_options[:maximum_per_page]&.to_i || 200) }
           end
 
           field :pagination, type: PaginationObject

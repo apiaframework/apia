@@ -49,7 +49,7 @@ module Apia
     # @return [Hash]
     def extract_arguments(given_path)
       given_path_parts = RouteSet.split_path(given_path)
-      path_parts.each_with_index.each_with_object({}) do |(part, index), hash|
+      path_parts.each_with_index.with_object({}) do |(part, index), hash|
         next unless part =~ /\A:(\w+)/
 
         value = given_path_parts[index]

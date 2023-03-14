@@ -12,4 +12,4 @@ gem 'rspec-mocks'
 gem 'solargraph'
 
 gem 'rake'
-gem 'rubocop', '0.91.1'
+gem 'rubocop'

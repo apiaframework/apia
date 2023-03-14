@@ -18,7 +18,7 @@ module Apia
 
       def endpoint(name, klass = nil, &block)
         if block_given?
-          id = "#{@definition.id}/#{klass || Helpers.camelize(name) + 'Endpoint'}"
+          id = "#{@definition.id}/#{klass || (Helpers.camelize(name) + 'Endpoint')}"
           klass = Apia::Endpoint.create(id, &block)
         end
 

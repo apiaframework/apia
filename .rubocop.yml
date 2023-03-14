@@ -2,8 +2,19 @@ inherit_from:
   - https://dev.k.io/rubocop/rubocop.yml
   - .rubocop_todo.yml
 
+AllCops:
+  Exclude:
+    - bin/**/*
+  SuggestExtensions: false
+
 Layout/LineLength:
   Enabled: false
 
 Metrics/PerceivedComplexity:
   Max: 20
+
+Gemspec/RequireMFA:
+  Enabled: false
+
+Lint/EmptyBlock:
+  Enabled: false

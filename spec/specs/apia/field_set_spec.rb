@@ -112,8 +112,8 @@ describe Apia::FieldSet do
 
     it 'should return polymorphs' do
       polymorph = Apia::Polymorph.create('MyPolymorph') do
-        option :string, type: :string, matcher: proc { |s| s.is_a?(::String) }
-        option :integer, type: :integer, matcher: proc { |s| s.is_a?(::Integer) }
+        option :string, type: :string, matcher: proc { |s| s.is_a?(String) }
+        option :integer, type: :integer, matcher: proc { |s| s.is_a?(Integer) }
       end
 
       field = Apia::Definitions::Field.new(:string_or_int)
@@ -133,8 +133,8 @@ describe Apia::FieldSet do
 
     it 'should return polymorphs in an array' do
       polymorph = Apia::Polymorph.create('MyPolymorph') do
-        option :string, type: :string, matcher: proc { |s| s.is_a?(::String) }
-        option :integer, type: :integer, matcher: proc { |s| s.is_a?(::Integer) }
+        option :string, type: :string, matcher: proc { |s| s.is_a?(String) }
+        option :integer, type: :integer, matcher: proc { |s| s.is_a?(Integer) }
       end
 
       field = Apia::Definitions::Field.new(:string_or_int)
@@ -156,7 +156,7 @@ describe Apia::FieldSet do
 
     it 'raises an error if a value cannot match any option' do
       polymorph = Apia::Polymorph.create('MyPolymorph') do
-        option :string, type: :string, matcher: proc { |s| s.is_a?(::String) }
+        option :string, type: :string, matcher: proc { |s| s.is_a?(String) }
       end
 
       field = Apia::Definitions::Field.new(:value)
