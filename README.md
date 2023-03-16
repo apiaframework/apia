@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://rubygems.org/gems/apia">
-    <img src="https://img.shields.io/gem/v/apia.svg?label=rubygems&logo=rubygems&color=%23E9573F" alt="RubyGems">
+    <img src="https://img.shields.io/gem/v/apia.svg?label=rubygems&logo=rubygems" alt="RubyGems">
   </a>
   <a href="https://github.com/krystal/apia/actions">
     <img src="https://img.shields.io/github/actions/workflow/status/krystal/apia/ci.yml?branch=main&logo=github" alt="Actions Status">
