@@ -2,6 +2,13 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## [3.4.0](https://github.com/krystal/apia/compare/v3.3.1...v3.4.0) (2023-05-15)
+
+
+### Features
+
+* decorated generated hashes with object, source & path ([#12](https://github.com/krystal/apia/issues/12)) ([e3af019](https://github.com/krystal/apia/commit/e3af01918c390e3ba82ee590bbd4d001003aa422))
+
 ## 3.3.1
 
 ## 3.3.0
