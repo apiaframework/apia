@@ -5,6 +5,7 @@ require 'apia/scalar'
 require 'apia/object'
 require 'apia/enum'
 require 'apia/field_spec'
+require 'apia/generated_hash'
 
 module Apia
   class FieldSet < Hash
@@ -35,10 +36,12 @@ module Apia
     #
     # @param source [Object, Hash]
     # @param request [Apia::Request]
+    # @param object [Apia::Object] the object that this fieldset belongs to
     # @param only [Array]
     # @return [Hash]
-    def generate_hash(source, request: nil, path: [])
-      each_with_object({}) do |(_, field), hash|
+    def generate_hash(source, request: nil, path: [], object: nil)
+      new_hash = GeneratedHash.enabled? ? GeneratedHash.new(object, source, path: path) : {}
+      each_with_object(new_hash) do |(_, field), hash|
         next unless field.include?(source, request)
 
         field_path = path + [field]

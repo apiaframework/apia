@@ -174,5 +174,25 @@ describe Apia::Object do
       hash = instance.hash
       expect(hash[:status]).to eq 'active'
     end
+
+    context 'when HashWithObject is enabled' do
+      before do
+        allow(Apia::GeneratedHash).to receive(:enabled?).and_return(true)
+      end
+
+      it 'passes the object to the hash for the source' do
+        type = Apia::Object.create('ExampleType') do
+          field :id, type: :string
+          field :number, type: :integer
+        end
+        source = { id: 'hello', number: 1234 }
+        type_instance = type.new(source)
+        hash = type_instance.hash
+        expect(hash).to be_a(Apia::GeneratedHash)
+        expect(hash.object).to be_a type
+        expect(hash.object).to eq type_instance
+        expect(hash.source).to eq source
+      end
+    end
   end
 end

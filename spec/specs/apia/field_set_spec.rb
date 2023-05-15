@@ -248,5 +248,19 @@ describe Apia::FieldSet do
         }
       })
     end
+
+    context 'when GeneratedHash is enabled' do
+      before do
+        allow(Apia::GeneratedHash).to receive(:enabled?).and_return(true)
+      end
+
+      it 'sets the source on the hash to the fieldset' do
+        example = '12345'
+        hash = field_set.generate_hash({}, object: example)
+        expect(hash).to be_a Apia::GeneratedHash
+        expect(hash.object).to eq example
+        expect(hash.source).to eq({})
+      end
+    end
   end
 end
