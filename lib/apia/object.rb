@@ -49,7 +49,7 @@ module Apia
     # @param request [Apia::Request] the associated request
     # @return [Hash]
     def hash(request: nil, path: [])
-      self.class.definition.fields.generate_hash(@value, request: request, path: path)
+      self.class.definition.fields.generate_hash(@value, object: self, request: request, path: path)
     end
 
     # Should this type be included in any output?
