@@ -94,42 +94,6 @@ describe Apia::Rack do
       end
     end
 
-    context 'cors' do
-      it 'should return no content with CORS headers in response to all options requests' do
-        api = Apia::API.create('MyAPI')
-        rack = described_class.new(app, api, 'api/v1')
-        env = Rack::MockRequest.env_for('/api/v1/test', method: 'OPTIONS')
-        result = rack.call(env)
-        expect(result).to be_a Array
-        expect(result[0]).to eq 204
-        expect(result[2][0]).to be_empty
-        expect(result[1]['Access-Control-Allow-Origin']).to eq '*'
-        expect(result[1]['Access-Control-Allow-Methods']).to eq '*'
-      end
-
-      it 'should include cors headers on successful requests' do
-        controller = Apia::Controller.create('Controller') do
-          endpoint :test do
-            action do
-              response.add_header 'x-demo', 'hello'
-            end
-          end
-        end
-        api = Apia::API.create('MyAPI') do
-          routes do
-            get 'test', controller: controller, endpoint: :test
-          end
-        end
-        rack = described_class.new(app, api, 'api/v1')
-        env = Rack::MockRequest.env_for('/api/v1/test')
-        result = rack.call(env)
-        expect(result).to be_a Array
-        expect(result[0]).to eq 200
-        expect(result[1]['Access-Control-Allow-Origin']).to eq '*'
-        expect(result[1]['Access-Control-Allow-Methods']).to eq '*'
-      end
-    end
-
     it 'should allow requests with matching hostnames through' do
       controller = Apia::Controller.create('Controller') do
         endpoint :test do

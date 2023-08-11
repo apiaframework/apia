@@ -48,9 +48,22 @@ module Apia
         environment = RequestEnvironment.new(request, response)
 
         catch_errors(response) do
-          # Determine an authenticator and execute it before the request happens
+          # Determine an authenticator for this endpoint
           request.authenticator = definition.authenticator || request.controller&.definition&.authenticator || request.api&.definition&.authenticator
+
+          # Execute the authentication before the request happens
           request.authenticator&.execute(environment)
+
+          # Add the CORS headers to the response before the endpoint is called. The endpoint
+          # cannot influence the CORS headers.
+          response.headers.merge!(environment.cors.to_headers)
+
+          # OPTIONS requests always return 200 OK and no body.
+          if request.options?
+            response.status = 200
+            response.body = ''
+            return response
+          end
 
           # Determine if we're permitted to run the action based on the endpoint's scopes
           if request.authenticator && !request.authenticator.authorized_scope?(environment, definition.scopes)

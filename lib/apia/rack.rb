@@ -65,9 +65,7 @@ module Apia
 
       api_path = Regexp.last_match(1)
 
-      triplet = handle_request(env, api_path)
-      add_cors_headers(env, triplet)
-      triplet
+      handle_request(env, api_path)
     end
 
     private
@@ -76,10 +74,6 @@ module Apia
       request = nil
       request_method = env['REQUEST_METHOD'].upcase
       notify_hash = { api: api, env: env, path: api_path, method: request_method }
-
-      if request_method.upcase == 'OPTIONS'
-        return [204, {}, ['']]
-      end
 
       Apia::Notifications.notify(:request_start, notify_hash)
 
@@ -153,21 +147,6 @@ module Apia
         },
         status: 500
       )
-    end
-
-    # Add cross origin headers to the response triplet
-    #
-    # @param env [Hash]
-    # @param triplet [Array]
-    # @return [void]
-    def add_cors_headers(env, triplet)
-      triplet[1]['Access-Control-Allow-Origin'] = '*'
-      triplet[1]['Access-Control-Allow-Methods'] = '*'
-      if env['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']
-        triplet[1]['Access-Control-Allow-Headers'] = env['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']
-      end
-
-      true
     end
 
     class << self
