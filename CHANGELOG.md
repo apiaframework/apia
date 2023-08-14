@@ -2,6 +2,13 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## [3.5.0](https://github.com/krystal/apia/compare/v3.4.0...v3.5.0) (2023-08-14)
+
+
+### Features
+
+* allow cors headers to be set by authenticators ([#14](https://github.com/krystal/apia/issues/14)) ([7afd076](https://github.com/krystal/apia/commit/7afd076307f07588d18af0efe07f99d1cb08d90d))
+
 ## [3.4.0](https://github.com/krystal/apia/compare/v3.3.1...v3.4.0) (2023-05-15)
 
 
