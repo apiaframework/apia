@@ -264,4 +264,12 @@ describe Apia::RequestEnvironment do
       expect(environment.response.fields[:widgets].last).to eq 's50'
     end
   end
+
+  context '#cors' do
+    subject(:environment) { setup_api }
+
+    it 'returns a CORS instance' do
+      expect(environment.cors).to be_a Apia::CORS
+    end
+  end
 end

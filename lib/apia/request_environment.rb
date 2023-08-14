@@ -2,6 +2,7 @@
 
 require 'apia/environment_error_handling'
 require 'apia/errors/invalid_helper_error'
+require 'apia/cors'
 
 module Apia
   class RequestEnvironment
@@ -72,6 +73,10 @@ module Apia
         pagination_info[:total_pages] = paginated.total_pages
       end
       @response.add_field :pagination, pagination_info
+    end
+
+    def cors
+      @cors ||= CORS.new
     end
 
     private

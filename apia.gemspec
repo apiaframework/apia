@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative './lib/apia/version'
+require_relative 'lib/apia/version'
 
 Gem::Specification.new do |s|
   s.name          = 'apia'
