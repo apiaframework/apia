@@ -154,6 +154,34 @@ describe Apia::Rack do
       expect(Apia::Notifications).to have_received(:notify).with(:request_end, hash_including(path: 'test', method: 'GET', env: kind_of(Hash))).once
     end
 
+    it 'should handle OPTIONS requests' do
+      controller = Apia::Controller.create('Controller') do
+        endpoint :test do
+          action do
+            response.add_field :hello, 'world'
+          end
+        end
+      end
+      api = Apia::API.create('MyAPI') do
+        routes do
+          get 'test', controller: controller, endpoint: :test
+        end
+      end
+      rack = described_class.new(app, api, 'api/v1')
+      mock_request = Rack::MockRequest.env_for(
+        '/api/v1/test',
+        'REQUEST_METHOD' => 'OPTIONS',
+        'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'GET'
+      )
+      result = rack.call(mock_request)
+      expect(result).to be_a Array
+      expect(result[0]).to eq 200
+      headers = result[1]
+      expect(headers['Access-Control-Allow-Origin']).to eq '*'
+      expect(headers['Access-Control-Allow-Methods']).to eq '*'
+      expect(result[2][0]).to eq("\"\"")
+    end
+
     it 'should catch rack errors and return an error triplet' do
       api = Apia::API.create('MyAPI')
       rack = described_class.new(app, api, 'api/v1', development: true)
