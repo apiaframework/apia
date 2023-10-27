@@ -88,6 +88,23 @@ describe Apia::ArgumentSet do
       expect(as_instance['age']).to eq '33'
     end
 
+    it 'can parse deeply nested query params' do
+      env = Rack::MockRequest.env_for('/?authors[][name]=ada&authors[][age]=40&authors[][name]=bob&authors[][age]=30', 'CONTENT_TYPE' => 'application/json')
+      request = Apia::Request.new(env)
+      author_as = Apia::ArgumentSet.create('AuthorSet') do
+        argument :name, type: :string
+        argument :age, type: :string
+      end
+      as = Apia::ArgumentSet.create('ExampleSet') do
+        argument :authors, type: [author_as]
+      end
+      as_instance = as.create_from_request(request)
+      expect(as_instance['authors'][0]['name']).to eq 'ada'
+      expect(as_instance['authors'][0]['age']).to eq '40'
+      expect(as_instance['authors'][1]['name']).to eq 'bob'
+      expect(as_instance['authors'][1]['age']).to eq '30'
+    end
+
     it 'should create a new empty set if nothing provided' do
       env = Rack::MockRequest.env_for('/')
       request = Apia::Request.new(env)

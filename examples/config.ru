@@ -7,6 +7,9 @@ require 'apia'
 require 'apia/rack'
 require 'core_api/base'
 
+require 'apia-openapi'
+
+use Apia::OpenAPI::Rack, 'CoreAPI::Base', '/core/v1/schema/openapi.json'
 use Apia::Rack, CoreAPI::Base, '/core/v1', development: true
 
 app = proc do

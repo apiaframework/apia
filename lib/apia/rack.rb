@@ -160,6 +160,7 @@ module Apia
       # @return [Array]
       def json_triplet(body, status: 200, headers: {})
         body_as_json = body.to_json
+        puts "body_as_json: #{body_as_json}"
         [
           status,
           headers.merge('content-type' => 'application/json', 'content-length' => body_as_json.bytesize.to_s),

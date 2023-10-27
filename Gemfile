@@ -13,3 +13,5 @@ gem 'solargraph'
 
 gem 'rake'
 gem 'rubocop'
+
+gem 'pry'
