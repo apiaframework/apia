@@ -13,8 +13,7 @@ module Apia
           servers: [],
           paths: {},
           components: {
-            schemas: {},
-            responses: {}
+            schemas: {}
           },
           security: []
         }
@@ -50,17 +49,16 @@ module Apia
         @api.definition.route_set.routes.each do |route|
           next unless route.endpoint.definition.schema? # not all routes should be documented
 
-          #path_without_params = route.path.gsub(/:[^\/]+/, '_')
-          path_without_params = route.path
-          route_spec = { operationId: "#{route.request_method}:#{path_without_params}" }
+          path = route.path
+          route_spec = { operationId: "#{route.request_method}:#{path}" }
           if route.request_method == :get
             add_parameters(route, route_spec)
           else
             add_request_body(route, route_spec)
           end
 
-          @spec[:paths]["/#{path_without_params}"] ||= {}
-          @spec[:paths]["/#{path_without_params}"]["#{route.request_method.to_s}"] = route_spec
+          @spec[:paths]["/#{path}"] ||= {}
+          @spec[:paths]["/#{path}"]["#{route.request_method.to_s}"] = route_spec
 
           add_responses(route, route_spec)
         end
@@ -84,15 +82,19 @@ module Apia
               route_spec[:parameters] << param
             end
           elsif arg.array?
-            # TODO: array of objects
+            if arg.type.enum? || arg.type.object? # polymorph?
+              items = { "$ref": "#/components/schemas/#{generate_id(arg.type.klass.definition)}" }
+              add_component_schema(arg)
+            else
+              items = { type: arg.type.klass.definition.name.downcase }
+            end
+
             param = {
-              name: arg.name.to_s,
+              name: "#{arg.name}[]",
               in: "query",
               schema: {
                 type: "array",
-                items: {
-                  type: arg.type.klass.definition.name.downcase
-                }
+                items: items
               }
             }
             route_spec[:parameters] << param
@@ -123,6 +125,13 @@ module Apia
         id = generate_id(definition.type.klass.definition)
         return unless @spec.dig(:components, :schemas, id).nil?
 
+        @spec[:components][:schemas][id] = generate_schema(definition: definition)
+      end
+
+      # we generate schemas for two reasons:
+      # 1. to add them to the components section (so they can be referenced)
+      # 2. to add them to the request body when not all fields are returned in the response
+      def generate_schema(definition:, endpoint: nil, path: nil)
         schema = {}
 
         if definition.type.argument_set?
@@ -136,51 +145,62 @@ module Apia
         end
 
         children.each do |child|
+          next unless endpoint.nil? || (!definition.type.enum? && endpoint.include_field?(path + [child.name]))
+
           if definition.type.enum?
             schema[:type] = 'string'
             schema[:enum] = children.map { |c| c[:name] }
-          elsif child.type.argument_set? || child.type.enum? # || child_type.object? # polymorph?
+          elsif child.type.argument_set? || child.type.enum? # polymorph?
             schema[:type] = 'object'
             schema[:properties] ||= {}
             schema[:properties][child.name.to_s] = {
               "$ref": "#/components/schemas/#{generate_id(child.type.klass.definition)}"
             }
             add_component_schema(child)
+          elsif child.type.object?
+            schema[:type] = 'object'
+            schema[:properties] ||= {}
+            # In theory we could point to a ref here if * is used to include all fields of a child object, but we'd
+            # need to parse the endpoint include string to determine if that's the case.
+            child_path = path.nil? ? nil : path + [child]
+            schema[:properties][child.name.to_s] = generate_schema(definition: child, endpoint: endpoint, path: child_path)
           else
             schema[:type] = 'object'
             schema[:properties] ||= {}
-            # TODO: do these map to OpenAPI types?
-            # object? polymorph?
             schema[:properties][child.name.to_s] = {
               type: child.type.klass.definition.name.downcase
             }
           end
         end
 
-        @spec[:components][:schemas][id] = schema
+        schema
       end
 
       def add_request_body(route, route_spec)
         properties = {}
         route.endpoint.definition.argument_set.definition.arguments.each_value do |arg|
           id = generate_id(arg.type.klass.definition)
-          if arg.type.argument_set? || arg.type.enum? # || arg.type.object? # polymorph?
-            if arg.array?
-              properties[arg.name.to_s] = {
-                type: "array",
-                items: {
-                  "$ref": "#/components/schemas/#{id}"
-                }
-              }
+          if arg.array?
+            if arg.type.argument_set? || arg.type.enum? # polymorph?
+              items = { "$ref": "#/components/schemas/#{id}" }
+              add_component_schema(arg)
             else
-              properties[arg.name.to_s] = {
-                "$ref": "#/components/schemas/#{id}"
-              }
+              items = { type: arg.type.klass.definition.name.downcase }
             end
+
+            properties[arg.name.to_s] = {
+                type: "array",
+                items: items
+              }
+
+          elsif arg.type.argument_set? || arg.type.enum? # polymorph?
+            properties[arg.name.to_s] = {
+              "$ref": "#/components/schemas/#{id}"
+            }
             add_component_schema(arg)
           else
             properties[arg.name.to_s] = {
-              type: arg.type.klass.definition.name.downcase # TODO: do these map to OpenAPI types?
+              type: arg.type.klass.definition.name.downcase
             }
           end
 
@@ -199,35 +219,54 @@ module Apia
         }
       end
 
-      # TODO: object might not include all fields in the response
       def add_responses(route, route_spec)
         properties = {}
         route.endpoint.definition.fields.each do |name, field|
-          if field.type.argument_set?
+          if field.array?
+            if field.type.object? || field.type.enum? # polymorph?
+              if field.include.nil?
+                items = { "$ref": "#/components/schemas/#{generate_id(field.type.klass.definition)}" }
+                add_component_schema(field)
+              else
+                schema = generate_schema(definition: field, endpoint: route.endpoint, path: [field])
+                items = schema[:properties]
+              end
+            else
+              items = { type: field.type.klass.definition.name.downcase }
+            end
             properties[name] = {
-              "$ref": "#/components/schemas/#{generate_id(field.type.klass.definition)}"
+              type: "array",
+              items: items
             }
-            add_component_schema(field)
-          elsif field.type.object?
-            properties[name] = {
-              "$ref": "#/components/schemas/#{generate_id(field.type.klass.definition)}"
-            }
-            add_component_schema(field)
+          elsif field.type.object? || field.type.enum? # polymorph?
+            if field.include.nil?
+              properties[name] = {
+                "$ref": "#/components/schemas/#{generate_id(field.type.klass.definition)}"
+              }
+              add_component_schema(field)
+            elsif schema = generate_schema(definition: field, endpoint: route.endpoint, path: [field])
+              properties[name] = schema
+            end
           else
             properties[name] = {
-              type: field.type.klass.definition.name.downcase # TODO: do these map to OpenAPI types?
+              type: field.type.klass.definition.name.downcase
             }
           end
         end
+
+        schema = {
+          properties: properties
+        }
+
+        required_fields = route.endpoint.definition.fields.select { |name, field| field.condition.nil? }
+        schema[:required] = required_fields.keys if required_fields.any?
 
         route_spec[:responses] = {
           "#{route.endpoint.definition.http_status}": {
             description: route.endpoint.definition.description, # does this break if nil?
             content: {
               "application/json": {
-                schema: {
-                  properties: properties
-                }
+                schema: schema
               }
             }
           }
@@ -250,6 +289,7 @@ module Apia
         end
       end
 
+      # forward slashes do not work in ids (e.g. schema ids)
       def generate_id(definition)
         definition.id.gsub(/\//, '_')
       end

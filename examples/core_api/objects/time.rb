@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'core_api/objects/day'
+require 'core_api/objects/year'
 
 module CoreAPI
   module Objects
@@ -22,6 +23,10 @@ module CoreAPI
 
       field :full, type: :string do
         backend { |t| t.to_s }
+      end
+
+      field :year, type: Objects::Year do
+        backend { |t| t.year }
       end
 
     end

@@ -5,6 +5,8 @@ module CoreAPI
     class TimeZone < Apia::Enum
 
       value 'Europe/London'
+      value 'Europe/Madrid'
+      value 'Asia/Singapore'
 
     end
   end

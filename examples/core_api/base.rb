@@ -24,6 +24,7 @@ module CoreAPI
         name 'Time functions'
         description 'Everything related to time elements'
         get 'time/now', endpoint: Endpoints::TimeNowEndpoint
+        post 'time/now', endpoint: Endpoints::TimeNowEndpoint
 
         get 'test/:object', endpoint: Endpoints::TestEndpoint
         post 'test/:object', endpoint: Endpoints::TestEndpoint

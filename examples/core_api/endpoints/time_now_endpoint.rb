@@ -8,12 +8,17 @@ module CoreAPI
 
       description 'Returns the current time'
       argument :timezone, type: Objects::TimeZone
-      # argument :filters, [:string]
-      field :time, type: Objects::Time, include: 'unix,day_of_week'
-      scope 'time' # TODO: what does this do?
+      argument :time_zones, [Objects::TimeZone]
+      argument :filters, [:string]
+      field :time, type: Objects::Time
+      field :time_zones, type: [Objects::TimeZone]
+      field :filters, [:string]
+      scope 'time'
 
       def call
         response.add_field :time, get_time_now
+        response.add_field :filters, request.arguments[:filters]
+        response.add_field :time_zones, request.arguments[:time_zones]
       end
 
       private
