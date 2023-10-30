@@ -13,12 +13,14 @@ module CoreAPI
       field :time, type: Objects::Time
       field :time_zones, type: [Objects::TimeZone]
       field :filters, [:string]
+      field :my_polymorph, type: Objects::MonthPolymorph
       scope 'time'
 
       def call
         response.add_field :time, get_time_now
         response.add_field :filters, request.arguments[:filters]
         response.add_field :time_zones, request.arguments[:time_zones]
+        response.add_field :my_polymorph, get_time_now
       end
 
       private

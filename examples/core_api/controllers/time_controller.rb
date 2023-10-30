@@ -13,6 +13,8 @@ module CoreAPI
 
       endpoint :now, Endpoints::TimeNowEndpoint
 
+      # TODO: add example of multiple objects using the same objects, to ensure
+      # we are handing circular references correctly
       endpoint :format do
         description 'Format the given time'
         argument :time, type: ArgumentSets::TimeLookupArgumentSet, required: true
@@ -28,12 +30,14 @@ module CoreAPI
         description 'Format the given times'
         argument :times, type: [ArgumentSets::TimeLookupArgumentSet], required: true
         field :formatted_times, type: [:string]
+        field :times, type: [Objects::Time], include: 'unix,year[as_string],as_array_of_objects[as_integer]'
         action do
           times = []
           request.arguments[:times].each do |time|
-            times << time.resolve.to_s
+            times << time.resolve
           end
-          response.add_field :formatted_times, times.join(", ")
+          response.add_field :formatted_times, times.map(&:to_s).join(", ")
+          response.add_field :times, times
         end
       end
 

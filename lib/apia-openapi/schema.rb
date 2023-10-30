@@ -21,7 +21,7 @@ module Apia
       end
 
       def json
-        @spec.to_json
+        JSON.pretty_generate(@spec)# .to_json
       end
 
       private
@@ -125,14 +125,46 @@ module Apia
         id = generate_id(definition.type.klass.definition)
         return unless @spec.dig(:components, :schemas, id).nil?
 
-        @spec[:components][:schemas][id] = generate_schema(definition: definition)
+        component_schema = {}
+        @spec[:components][:schemas][id] = component_schema
+        generate_schema(definition: definition, schema: component_schema)
       end
 
-      # we generate schemas for two reasons:
+      # We generate schemas for two reasons:
       # 1. to add them to the components section (so they can be referenced)
       # 2. to add them to the request body when not all fields are returned in the response
-      def generate_schema(definition:, endpoint: nil, path: nil)
-        schema = {}
+      def generate_schema(definition:, schema: ,endpoint: nil, path: nil)
+        if definition.type.polymorph?
+          schema[:type] = 'object'
+          schema[:properties] ||= {}
+          refs = []
+          definition.type.klass.definition.options.map do |name, polymorph_option|
+            refs << { "$ref": "#/components/schemas/#{generate_id(polymorph_option.type.klass.definition)}" }
+            add_component_schema(polymorph_option)
+          end
+          schema[:properties][definition.name.to_s] = { oneOf: refs }
+          return schema
+        elsif definition.respond_to?(:array?) && definition.array?
+          schema[:type] = 'object'
+          schema[:properties] ||= {}
+          if definition.type.argument_set? || definition.type.enum? || definition.type.object?
+            if definition.type.argument_set? # TODO add array of argument sets to the example app (refer to CoreAPI::ArgumentSets::KeyValue)
+              children = definition.type.klass.definition.arguments.values
+            else
+              children = definition.type.klass.definition.fields.values
+            end
+          else
+            items = { type: definition.type.klass.definition.name.downcase }
+          end
+
+          if items
+            schema[:properties][definition.name.to_s] = {
+              type: "array",
+              items: items
+            }
+            return schema
+          end
+        end
 
         if definition.type.argument_set?
           children = definition.type.klass.definition.arguments.values
@@ -144,13 +176,15 @@ module Apia
           children = []
         end
 
+        all_properties_included = definition.type.enum? || endpoint.nil? || children.all? { |child| endpoint.include_field?(path + [child.name]) }
+
         children.each do |child|
           next unless endpoint.nil? || (!definition.type.enum? && endpoint.include_field?(path + [child.name]))
 
           if definition.type.enum?
             schema[:type] = 'string'
             schema[:enum] = children.map { |c| c[:name] }
-          elsif child.type.argument_set? || child.type.enum? # polymorph?
+          elsif child.type.argument_set? || child.type.enum? || child.type.polymorph?
             schema[:type] = 'object'
             schema[:properties] ||= {}
             schema[:properties][child.name.to_s] = {
@@ -162,13 +196,24 @@ module Apia
             schema[:properties] ||= {}
             # In theory we could point to a ref here if * is used to include all fields of a child object, but we'd
             # need to parse the endpoint include string to determine if that's the case.
-            child_path = path.nil? ? nil : path + [child]
-            schema[:properties][child.name.to_s] = generate_schema(definition: child, endpoint: endpoint, path: child_path)
+            if all_properties_included
+              schema[:properties][child.name.to_s] = {
+                "$ref": "#/components/schemas/#{generate_id(child.type.klass.definition)}"
+              }
+              add_component_schema(child)
+            else
+              child_path = path.nil? ? nil : path + [child]
+              puts "definition.type: #{definition.type.inspect}"
+              child_schema = {}
+              schema[:properties][child.name.to_s] = child_schema
+              generate_schema(definition: child, schema: child_schema, endpoint: endpoint, path: child_path)
+            end
           else
             schema[:type] = 'object'
             schema[:properties] ||= {}
             schema[:properties][child.name.to_s] = {
-              type: child.type.klass.definition.name.downcase
+              type: map_type_to_openapi_property_type(child.type)
+
             }
           end
         end
@@ -176,12 +221,13 @@ module Apia
         schema
       end
 
+      # TODO: can you use a polymorph in a request body?
       def add_request_body(route, route_spec)
         properties = {}
         route.endpoint.definition.argument_set.definition.arguments.each_value do |arg|
           id = generate_id(arg.type.klass.definition)
           if arg.array?
-            if arg.type.argument_set? || arg.type.enum? # polymorph?
+            if arg.type.argument_set? || arg.type.enum?
               items = { "$ref": "#/components/schemas/#{id}" }
               add_component_schema(arg)
             else
@@ -189,16 +235,15 @@ module Apia
             end
 
             properties[arg.name.to_s] = {
-                type: "array",
-                items: items
-              }
-
-          elsif arg.type.argument_set? || arg.type.enum? # polymorph?
+              type: "array",
+              items: items
+            }
+          elsif arg.type.argument_set? || arg.type.enum?
             properties[arg.name.to_s] = {
               "$ref": "#/components/schemas/#{id}"
             }
             add_component_schema(arg)
-          else
+          else # scalar
             properties[arg.name.to_s] = {
               type: arg.type.klass.definition.name.downcase
             }
@@ -222,36 +267,9 @@ module Apia
       def add_responses(route, route_spec)
         properties = {}
         route.endpoint.definition.fields.each do |name, field|
-          if field.array?
-            if field.type.object? || field.type.enum? # polymorph?
-              if field.include.nil?
-                items = { "$ref": "#/components/schemas/#{generate_id(field.type.klass.definition)}" }
-                add_component_schema(field)
-              else
-                schema = generate_schema(definition: field, endpoint: route.endpoint, path: [field])
-                items = schema[:properties]
-              end
-            else
-              items = { type: field.type.klass.definition.name.downcase }
-            end
-            properties[name] = {
-              type: "array",
-              items: items
-            }
-          elsif field.type.object? || field.type.enum? # polymorph?
-            if field.include.nil?
-              properties[name] = {
-                "$ref": "#/components/schemas/#{generate_id(field.type.klass.definition)}"
-              }
-              add_component_schema(field)
-            elsif schema = generate_schema(definition: field, endpoint: route.endpoint, path: [field])
-              properties[name] = schema
-            end
-          else
-            properties[name] = {
-              type: field.type.klass.definition.name.downcase
-            }
-          end
+          properties.merge!(
+            generate_properties_for_response(name, field, route.endpoint)
+          )
         end
 
         schema = {
@@ -273,6 +291,62 @@ module Apia
         }
       end
 
+      # Response fields can often just point to a ref of a schema. But it's also
+      # possible to reference a return type and not include all fields of that type.
+      # The presence of the `include` keyword arg defines which fields are included.
+      def generate_properties_for_response(name, field, endpoint)
+        properties = {}
+        if field.type.polymorph?
+          if field.include.nil?
+            refs = []
+            field.type.klass.definition.options.map do |name, polymorph_option|
+              refs << { "$ref": "#/components/schemas/#{generate_id(polymorph_option.type.klass.definition)}" }
+              add_component_schema(polymorph_option)
+            end
+            properties[name] = { oneOf: refs }
+          else
+            # TODO
+          end
+        elsif field.array?
+          if field.type.object? || field.type.enum? # polymorph?
+            if field.include.nil?
+              items = { "$ref": "#/components/schemas/#{generate_id(field.type.klass.definition)}" }
+              add_component_schema(field)
+            else
+              array_schema = {}
+              generate_schema(definition: field, schema: array_schema, endpoint: endpoint, path: [field])
+              if array_schema[:properties].any?
+                items = array_schema
+              end
+            end
+          else
+            items = { type: field.type.klass.definition.name.downcase }
+          end
+          if items
+            properties[name] = {
+              type: "array",
+              items: items
+            }
+          end
+        elsif field.type.object? || field.type.enum?
+          if field.include.nil?
+            properties[name] = {
+              "$ref": "#/components/schemas/#{generate_id(field.type.klass.definition)}"
+            }
+            add_component_schema(field)
+          else
+            object_schema = {}
+            generate_schema(definition: field, schema: object_schema, endpoint: endpoint, path: [field])
+            properties[name] = object_schema
+          end
+        else # scalar
+          properties[name] = {
+            type: map_type_to_openapi_property_type(field.type)
+          }
+        end
+        properties
+      end
+
       def add_security
         @api.objects.select { |o| o.ancestors.include?(Apia::Authenticator) }.each do |authenticator|
           next unless authenticator.definition.type == :bearer
@@ -292,6 +366,16 @@ module Apia
       # forward slashes do not work in ids (e.g. schema ids)
       def generate_id(definition)
         definition.id.gsub(/\//, '_')
+      end
+
+      def map_type_to_openapi_property_type(type)
+        if type.klass == Apia::Scalars::UnixTime
+          'integer'
+        elsif type.klass == Apia::Scalars::Decimal
+          'string' # TODO: or integer, add this to example app
+        else
+          type.klass.definition.name.downcase
+        end
       end
     end
   end

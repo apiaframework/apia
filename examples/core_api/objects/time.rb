@@ -2,6 +2,7 @@
 
 require 'core_api/objects/day'
 require 'core_api/objects/year'
+require 'core_api/objects/month_polymorph'
 
 module CoreAPI
   module Objects
@@ -9,16 +10,12 @@ module CoreAPI
 
       description 'Represents a time'
 
-      field :unix, type: :integer do
+      field :unix, type: :unix_time do
         backend(&:to_i)
       end
 
       field :day_of_week, type: Objects::Day do
         backend { |t| t.strftime('%A') }
-      end
-
-      field :month, type: :string do
-        backend { |t| t.strftime('%b') }
       end
 
       field :full, type: :string do
@@ -27,6 +24,18 @@ module CoreAPI
 
       field :year, type: Objects::Year do
         backend { |t| t.year }
+      end
+
+      field :month, type: Objects::MonthPolymorph do
+        backend { |t| t }
+      end
+
+      field :as_array, type: [:integer] do
+        backend { |t| [t.year, t.month, t.day, t.hour, t.minute, t.second] }
+      end
+
+      field :as_array_of_objects, type: [Objects::Year] do
+        backend { |t| [t.year] }
       end
 
     end
