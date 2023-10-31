@@ -8,7 +8,7 @@ module Apia
         @api = api
         @base_url = base_url # TODO: should we support multiple urls?
         @spec = {
-          openapi: '3.0.0', # swagger-editor does not support 3.1.0 :(
+          openapi: '3.1.0',
           info: {},
           servers: [],
           paths: {},
@@ -76,7 +76,7 @@ module Apia
                 name: "#{arg.name.to_s}[#{child_arg.name.to_s}]",
                 in: "query",
                 schema: {
-                  type: child_arg.type.klass.definition.name.downcase
+                  type: convert_type_to_openapi_data_type(child_arg.type)
                 }
               }
               route_spec[:parameters] << param
@@ -86,7 +86,7 @@ module Apia
               items = { "$ref": "#/components/schemas/#{generate_id(arg.type.klass.definition)}" }
               add_component_schema(arg)
             else
-              items = { type: arg.type.klass.definition.name.downcase }
+              items = { type: convert_type_to_openapi_data_type(arg.type) }
             end
 
             param = {
@@ -113,7 +113,7 @@ module Apia
               name: arg.name.to_s,
               in: "query",
               schema: {
-                type: arg.type.klass.definition.name.downcase # TODO: do these map to OpenAPI types?
+                type: convert_type_to_openapi_data_type(arg.type)
               }
             }
             route_spec[:parameters] << param
@@ -154,7 +154,7 @@ module Apia
               children = definition.type.klass.definition.fields.values
             end
           else
-            items = { type: definition.type.klass.definition.name.downcase }
+            items = { type: convert_type_to_openapi_data_type(definition.type) }
           end
 
           if items
@@ -176,7 +176,14 @@ module Apia
           children = []
         end
 
-        all_properties_included = definition.type.enum? || endpoint.nil? || children.all? { |child| endpoint.include_field?(path + [child.name]) }
+        # if !definition.type.enum? && !endpoint.nil?
+        #   puts "definition.type #{definition.type.klass}"
+        #   puts "children: #{children.map { |c| [c.name, endpoint.include_field?(path + [c.name])] }}"
+        #   puts "children.all? #{children.all? { |child| endpoint.include_field?(path + [child.name]) }}"
+        #   puts ""
+        # end
+        all_properties_included = definition.type.enum? || endpoint.nil? #|| children.all? { |child| endpoint.include_field?(path + [child.name]) }
+        #puts "all_properties_included: #{all_properties_included}"
 
         children.each do |child|
           next unless endpoint.nil? || (!definition.type.enum? && endpoint.include_field?(path + [child.name]))
@@ -203,7 +210,6 @@ module Apia
               add_component_schema(child)
             else
               child_path = path.nil? ? nil : path + [child]
-              puts "definition.type: #{definition.type.inspect}"
               child_schema = {}
               schema[:properties][child.name.to_s] = child_schema
               generate_schema(definition: child, schema: child_schema, endpoint: endpoint, path: child_path)
@@ -212,7 +218,7 @@ module Apia
             schema[:type] = 'object'
             schema[:properties] ||= {}
             schema[:properties][child.name.to_s] = {
-              type: map_type_to_openapi_property_type(child.type)
+              type: convert_type_to_openapi_data_type(child.type)
 
             }
           end
@@ -231,7 +237,7 @@ module Apia
               items = { "$ref": "#/components/schemas/#{id}" }
               add_component_schema(arg)
             else
-              items = { type: arg.type.klass.definition.name.downcase }
+              items = { type: convert_type_to_openapi_data_type(arg.type) }
             end
 
             properties[arg.name.to_s] = {
@@ -245,7 +251,7 @@ module Apia
             add_component_schema(arg)
           else # scalar
             properties[arg.name.to_s] = {
-              type: arg.type.klass.definition.name.downcase
+              type: convert_type_to_openapi_data_type(arg.type)
             }
           end
 
@@ -281,7 +287,7 @@ module Apia
 
         route_spec[:responses] = {
           "#{route.endpoint.definition.http_status}": {
-            description: route.endpoint.definition.description, # does this break if nil?
+            description: route.endpoint.definition.description || "",
             content: {
               "application/json": {
                 schema: schema
@@ -320,7 +326,7 @@ module Apia
               end
             end
           else
-            items = { type: field.type.klass.definition.name.downcase }
+            items = { type: convert_type_to_openapi_data_type(field.type) }
           end
           if items
             properties[name] = {
@@ -341,7 +347,7 @@ module Apia
           end
         else # scalar
           properties[name] = {
-            type: map_type_to_openapi_property_type(field.type)
+            type: convert_type_to_openapi_data_type(field.type)
           }
         end
         properties
@@ -368,11 +374,13 @@ module Apia
         definition.id.gsub(/\//, '_')
       end
 
-      def map_type_to_openapi_property_type(type)
+      def convert_type_to_openapi_data_type(type)
         if type.klass == Apia::Scalars::UnixTime
           'integer'
         elsif type.klass == Apia::Scalars::Decimal
-          'string' # TODO: or integer, add this to example app
+          'number'
+        elsif type.klass == Apia::Scalars::Base64
+          'string'
         else
           type.klass.definition.name.downcase
         end

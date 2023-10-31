@@ -11,7 +11,7 @@ module CoreAPI
       description 'Represents a time'
 
       field :unix, type: :unix_time do
-        backend(&:to_i)
+        backend { |t| t }
       end
 
       field :day_of_week, type: Objects::Day do
@@ -31,11 +31,19 @@ module CoreAPI
       end
 
       field :as_array, type: [:integer] do
-        backend { |t| [t.year, t.month, t.day, t.hour, t.minute, t.second] }
+        backend { |t| [t.year, t.month, t.day, t.hour, t.min, t.sec] }
       end
 
       field :as_array_of_objects, type: [Objects::Year] do
         backend { |t| [t.year] }
+      end
+
+      field :as_decimal, type: :decimal do
+        backend { |t| t.to_f }
+      end
+
+      field :as_base64, type: :base64 do
+        backend { |t| Base64.encode64(t.to_s) }
       end
 
     end

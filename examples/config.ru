@@ -9,7 +9,7 @@ require 'core_api/base'
 
 require 'apia-openapi'
 
-use Apia::OpenAPI::Rack, 'CoreAPI::Base', '/core/v1/schema/openapi.json'
+use Apia::OpenAPI::Rack, 'CoreAPI::Base', '/core/v1/schema/openapi.json', base_url: 'http://127.0.0.1:9292/core/v1/'
 use Apia::Rack, CoreAPI::Base, '/core/v1', development: true
 
 app = proc do
