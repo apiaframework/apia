@@ -2,6 +2,13 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## [3.5.1](https://github.com/krystal/apia/compare/v3.5.0...v3.5.1) (2023-11-09)
+
+
+### Bug Fixes
+
+* **rack:** ensure OPTIONS preflight requests are handled ([#18](https://github.com/krystal/apia/issues/18)) ([8142479](https://github.com/krystal/apia/commit/81424790ceb95619e01f0e111bb735c984d4b899))
+
 ## [3.5.0](https://github.com/krystal/apia/compare/v3.4.0...v3.5.0) (2023-08-14)
 
 
