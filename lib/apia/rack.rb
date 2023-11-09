@@ -79,7 +79,8 @@ module Apia
 
       validate_api if development?
 
-      route = find_route(request_method, api_path)
+      access_control_request_method = env['HTTP_ACCESS_CONTROL_REQUEST_METHOD']&.upcase if request_method == 'OPTIONS'
+      route = find_route((access_control_request_method || request_method), api_path)
       if route.nil?
         Apia::Notifications.notify(:request_route_not_found, notify_hash)
         raise RackError.new(404, 'route_not_found', "No route matches '#{api_path}' for #{request_method}")

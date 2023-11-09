@@ -11,5 +11,6 @@ gem 'rspec-mocks'
 
 gem 'solargraph'
 
+gem 'pry'
 gem 'rake'
 gem 'rubocop'

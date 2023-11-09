@@ -18,15 +18,15 @@ module CoreAPI
       cors.methods = %w[GET POST PUT PATCH DELETE OPTIONS]
 
       # Define a list of cors headers that are permitted for the request.
-      cors.headers = %w[X-Custom-Header]
+      cors.headers = %w[Authorization Content-Type] # or allow all with '*'
 
       # Define a the hostname to allow for CORS requests.
       cors.origin = '*' # or 'example.com'
-      cors.origin = 'krystal.uk'
+
+      return if request.options?
 
       given_token = request.headers['authorization']&.sub(/\ABearer /, '')
-      case given_token
-      when 'example'
+      if given_token == 'example'
         request.identity = { name: 'Example User', id: 1234 }
       else
         raise_error 'CoreAPI/MainAuthenticator/InvalidToken', given_token: given_token.to_s
