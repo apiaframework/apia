@@ -1,21 +1,21 @@
-![Welcome](https://share.adam.ac/21/Artboard-2MDkIo4op8Zmv5h278.png)
+![Welcome](https://github.com/apiaframework/apia/assets/4765/913fe247-52eb-4daf-8f6f-42d84416f383)
 
 <p align="center">
   <a href="https://rubygems.org/gems/apia">
     <img src="https://img.shields.io/gem/v/apia.svg?label=rubygems&logo=rubygems" alt="RubyGems">
   </a>
-  <a href="https://github.com/krystal/apia/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/krystal/apia/ci.yml?branch=main&logo=github" alt="Actions Status">
+  <a href="https://github.com/apiaframework/apia/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/apiaframework/apia/ci.yml?branch=main&logo=github" alt="Actions Status">
   </a>
-  <a href="https://github.com/krystal/apia/issues">
-    <img src="https://img.shields.io/github/issues-raw/krystal/apia.svg?style=flat&logo=github&logoColor=white"
+  <a href="https://github.com/apiaframework/apia/issues">
+    <img src="https://img.shields.io/github/issues-raw/apiaframework/apia.svg?style=flat&logo=github&logoColor=white"
 alt="GitHub issues">
   </a>
-  <a href="https://github.com/krystal/apia/pulls">
-    <img src="https://img.shields.io/github/issues-pr-raw/krystal/apia.svg?style=flat&logo=github&logoColor=white" alt="GitHub pull requests">
+  <a href="https://github.com/apiaframework/apia/pulls">
+    <img src="https://img.shields.io/github/issues-pr-raw/apiaframework/apia.svg?style=flat&logo=github&logoColor=white" alt="GitHub pull requests">
   </a>
-  <a href="https://github.com/krystal/apia/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/krystal/apia.svg?style=flat" alt="License Status">
+  <a href="https://github.com/apiaframework/apia/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/apiaframework/apia.svg?style=flat" alt="License Status">
   </a>
 </p>
 

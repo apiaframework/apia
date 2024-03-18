@@ -10,11 +10,6 @@ jobs:
       tag_name: ${{ steps.release-please.outputs.tag_name }} # e.g. v1.0.0
       version: ${{ steps.release-please.outputs.version }} # e.g. 1.0.0
     steps:
-      - uses: tibdex/github-app-token@v1
-        id: generate-github-token
-        with:
-          app_id: ${{ vars.RELEASE_PLEASE_GITHUB_APP_ID }}
-          private_key: ${{ secrets.RELEASE_PLEASE_GITHUB_APP_PRIVATE_KEY }}
       - uses: google-github-actions/release-please-action@v3
         id: release-please
         with:
@@ -28,10 +23,7 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
-
-      - name: Configure Bundler
-        run: bundle config set rubygems.pkg.github.com "${{ secrets.KRYSTAL_GITHUB_PACKAGE_READ_KEY }}"
+          ruby-version: 3.2
 
       - name: Install dependencies
         run: bundle install
@@ -45,20 +37,16 @@ jobs:
       fail-fast: false
       matrix:
         ruby_version:
-          - 2.5
-          - 2.6
           - 2.7
           - "3.0"
           - 3.1
+          - 3.2
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby_version }}
           bundler-cache: true
-
-      - name: Configure Bundler
-        run: bundle config set rubygems.pkg.github.com "${{ secrets.KRYSTAL_GITHUB_PACKAGE_READ_KEY }}"
 
       - name: Install dependencies
         run: bundle install
