@@ -10,6 +10,7 @@ module Apia
     attr_reader :fields
     attr_reader :headers
     attr_writer :body
+    attr_writer :type
 
     def initialize(request, endpoint)
       @request = request
@@ -53,11 +54,18 @@ module Apia
       @body || hash
     end
 
+    def type
+      @type || :json
+    end
+
     # Return the rack triplet for this response
     #
     # @return [Array]
     def rack_triplet
-      Rack.json_triplet(body, headers: @headers, status: @status)
+      return Rack.json_triplet(body, headers: @headers, status: @status) if type == :json
+      return Rack.plain_triplet(body, headers: @headers, status: @status) if type == :plain
+
+      raise "Unknown response type '#{type}'"
     end
 
   end
