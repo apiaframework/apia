@@ -180,10 +180,13 @@ module Apia
       # @param headers [Hash]
       # @return [Array]
       def response_triplet(body, content_type:, status: 200, headers: {})
+        content_length = body.bytesize.to_s
+        body = [body] unless body.respond_to?(:each)
+
         [
           status,
-          headers.merge('content-type' => content_type, 'content-length' => body.bytesize.to_s),
-          [body]
+          headers.merge('content-type' => content_type, 'content-length' => content_length),
+          body
         ]
       end
 

@@ -25,9 +25,9 @@ module Apia
       @headers = {}
     end
 
-    def plain!
+    def plain_text_body(body)
       @type = PLAIN
-      @body = ''
+      @body = body
     end
 
     # Add a field value for this endpoint
