@@ -2,6 +2,13 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## [3.6.0](https://github.com/apiaframework/apia/compare/v3.5.1...v3.6.0) (2024-04-17)
+
+
+### Features
+
+* Add plain text responses ([#25](https://github.com/apiaframework/apia/issues/25)) ([dd556e6](https://github.com/apiaframework/apia/commit/dd556e6cc9332960e409c4e5245431ec97ba84f0))
+
 ## [3.5.1](https://github.com/krystal/apia/compare/v3.5.0...v3.5.1) (2023-11-09)
 
 
