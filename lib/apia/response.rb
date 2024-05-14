@@ -7,8 +7,8 @@ module Apia
   class Response
 
     TYPES = [
-      JSON = :json,
-      PLAIN = :plain
+      JSON = 'application/json',
+      PLAIN = 'text/plain'
     ].freeze
 
     attr_accessor :status
@@ -21,11 +21,14 @@ module Apia
       @endpoint = endpoint
 
       @status = @endpoint.definition.http_status_code
+      @type = @endpoint.definition.response_type
       @fields = {}
       @headers = {}
     end
 
     def plain_text_body(body)
+      warn '[DEPRECATION] `plain_text_body` is deprecated. Please set use `response_type` in the endpoint definition, and set the response `body` directly instead.'
+
       @type = PLAIN
       @body = body
     end
@@ -63,15 +66,11 @@ module Apia
       @body || hash
     end
 
-    def type
-      @type || JSON
-    end
-
     # Return the rack triplet for this response
     #
     # @return [Array]
     def rack_triplet
-      case type
+      case @type
       when JSON
         Rack.json_triplet(body, headers: headers, status: status)
       when PLAIN

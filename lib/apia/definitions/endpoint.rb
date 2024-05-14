@@ -14,6 +14,7 @@ module Apia
       attr_accessor :authenticator
       attr_accessor :action
       attr_accessor :http_status
+      attr_accessor :response_type
       attr_accessor :paginated_field
       attr_reader :fields
       attr_reader :scopes
@@ -21,6 +22,7 @@ module Apia
       def setup
         @fields = FieldSet.new
         @http_status = 200
+        @response_type = Apia::Response::JSON
         @scopes = []
       end
 
