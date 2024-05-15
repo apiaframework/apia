@@ -2,6 +2,13 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## [3.7.0](https://github.com/apiaframework/apia/compare/v3.6.0...v3.7.0) (2024-05-15)
+
+
+### Features
+
+* Add response type option to endpoints ([#27](https://github.com/apiaframework/apia/issues/27)) ([ee7efe8](https://github.com/apiaframework/apia/commit/ee7efe80bc70b300e9fd160b57d2084f3e719a4c))
+
 ## [3.6.0](https://github.com/apiaframework/apia/compare/v3.5.1...v3.6.0) (2024-04-17)
 
 
