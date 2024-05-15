@@ -85,6 +85,59 @@ describe Apia::Response do
     end
 
     context 'with a plain text response' do
+      before { endpoint.response_type Apia::Response::PLAIN }
+
+      let(:endpoint) { Apia::Endpoint.create('ExampleEndpoint') }
+
+      it 'should return 200 by default' do
+        response = Apia::Response.new(request, endpoint)
+        response.body = 'hello world'
+        expect(response.rack_triplet[0]).to eq 200
+      end
+
+      it 'should return whatever the status is set to' do
+        response = Apia::Response.new(request, endpoint)
+        response.body = 'hello world'
+        response.status = 403
+        expect(response.rack_triplet[0]).to eq 403
+      end
+
+      it 'should return the status from the endpoint' do
+        endpoint.http_status :created
+        response = Apia::Response.new(request, endpoint)
+        response.body = 'hello world'
+        expect(response.rack_triplet[0]).to eq 201
+      end
+
+      it 'should return the headers' do
+        response = Apia::Response.new(request, endpoint)
+        response.body = 'hello world'
+        response.add_header 'x-example', 'hi!'
+        expect(response.rack_triplet[1]['x-example']).to eq 'hi!'
+      end
+
+      it 'should always provide the content-type as plain' do
+        response = Apia::Response.new(request, endpoint)
+        response.body = 'hello world'
+        expect(response.rack_triplet[1]['content-type']).to eq 'text/plain'
+      end
+
+      it 'should always set a content-length' do
+        response = Apia::Response.new(request, endpoint)
+        response.body = ''
+        expect(response.rack_triplet[2][0]).to eq ''
+        expect(response.rack_triplet[1]['content-length']).to eq '0'
+      end
+
+      it 'should return the body if one has been set' do
+        response = Apia::Response.new(request, endpoint)
+        response.body = 'hello world'
+        expect(response.rack_triplet[2][0]).to eq 'hello world'
+        expect(response.rack_triplet[1]['content-length']).to eq '11'
+      end
+    end
+
+    context 'with a legacy plain text response' do
       it 'should return 200 by default' do
         endpoint = Apia::Endpoint.create('ExampleEndpoint')
         response = Apia::Response.new(request, endpoint)
@@ -137,6 +190,13 @@ describe Apia::Response do
         response.plain_text_body('hello world')
         expect(response.rack_triplet[2][0]).to eq 'hello world'
         expect(response.rack_triplet[1]['content-length']).to eq '11'
+      end
+
+      it 'should warn that the method is deprecated' do
+        endpoint = Apia::Endpoint.create('ExampleEndpoint')
+        response = Apia::Response.new(request, endpoint)
+        expect(response).to receive(:warn).with('[DEPRECATION] `plain_text_body` is deprecated. Please set use `response_type` in the endpoint definition, and set the response `body` directly instead.')
+        response.plain_text_body('hello world')
       end
     end
   end

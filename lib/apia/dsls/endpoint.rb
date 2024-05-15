@@ -40,6 +40,10 @@ module Apia
         @definition.http_status = status
       end
 
+      def response_type(type)
+        @definition.response_type = type
+      end
+
       def field(name, *args, type: nil, **options, &block)
         if @definition.fields_overriden?
           raise Apia::StandardError, 'Cannot add fields to an endpoint that has a separate fieldset'
