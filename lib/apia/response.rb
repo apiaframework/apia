@@ -70,11 +70,14 @@ module Apia
     #
     # @return [Array]
     def rack_triplet
-      case @type
-      when JSON
-        Rack.json_triplet(body, headers: headers, status: status)
-      when PLAIN
+      # Errors will always be sent as a hash intended for JSON encoding,
+      # even if the endpoint specifies a plain text response, so only
+      # send a pain response if the type is plaintext _and_ the body is
+      # a string
+      if @type == PLAIN && body.is_a?(String)
         Rack.plain_triplet(body, headers: headers, status: status)
+      else
+        Rack.json_triplet(body, headers: headers, status: status)
       end
     end
 

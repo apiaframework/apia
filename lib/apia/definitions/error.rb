@@ -37,7 +37,7 @@ module Apia
       # API.
       #
       # @param errors [Apia::ManifestErrors]
-      # @reeturn [void]
+      # @return [void]
       def validate(errors)
         unless code.is_a?(Symbol)
           errors.add self, 'InvalidCode', 'Code must be a symbol'

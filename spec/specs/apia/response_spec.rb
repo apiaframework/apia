@@ -135,6 +135,14 @@ describe Apia::Response do
         expect(response.rack_triplet[2][0]).to eq 'hello world'
         expect(response.rack_triplet[1]['content-length']).to eq '11'
       end
+
+      it 'should return JSON if the body is not a string' do
+        response = Apia::Response.new(request, endpoint)
+        response.body = { hello: 'world' }
+        expect(response.rack_triplet[1]['content-type']).to eq 'application/json'
+        expect(response.rack_triplet[1]['content-length']).to eq '17'
+        expect(response.rack_triplet[2][0]).to eq '{"hello":"world"}'
+      end
     end
 
     context 'with a legacy plain text response' do
