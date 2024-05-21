@@ -2,6 +2,13 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## [3.7.1](https://github.com/apiaframework/apia/compare/v3.7.0...v3.7.1) (2024-05-21)
+
+
+### Bug Fixes
+
+* Ensure plain text response is only used for strings ([#29](https://github.com/apiaframework/apia/issues/29)) ([dbf8a5e](https://github.com/apiaframework/apia/commit/dbf8a5ee29d72b16b592eb331597fd52b9fb2ca7))
+
 ## [3.7.0](https://github.com/apiaframework/apia/compare/v3.6.0...v3.7.0) (2024-05-15)
 
 
