@@ -47,7 +47,7 @@ module Apia
         response = Response.new(request, self)
         environment = RequestEnvironment.new(request, response)
 
-        catch_errors(response) do
+        catch_errors(response, environment) do
           # Determine an authenticator for this endpoint
           request.authenticator = definition.authenticator || request.controller&.definition&.authenticator || request.api&.definition&.authenticator
 
@@ -92,10 +92,14 @@ module Apia
       #
       # @param response [Apia::Response]
       # @return [void]
-      def catch_errors(response)
+      def catch_errors(response, environment)
         yield
       rescue Apia::RuntimeError => e
-        catch_errors(response) do
+        # If the error was triggered by the authenticator, the cors headers wont yet have been merged
+        # so ensure cors headers are merged here
+        response.headers.merge!(environment.cors.to_headers)
+
+        catch_errors(response, environment) do
           response.body = { error: e.hash }
           response.status = e.http_status
           response.headers['x-api-schema'] = 'json-error'

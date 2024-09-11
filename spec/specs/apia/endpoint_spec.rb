@@ -173,6 +173,36 @@ describe Apia::Endpoint do
             expect(response.headers['Access-Control-Allow-Headers']).to eq 'X-Custom'
           end
         end
+
+        context 'when cors values are set by the authenticator and it throws an error' do
+          it 'includes the CORS headers from the authenticator in the response' do
+            request = Apia::Request.new(Rack::MockRequest.env_for('/', input: ''))
+
+            authenticator = Apia::Authenticator.create('ExampleAPIAuthenticator') do
+              potential_error 'Failed' do
+                code :failed
+                http_status 500
+              end
+            end
+
+            authenticator.action do
+              cors.origin = 'example.com'
+              cors.methods = 'GET, POST'
+              cors.headers = 'X-Custom'
+
+              raise_error 'Failed'
+            end
+
+            endpoint = Apia::Endpoint.create('Endpoint') do
+              authenticator authenticator
+            end
+
+            response = endpoint.execute(request)
+            expect(response.headers['Access-Control-Allow-Origin']).to eq 'example.com'
+            expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, POST'
+            expect(response.headers['Access-Control-Allow-Headers']).to eq 'X-Custom'
+          end
+        end
       end
 
       context 'when the request is an OPTIONS request' do
