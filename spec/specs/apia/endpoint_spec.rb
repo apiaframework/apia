@@ -12,7 +12,7 @@ describe Apia::Endpoint do
   context '.execute' do
     context 'authenticators' do
       it 'should call the endpoint authenticator if one has been set' do
-        request = Apia::Request.new(Rack::MockRequest.env_for('/', input: ''))
+        request = Apia::Request.new(Rack::MockRequest.env_for('/', :input => ''))
 
         api_auth = Apia::Authenticator.create('ExampleAPIAuthenticator')
         api_auth.action { response.add_header 'x-auth', 'api' }
@@ -45,7 +45,7 @@ describe Apia::Endpoint do
       end
 
       it 'should call the controller authenticator if one has been set' do
-        request = Apia::Request.new(Rack::MockRequest.env_for('/', input: ''))
+        request = Apia::Request.new(Rack::MockRequest.env_for('/', :input => ''))
 
         api_auth = Apia::Authenticator.create('ExampleAPIAuthenticator')
         api_auth.action { response.add_header 'x-auth', 'api' }
@@ -75,7 +75,7 @@ describe Apia::Endpoint do
       end
 
       it 'should call the API authenticator' do
-        request = Apia::Request.new(Rack::MockRequest.env_for('/', input: ''))
+        request = Apia::Request.new(Rack::MockRequest.env_for('/', :input => ''))
 
         api_auth = Apia::Authenticator.create('ExampleAPIAuthenticator')
         api_auth.action { response.add_header 'x-auth', 'api' }
@@ -92,7 +92,7 @@ describe Apia::Endpoint do
       end
 
       it 'checks the scopes are valid' do
-        request = Apia::Request.new(Rack::MockRequest.env_for('/', input: ''))
+        request = Apia::Request.new(Rack::MockRequest.env_for('/', :input => ''))
 
         api_auth = Apia::Authenticator.create('ExampleAPIAuthenticator') do
           scope_validator { |e| e == 'not-example' }
@@ -130,7 +130,7 @@ describe Apia::Endpoint do
       end
 
       it 'should create an argument set from standard HTTP query string parameters' do
-        request = Apia::Request.new(Rack::MockRequest.env_for('/?name=Adam'))
+        request = Apia::Request.new(Rack::MockRequest.env_for('/?name=Adam', :input => ''))
         request.endpoint = Apia::Endpoint.create('Endpoint') do
           argument :name, type: :string
         end
@@ -144,7 +144,7 @@ describe Apia::Endpoint do
       context 'it includes CORS headers in the response' do
         context 'when nothing is specified' do
           it 'includes wildcard CORS headers' do
-            request = Apia::Request.new(Rack::MockRequest.env_for('/', input: ''))
+            request = Apia::Request.new(Rack::MockRequest.env_for('/', :input => ''))
             endpoint = Apia::Endpoint.create('Endpoint')
             response = endpoint.execute(request)
             expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
@@ -154,7 +154,7 @@ describe Apia::Endpoint do
 
         context 'when cors values are set by the authenticator' do
           it 'includes the CORS headers from the authenticator in the response' do
-            request = Apia::Request.new(Rack::MockRequest.env_for('/', input: ''))
+            request = Apia::Request.new(Rack::MockRequest.env_for('/', :input => ''))
 
             authenticator = Apia::Authenticator.create('ExampleAPIAuthenticator')
             authenticator.action do
@@ -176,7 +176,7 @@ describe Apia::Endpoint do
 
         context 'when cors values are set by the authenticator and it throws an error' do
           it 'includes the CORS headers from the authenticator in the response' do
-            request = Apia::Request.new(Rack::MockRequest.env_for('/', input: ''))
+            request = Apia::Request.new(Rack::MockRequest.env_for('/', :input => ''))
 
             authenticator = Apia::Authenticator.create('ExampleAPIAuthenticator') do
               potential_error 'Failed' do
@@ -207,7 +207,7 @@ describe Apia::Endpoint do
 
       context 'when the request is an OPTIONS request' do
         it 'returns a 200 OK status' do
-          request = Apia::Request.new(Rack::MockRequest.env_for('/', input: '', method: 'OPTIONS'))
+          request = Apia::Request.new(Rack::MockRequest.env_for('/', :input => '', method: 'OPTIONS'))
           endpoint = Apia::Endpoint.create('Endpoint')
           response = endpoint.execute(request)
           expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
@@ -217,7 +217,7 @@ describe Apia::Endpoint do
         end
 
         it 'does not execute the endpoint' do
-          request = Apia::Request.new(Rack::MockRequest.env_for('/', input: '', method: 'OPTIONS'))
+          request = Apia::Request.new(Rack::MockRequest.env_for('/', :input => '', method: 'OPTIONS'))
           endpoint = Apia::Endpoint.create('Endpoint')
           expect(endpoint).not_to receive(:new)
           endpoint.execute(request)
@@ -226,7 +226,7 @@ describe Apia::Endpoint do
 
       context 'when the request is not an OPTIONS request' do
         it 'executes the endpoint' do
-          request = Apia::Request.new(Rack::MockRequest.env_for('/', input: '', method: 'GET'))
+          request = Apia::Request.new(Rack::MockRequest.env_for('/', :input => '', method: 'GET'))
           endpoint = Apia::Endpoint.create('Endpoint')
           expect(endpoint).to receive(:new).and_call_original
           endpoint.execute(request)
