@@ -40,7 +40,7 @@ describe Apia::ArgumentSet do
     end
 
     it 'should create a new set using HTTP params if provided' do
-      env = Rack::MockRequest.env_for('/?name=michael')
+      env = Rack::MockRequest.env_for('/?name=michael', input: '')
       request = Apia::Request.new(env)
       as = Apia::ArgumentSet.create('ExampleSet') do
         argument :name, type: :string

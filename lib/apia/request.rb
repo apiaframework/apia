@@ -36,7 +36,7 @@ module Apia
     end
 
     def body?
-      has_header?('rack.input')
+      has_header?(::Rack::RACK_INPUT)
     end
 
     def params

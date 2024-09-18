@@ -69,7 +69,7 @@ module Apia
 
           field :pagination, type: PaginationObject
         end
-        super(name, *args, type: type, **options, &block)
+        super
       end
 
       def fields(fieldset)
