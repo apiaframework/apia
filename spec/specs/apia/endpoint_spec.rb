@@ -198,6 +198,8 @@ describe Apia::Endpoint do
             end
 
             response = endpoint.execute(request)
+
+            expect(response.status).to eq 500
             expect(response.headers['Access-Control-Allow-Origin']).to eq 'example.com'
             expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, POST'
             expect(response.headers['Access-Control-Allow-Headers']).to eq 'X-Custom'
