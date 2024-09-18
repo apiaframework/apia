@@ -2,6 +2,13 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## [3.7.2](https://github.com/apiaframework/apia/compare/v3.7.1...v3.7.2) (2024-09-18)
+
+
+### Bug Fixes
+
+* Ensure CORS headers are still added when an error occurs in the authenticator ([#32](https://github.com/apiaframework/apia/issues/32)) ([76cc18a](https://github.com/apiaframework/apia/commit/76cc18adca6da977dd11cd26032e40374b43533d))
+
 ## [3.7.1](https://github.com/apiaframework/apia/compare/v3.7.0...v3.7.1) (2024-05-21)
 
 
