@@ -2,6 +2,13 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## [3.8.0](https://github.com/apiaframework/apia/compare/v3.7.2...v3.8.0) (2025-02-28)
+
+
+### Features
+
+* Allow JSON request with a vendor specific content type ([#34](https://github.com/apiaframework/apia/issues/34)) ([3f20d6f](https://github.com/apiaframework/apia/commit/3f20d6f7037b36470655660cd31eeae07057d93b))
+
 ## [3.7.2](https://github.com/apiaframework/apia/compare/v3.7.1...v3.7.2) (2024-09-18)
 
 
