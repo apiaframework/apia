@@ -12,13 +12,19 @@ describe Apia::Request do
   end
 
   context '#json_body' do
-    it 'should return nil if the content type is not application/json' do
-      request = Apia::Request.new(Rack::MockRequest.env_for('/'))
+    it 'should return nil if the content type is not json' do
+      request = Apia::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/vnd.docker.distribution.events.v2-json', :input => '{"name":"Lauren"}'))
       expect(request.json_body).to be nil
     end
 
     it 'should return a hash when valid JSON is provided' do
       request = Apia::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/json', :input => '{"name":"Lauren"}'))
+      expect(request.json_body).to be_a Hash
+      expect(request.json_body['name']).to eq 'Lauren'
+    end
+
+    it 'should return a hash when valid JSON is provided with a vendor specific json content type' do
+      request = Apia::Request.new(Rack::MockRequest.env_for('/', 'CONTENT_TYPE' => 'application/vnd.docker.distribution.events.v2+json', :input => '{"name":"Lauren"}'))
       expect(request.json_body).to be_a Hash
       expect(request.json_body['name']).to eq 'Lauren'
     end

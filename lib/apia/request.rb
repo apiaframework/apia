@@ -58,7 +58,9 @@ module Apia
     end
 
     def get_json_body_from_body
-      return unless content_type =~ /\Aapplication\/json/
+      # Allow for either standard json content type (ie: application/json)
+      # or a vendor specific type with a json suffix (eg: application/vnd.docker.distribution.events.v2+json)
+      return unless content_type =~ /\Aapplication\/(|.*\+)json/
       return unless body?
 
       parse_json_from_string(body.read)
