@@ -48,7 +48,7 @@ jobs:
         id: release-please
         with:
           target-branch-pattern: '^(main|master|release-[0-9]+(\.[0-9]+)?\.x)$'
-          app-id: ${{ secrets.RELEASE_BOT_APP_ID }}
+          app-id: ${{ vars.RELEASE_BOT_APP_ID }}
           private-key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
 
   release:
