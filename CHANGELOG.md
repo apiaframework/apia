@@ -2,6 +2,13 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## [3.9.0](https://github.com/apiaframework/apia/compare/v3.8.0...v3.9.0) (2025-10-17)
+
+
+### Features
+
+* **deps:** add support for Rack v3.x ([#38](https://github.com/apiaframework/apia/issues/38)) ([852d671](https://github.com/apiaframework/apia/commit/852d67155173cfdab43ede6956372e9a8166437d))
+
 ## [3.8.0](https://github.com/apiaframework/apia/compare/v3.7.2...v3.8.0) (2025-02-28)
 
 
