@@ -5,6 +5,7 @@ inherit_from:
 AllCops:
   Exclude:
     - bin/**/*
+    - "vendor/bundle/**/*" # Fixes missing gem exception when running RuboCop on GitHub Actions.
   SuggestExtensions: false
 
 Layout/LineLength:
