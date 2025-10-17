@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.authors       = ['Adam Cooke']
   s.email         = ['adam@k.io']
   s.licenses      = ['MIT']
+  s.add_dependency 'base64'
   s.add_dependency 'json'
   s.add_dependency 'rack'
 end
