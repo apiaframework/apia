@@ -14,5 +14,9 @@ module Apia
     end
     attr_writer :ip
 
+    def params
+      @params ||= {}
+    end
+
   end
 end

@@ -76,4 +76,110 @@ describe Apia::Request do
       expect(request.json_body).to be_empty
     end
   end
+
+  context '#params' do
+    it 'returns an empty hash when there is no body' do
+      request = Apia::Request.new(Rack::MockRequest.env_for('/'))
+      expect(request.params).to eq({})
+    end
+
+    it 'returns an empty hash for GET requests with no query string' do
+      request = Apia::Request.new(Rack::MockRequest.env_for('/', method: 'GET'))
+      expect(request.params).to eq({})
+    end
+
+    it 'returns query string params for GET requests' do
+      request = Apia::Request.new(
+        Rack::MockRequest.env_for('/?name=Alice&age=30', method: 'GET')
+      )
+      expect(request.params).to eq({ 'name' => 'Alice', 'age' => '30' })
+    end
+
+    it 'returns form data params for POST requests' do
+      request = Apia::Request.new(
+        Rack::MockRequest.env_for(
+          '/',
+          method: 'POST',
+          'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
+          input: 'name=Bob&email=bob@example.com'
+        )
+      )
+      expect(request.params).to eq({
+        'name' => 'Bob',
+        'email' => 'bob@example.com'
+      })
+    end
+
+    it 'returns combined params from query string and form data' do
+      request = Apia::Request.new(
+        Rack::MockRequest.env_for(
+          '/?id=123',
+          method: 'POST',
+          'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
+          input: 'name=Charlie'
+        )
+      )
+      expect(request.params).to include('id' => '123', 'name' => 'Charlie')
+    end
+
+    it 'handles array parameters' do
+      request = Apia::Request.new(
+        Rack::MockRequest.env_for(
+          '/?tags[]=ruby&tags[]=rails',
+          method: 'GET'
+        )
+      )
+      expect(request.params).to eq({ 'tags' => %w[ruby rails] })
+    end
+
+    it 'handles nested parameters' do
+      request = Apia::Request.new(
+        Rack::MockRequest.env_for(
+          '/',
+          method: 'POST',
+          'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
+          input: 'user[name]=Dave&user[email]=dave@example.com'
+        )
+      )
+      expect(request.params).to eq({
+        'user' => { 'name' => 'Dave', 'email' => 'dave@example.com' }
+      })
+    end
+
+    it 'returns empty hash for POST with empty body' do
+      request = Apia::Request.new(
+        Rack::MockRequest.env_for(
+          '/',
+          method: 'POST',
+          'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
+          input: ''
+        )
+      )
+      expect(request.params).to eq({})
+    end
+
+    it 'does not parse JSON content type as params' do
+      request = Apia::Request.new(
+        Rack::MockRequest.env_for(
+          '/',
+          method: 'POST',
+          'CONTENT_TYPE' => 'application/json',
+          input: '{"name":"Eve"}'
+        )
+      )
+      expect(request.params).to eq({})
+    end
+
+    it 'handles multipart form data' do
+      request = Apia::Request.new(
+        Rack::MockRequest.env_for(
+          '/',
+          method: 'POST',
+          'CONTENT_TYPE' => 'multipart/form-data; boundary=----WebKitFormBoundary',
+          input: "------WebKitFormBoundary\r\nContent-Disposition: form-data; name=\"field\"\r\n\r\nvalue\r\n------WebKitFormBoundary--\r\n"
+        )
+      )
+      expect(request.params).to eq({ 'field' => 'value' })
+    end
+  end
 end
