@@ -39,12 +39,6 @@ module Apia
       has_header?(::Rack::RACK_INPUT)
     end
 
-    def params
-      return {} unless body?
-
-      super
-    end
-
     private
 
     def parse_json_from_string(body)
