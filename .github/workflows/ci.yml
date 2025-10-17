@@ -39,18 +39,17 @@ jobs:
   release-please:
     name: Release Please
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
+    if: ${{ startsWith(github.ref, 'refs/heads/') }}
     outputs:
       release_created: ${{ steps.release-please.outputs.release_created }}
-      tag_name: ${{ steps.release-please.outputs.tag_name }} # e.g. v1.0.0
-      version: ${{ steps.release-please.outputs.version }} # e.g. 1.0.0
+      version: ${{ steps.release-please.outputs.version }}
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: krystal/release-please-manifest-action@092261975f7de95f39420852ffa44410d8e726bc # v2.0.0
         id: release-please
+        with:
+          target-branch-pattern: '^(main|master|release-[0-9]+(\.[0-9]+)?\.x)$'
+          app-id: ${{ secrets.RELEASE_BOT_APP_ID }}
+          private-key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
 
   release:
     runs-on: ubuntu-latest
