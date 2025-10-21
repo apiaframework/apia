@@ -17,18 +17,18 @@ module Apia
       return {} if @origin.nil?
 
       headers = {}
-      headers['Access-Control-Allow-Origin'] = @origin
+      headers['access-control-allow-origin'] = @origin
 
       if @methods.is_a?(String)
-        headers['Access-Control-Allow-Methods'] = @methods
+        headers['access-control-allow-methods'] = @methods
       elsif @methods.is_a?(Array) && @methods.any?
-        headers['Access-Control-Allow-Methods'] = @methods.map(&:upcase).join(', ')
+        headers['access-control-allow-methods'] = @methods.map(&:upcase).join(', ')
       end
 
       if @headers.is_a?(String)
-        headers['Access-Control-Allow-Headers'] = @headers
+        headers['access-control-allow-headers'] = @headers
       elsif @headers.is_a?(Array) && @headers.any?
-        headers['Access-Control-Allow-Headers'] = @headers.join(', ')
+        headers['access-control-allow-headers'] = @headers.join(', ')
       end
 
       headers

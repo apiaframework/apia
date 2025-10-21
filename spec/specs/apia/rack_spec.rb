@@ -190,9 +190,9 @@ describe Apia::Rack do
       expect(result[0]).to eq 200
 
       headers = result[1]
-      expect(headers['Access-Control-Allow-Methods']).to eq 'GET, OPTIONS'
-      expect(headers['Access-Control-Allow-Headers']).to eq 'Authorization, Content-Type'
-      expect(headers['Access-Control-Allow-Origin']).to eq 'example.com'
+      expect(headers['access-control-allow-methods']).to eq 'GET, OPTIONS'
+      expect(headers['access-control-allow-headers']).to eq 'Authorization, Content-Type'
+      expect(headers['access-control-allow-origin']).to eq 'example.com'
       expect(headers['x-executed'].nil?).to be true
 
       # assert body is empty (does not contain the response from the test endpoint)

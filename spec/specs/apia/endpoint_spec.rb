@@ -147,8 +147,8 @@ describe Apia::Endpoint do
             request = Apia::Request.new(Rack::MockRequest.env_for('/', input: ''))
             endpoint = Apia::Endpoint.create('Endpoint')
             response = endpoint.execute(request)
-            expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
-            expect(response.headers['Access-Control-Allow-Methods']).to eq '*'
+            expect(response.headers['access-control-allow-origin']).to eq '*'
+            expect(response.headers['access-control-allow-methods']).to eq '*'
           end
         end
 
@@ -168,9 +168,9 @@ describe Apia::Endpoint do
             end
 
             response = endpoint.execute(request)
-            expect(response.headers['Access-Control-Allow-Origin']).to eq 'example.com'
-            expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, POST'
-            expect(response.headers['Access-Control-Allow-Headers']).to eq 'X-Custom'
+            expect(response.headers['access-control-allow-origin']).to eq 'example.com'
+            expect(response.headers['access-control-allow-methods']).to eq 'GET, POST'
+            expect(response.headers['access-control-allow-headers']).to eq 'X-Custom'
           end
         end
 
@@ -200,9 +200,9 @@ describe Apia::Endpoint do
             response = endpoint.execute(request)
 
             expect(response.status).to eq 500
-            expect(response.headers['Access-Control-Allow-Origin']).to eq 'example.com'
-            expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, POST'
-            expect(response.headers['Access-Control-Allow-Headers']).to eq 'X-Custom'
+            expect(response.headers['access-control-allow-origin']).to eq 'example.com'
+            expect(response.headers['access-control-allow-methods']).to eq 'GET, POST'
+            expect(response.headers['access-control-allow-headers']).to eq 'X-Custom'
           end
         end
       end
@@ -212,8 +212,8 @@ describe Apia::Endpoint do
           request = Apia::Request.new(Rack::MockRequest.env_for('/', input: '', method: 'OPTIONS'))
           endpoint = Apia::Endpoint.create('Endpoint')
           response = endpoint.execute(request)
-          expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
-          expect(response.headers['Access-Control-Allow-Methods']).to eq '*'
+          expect(response.headers['access-control-allow-origin']).to eq '*'
+          expect(response.headers['access-control-allow-methods']).to eq '*'
           expect(response.status).to eq 200
           expect(response.body).to eq ''
         end
