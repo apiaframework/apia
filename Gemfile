@@ -13,4 +13,5 @@ group :development, :test do
   gem 'rspec-expectations'
   gem 'rspec-mocks'
   gem 'rubocop'
+  gem 'ruby-lsp-rspec', require: false if RUBY_VERSION >= '3.0'
 end
