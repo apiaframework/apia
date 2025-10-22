@@ -9,8 +9,8 @@ describe Apia::CORS do
 
     context 'with the details' do
       it 'returns a wildcard origin and methods' do
-        expect(cors.to_headers).to eq({ 'Access-Control-Allow-Origin' => '*',
-                                        'Access-Control-Allow-Methods' => '*' })
+        expect(cors.to_headers).to eq({ 'access-control-allow-origin' => '*',
+                                        'access-control-allow-methods' => '*' })
       end
     end
 
@@ -26,50 +26,50 @@ describe Apia::CORS do
         cors.origin = 'example.com'
       end
 
-      it 'includes the Access-Control-Allow-Origin header' do
+      it 'includes the "access-control-allow-origin" header' do
         expect(cors.to_headers).to eq({
-          'Access-Control-Allow-Origin' => 'example.com',
-          'Access-Control-Allow-Methods' => '*'
+          'access-control-allow-origin' => 'example.com',
+          'access-control-allow-methods' => '*'
         })
       end
 
       context 'when methods have been provided' do
-        it 'includes the Access-Control-Allow-Methods header' do
+        it 'includes the "access-control-allow-methods" header' do
           cors.methods = %w[GET POST]
           expect(cors.to_headers).to eq({
-            'Access-Control-Allow-Origin' => 'example.com',
-            'Access-Control-Allow-Methods' => 'GET, POST'
+            'access-control-allow-origin' => 'example.com',
+            'access-control-allow-methods' => 'GET, POST'
           })
         end
 
         it 'upcases any methods provided' do
           cors.methods = %w[get post]
           expect(cors.to_headers).to eq({
-            'Access-Control-Allow-Origin' => 'example.com',
-            'Access-Control-Allow-Methods' => 'GET, POST'
+            'access-control-allow-origin' => 'example.com',
+            'access-control-allow-methods' => 'GET, POST'
           })
         end
       end
 
       context 'when headers have been provided' do
-        it 'includes the Access-Control-Allow-Headers header' do
+        it 'includes the "access-control-allow-headers" header' do
           cors.headers = %w[X-Custom Content-Type]
           expect(cors.to_headers).to eq({
-            'Access-Control-Allow-Origin' => 'example.com',
-            'Access-Control-Allow-Methods' => '*',
-            'Access-Control-Allow-Headers' => 'X-Custom, Content-Type'
+            'access-control-allow-origin' => 'example.com',
+            'access-control-allow-methods' => '*',
+            'access-control-allow-headers' => 'X-Custom, Content-Type'
           })
         end
       end
 
       context 'when methods and headers have been provided' do
-        it 'includes the Access-Control-Allow-Methods and Access-Control-Allow-Headers headers' do
+        it 'includes the "access-control-allow-methods" and "access-control-allow-headers" headers' do
           cors.methods = %w[GET POST]
           cors.headers = %w[X-Custom Content-Type]
           expect(cors.to_headers).to eq({
-            'Access-Control-Allow-Origin' => 'example.com',
-            'Access-Control-Allow-Methods' => 'GET, POST',
-            'Access-Control-Allow-Headers' => 'X-Custom, Content-Type'
+            'access-control-allow-origin' => 'example.com',
+            'access-control-allow-methods' => 'GET, POST',
+            'access-control-allow-headers' => 'X-Custom, Content-Type'
           })
         end
       end
