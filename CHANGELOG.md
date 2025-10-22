@@ -2,6 +2,13 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## [3.9.1](https://github.com/apiaframework/apia/compare/v3.9.0...v3.9.1) (2025-10-22)
+
+
+### Bug Fixes
+
+* **cors:** lowercase cors headers for rack 3 compatibility ([#42](https://github.com/apiaframework/apia/issues/42)) ([859907a](https://github.com/apiaframework/apia/commit/859907a47a719776d215115208f1368009bf7654))
+
 ## [3.9.0](https://github.com/apiaframework/apia/compare/v3.8.0...v3.9.0) (2025-10-17)
 
 
