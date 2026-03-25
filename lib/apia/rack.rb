@@ -162,6 +162,26 @@ module Apia
         response_triplet(body, content_type: Apia::Response::PLAIN, status: status, headers: headers)
       end
 
+      # Return an HTML triplet for the given body.
+      #
+      # @param body [String]
+      # @param status [Integer]
+      # @param headers [Hash]
+      # @return [Array]
+      def html_triplet(body, status: 200, headers: {})
+        response_triplet(body, content_type: Apia::Response::HTML, status: status, headers: headers)
+      end
+
+      # Return a Turbo Stream triplet for the given body.
+      #
+      # @param body [String]
+      # @param status [Integer]
+      # @param headers [Hash]
+      # @return [Array]
+      def turbo_stream_triplet(body, status: 200, headers: {})
+        response_triplet(body, content_type: Apia::Response::TURBO_STREAM, status: status, headers: headers)
+      end
+
       # Return a JSON-ready triplet for the given body.
       #
       # @param body [Hash, Array]

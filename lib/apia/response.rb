@@ -8,7 +8,9 @@ module Apia
 
     TYPES = [
       JSON = 'application/json',
-      PLAIN = 'text/plain'
+      PLAIN = 'text/plain',
+      HTML = 'text/html',
+      TURBO_STREAM = 'text/vnd.turbo-stream.html'
     ].freeze
 
     attr_accessor :status
@@ -72,10 +74,10 @@ module Apia
     def rack_triplet
       # Errors will always be sent as a hash intended for JSON encoding,
       # even if the endpoint specifies a plain text response, so only
-      # send a pain response if the type is plaintext _and_ the body is
-      # a string
-      if @type == PLAIN && body.is_a?(String)
-        Rack.plain_triplet(body, headers: headers, status: status)
+      # send a plain response if the type is plaintext _and_ the body is
+      # a string. Same logic applies to HTML and Turbo Stream responses.
+      if (@type == PLAIN || @type == HTML || @type == TURBO_STREAM) && body.is_a?(String)
+        Rack.response_triplet(body, content_type: @type, status: status, headers: headers)
       else
         Rack.json_triplet(body, headers: headers, status: status)
       end
