@@ -21,6 +21,9 @@ module Apia
       field :array, type: :boolean do
         backend(&:array?)
       end
+      field :skip_if_null, type: :boolean do
+        backend(&:skip_if_null?)
+      end
 
       field :spec, type: FieldSpecOptionsSchemaType do
         backend do |field|

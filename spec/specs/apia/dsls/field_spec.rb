@@ -43,6 +43,18 @@ describe Apia::DSLs::Field do
     end
   end
 
+  context '#skip_if_null' do
+    it 'should be able to set skip_if_null (true)' do
+      dsl.skip_if_null true
+      expect(field.skip_if_null?).to be true
+    end
+
+    it 'should be able to set skip_if_null (false)' do
+      dsl.skip_if_null false
+      expect(field.skip_if_null?).to be false
+    end
+  end
+
   context '#array' do
     it 'should be able to set the ability to be nil (true)' do
       dsl.array true

@@ -15,6 +15,7 @@ module Apia
       attr_accessor :backend
       attr_accessor :array
       attr_accessor :null
+      attr_accessor :skip_if_null
       attr_accessor :condition
       attr_writer :type
       attr_accessor :include
@@ -36,6 +37,13 @@ module Apia
       # @return [Boolean]
       def null?
         @null == true
+      end
+
+      # Should this field be skipped if the value is null?
+      #
+      # @return [Boolean]
+      def skip_if_null?
+        @skip_if_null == true
       end
 
       # Is the result from this field expected to be an array?
@@ -83,8 +91,12 @@ module Apia
       def value(object, request: nil, path: [])
         raw_value = raw_value_from_object(object)
 
-        return nil if raw_value.nil? && null?
-        raise Apia::NullFieldValueError.new(self, object) if raw_value.nil?
+        if raw_value.nil?
+          return :skip if skip_if_null?
+          return nil if null?
+
+          raise Apia::NullFieldValueError.new(self, object)
+        end
 
         if array? && raw_value.is_a?(Array)
           raw_value.map { |v| type.cast(v, request: request, path: path) }

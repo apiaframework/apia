@@ -14,6 +14,10 @@ module Apia
         @definition.null = value
       end
 
+      def skip_if_null(value)
+        @definition.skip_if_null = value
+      end
+
       def array(value)
         @definition.array = value
       end

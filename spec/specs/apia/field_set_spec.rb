@@ -19,6 +19,31 @@ describe Apia::FieldSet do
       expect(hash['name']).to eq nil
     end
 
+    it 'should not include fields with skip_if_null when value is nil' do
+      field = Apia::Definitions::Field.new(:name)
+      field.type = :string
+      field_set.add field
+
+      field = Apia::Definitions::Field.new(:email)
+      field.type = :string
+      field.skip_if_null = true
+      field_set.add field
+
+      hash = field_set.generate_hash({ name: 'Adam', email: nil })
+      expect(hash[:name]).to eq 'Adam'
+      expect(hash.keys).to_not include :email
+    end
+
+    it 'should include fields with skip_if_null when value is present' do
+      field = Apia::Definitions::Field.new(:email)
+      field.type = :string
+      field.skip_if_null = true
+      field_set.add field
+
+      hash = field_set.generate_hash({ email: 'adam@example.com' })
+      expect(hash[:email]).to eq 'adam@example.com'
+    end
+
     it 'should not include fields that are not supposed to be included' do
       field = Apia::Definitions::Field.new(:name)
       field.type = :string

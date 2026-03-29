@@ -46,6 +46,25 @@ describe Apia::Definitions::Field do
     end
   end
 
+  context '#skip_if_null?' do
+    it 'should be true if skip_if_null is set to true' do
+      field = Apia::Definitions::Field.new(:id)
+      field.skip_if_null = true
+      expect(field.skip_if_null?).to be true
+    end
+
+    it 'should be false if skip_if_null is not specified' do
+      field = Apia::Definitions::Field.new(:id)
+      expect(field.skip_if_null?).to be false
+    end
+
+    it 'should be false if skip_if_null is set to false' do
+      field = Apia::Definitions::Field.new(:id)
+      field.skip_if_null = false
+      expect(field.skip_if_null?).to be false
+    end
+  end
+
   context '#include?' do
     it 'should return true when there is no condition' do
       field = Apia::Definitions::Field.new(:id)
@@ -137,6 +156,28 @@ describe Apia::Definitions::Field do
       expect do
         field.value({ id: '444' })
       end.to raise_error(Apia::InvalidScalarValueError)
+    end
+
+    it 'should return :skip when value is nil and skip_if_null is true' do
+      field = Apia::Definitions::Field.new(:name)
+      field.type = :string
+      field.skip_if_null = true
+      expect(field.value({ name: nil })).to eq :skip
+    end
+
+    it 'should return :skip when value is nil and skip_if_null is true even if null is true' do
+      field = Apia::Definitions::Field.new(:name)
+      field.type = :string
+      field.skip_if_null = true
+      field.null = true
+      expect(field.value({ name: nil })).to eq :skip
+    end
+
+    it 'should not return :skip when value is present and skip_if_null is true' do
+      field = Apia::Definitions::Field.new(:name)
+      field.type = :string
+      field.skip_if_null = true
+      expect(field.value({ name: 'Adam' })).to eq 'Adam'
     end
 
     it 'should return an array if defined as an array' do

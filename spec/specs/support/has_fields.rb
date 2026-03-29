@@ -34,6 +34,11 @@ shared_examples 'has fields dsl' do
       expect(definition.fields[:name].description).to eq 'Some description'
     end
 
+    it 'should allow skip_if_null to be provided as an option' do
+      dsl.field :name, type: :string, skip_if_null: true
+      expect(definition.fields[:name].skip_if_null?).to eq true
+    end
+
     it 'should allow the backend to be provided as an option' do
       example_proc = proc { 1234 }
       dsl.field :name, type: :string, backend: example_proc

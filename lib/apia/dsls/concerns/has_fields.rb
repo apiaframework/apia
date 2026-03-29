@@ -22,6 +22,7 @@ module Apia
           end
 
           field.null = options[:null] if options.key?(:null)
+          field.skip_if_null = options[:skip_if_null] if options.key?(:skip_if_null)
           field.array = options[:array] if options.key?(:array)
           field.include = options[:include] if options.key?(:include)
           field.backend = options[:backend] if options.key?(:backend)
