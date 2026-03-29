@@ -146,6 +146,10 @@ describe Apia::Response do
     end
 
     context 'with a legacy plain text response' do
+      before do
+        allow_any_instance_of(Apia::Response).to receive(:warn)
+      end
+
       it 'should return 200 by default' do
         endpoint = Apia::Endpoint.create('ExampleEndpoint')
         response = Apia::Response.new(request, endpoint)
@@ -203,8 +207,8 @@ describe Apia::Response do
       it 'should warn that the method is deprecated' do
         endpoint = Apia::Endpoint.create('ExampleEndpoint')
         response = Apia::Response.new(request, endpoint)
-        expect(response).to receive(:warn).with('[DEPRECATION] `plain_text_body` is deprecated. Please set use `response_type` in the endpoint definition, and set the response `body` directly instead.')
         response.plain_text_body('hello world')
+        expect(response).to have_received(:warn).with('[DEPRECATION] `plain_text_body` is deprecated. Please set use `response_type` in the endpoint definition, and set the response `body` directly instead.')
       end
     end
   end

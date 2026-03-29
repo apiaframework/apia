@@ -118,7 +118,6 @@ describe Apia::Definitions::Field do
     end
 
     it 'should be able to pull a value from an object' do
-      require 'ostruct'
       field = Apia::Definitions::Field.new(:id)
       field.type = :integer
       struct = Struct.new(:id).new
