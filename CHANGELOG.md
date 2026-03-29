@@ -2,6 +2,18 @@
 
 This file contains all the latest changes and updates to Apia.
 
+## [3.10.0](https://github.com/apiaframework/apia/compare/v3.9.1...v3.10.0) (2026-03-29)
+
+
+### Features
+
+* **fields:** add skip_if_null option to omit null fields from output ([efee6f0](https://github.com/apiaframework/apia/commit/efee6f0c0776dbbc5ad2dac68361d191667b8601))
+
+
+### Bug Fixes
+
+* **specs:** silence deprecation warnings in test output ([b2e0715](https://github.com/apiaframework/apia/commit/b2e071578c271ab3f2df75bc4a1d08f5e113c616))
+
 ## [3.9.1](https://github.com/apiaframework/apia/compare/v3.9.0...v3.9.1) (2025-10-22)
 
 
